@@ -9,7 +9,7 @@
     http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
  
     <http pattern="/assets/**" security="none"/>
-    <http use-expressions="true">
+    <http use-expressions="true" auto-config="true">
         <intercept-url pattern="/j_spring_security_check" access="permitAll"/>
         <intercept-url pattern="/welcome/login*" access="isAnonymous()" />
         <intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')"/>
@@ -19,10 +19,11 @@
                     default-target-url="/admin/dashboard/init.io"
                     authentication-failure-url="/welcome/login.io?error=login failed" 
                     username-parameter="username"
-                    password-parameter="password" />
+                    password-parameter="password" 
+        />
         
  
-        <logout logout-success-url="/welcome/login.io" />
+        <logout logout-success-url="/welcome/login.io" logout-url="/j_spring_security_logout" delete-cookies="JSESSIONID" />
         <csrf/>
     </http>
     

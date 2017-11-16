@@ -29,7 +29,21 @@
         <property name="username" value="root" />
         <property name="password" value="admin" />
     </bean>
+    
+         <bean id="multipartResolver"
+               class="org.springframework.web.multipart.support.StandardServletMultipartResolver">
+         
+         
+         </bean>
+         
+    <!-- Support For File Upload And Download -->
+<!--    <bean id="filterMultipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="100000000" />
 
+    </bean>-->
+
+   
+ 
     <!-- Hibernate 4 SessionFactory Bean definition -->
     <bean id="hibernate4AnnotatedSessionFactory"
           class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
@@ -37,6 +51,14 @@
         <property name="annotatedClasses">
             <list>
                 <value>com.abp.test.Person</value>
+                <value>com.abp.admin.language.LanguageDAO</value>
+                <value>com.abp.statedistrict.StateDAO</value>
+                <value>com.abp.statedistrict.DistrictDAO</value>
+                <value>com.abp.admin.ssc.SSCDAO</value>
+                <value>com.abp.admin.assessor.AssessorDAO</value>
+                <value>com.abp.admin.qualificationpack.QualificationPackDAO</value>
+                <value>com.abp.admin.qualificationpack.NOSDAO</value>
+                <value>com.abp.admin.qualificationpack.PCDAO</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -47,10 +69,20 @@
             </props>
         </property>
     </bean>
+    
+    <bean id="superDAO" class="com.abp.superdao.SuperDAOImpl">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </bean>
+    
+    <bean id="superService" class="com.abp.superservice.SuperServiceImpl">
+        <property name="superDAO" ref="superDAO"></property>
+    </bean>
 	
     <bean id="personDAO" class="com.abp.dao.PersonDAOImpl">
         <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </bean>
+    
+    
     <bean id="personService" class="com.abp.service.PersonServiceImpl">
         <property name="personDAO" ref="personDAO"></property>
     </bean>
@@ -100,11 +132,11 @@
 
     <mvc:interceptors>
         <bean 
-              class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+            class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
             <property name="paramName" value="language" />
         </bean>
     </mvc:interceptors>
-<!--    <bean class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping" >
+    <!--    <bean class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping" >
         <property name="interceptors">
             <list>
                 <ref bean="localeChangeInterceptor" />
@@ -115,7 +147,15 @@
           class="org.springframework.context.support.ResourceBundleMessageSource">
         <property name="basenames">
             <list>
-                <value>admin/properties/welcome</value>
+                <value>admin/properties/language/language</value>
+                <value>admin/properties/statedistricts/statedistricts</value>
+                <value>admin/properties/common/common</value>
+                <value>admin/properties/welcom</value>
+                <value>admin/properties/assessor/assessor</value>
+                <value>admin/properties/language/language</value>
+                <value>admin/properties/ssc/ssc</value>
+                <value>admin/properties/statedistricts/statedistricts</value>
+                <value>admin/properties/qualificationpack/qualificationpack</value>
                 
             </list>
         </property>

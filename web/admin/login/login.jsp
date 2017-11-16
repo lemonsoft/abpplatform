@@ -23,7 +23,7 @@
 
     </head>
 
-    <body class="woodbg">
+    <body class="darkbg">
 
         <div class="smart-wrap">
             <div class="smart-forms smart-container wrap-2">

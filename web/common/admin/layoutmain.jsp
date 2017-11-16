@@ -17,23 +17,15 @@
         <link rel="stylesheet" type="text/css"  href="<%=request.getContextPath()%>/assets/css/smart-themes/purple.css"> 
     </head>
     <body>
-        <table border="1" cellpadding="2" cellspacing="2" align="center">
-            <tr>
-                <td height="20%" colspan="2">
-                    <tiles:insert attribute="header" ignore="true" />
-                </td>
-            </tr>
+        <table width="100%" border="1" cellpadding="2" cellspacing="2" align="center">
+            
             <tr>
 
                 <td>
                     <tiles:insert attribute="body" />
                 </td>
             </tr>
-            <tr>
-                <td height="20%" colspan="2">
-                    <tiles:insert attribute="footer" />
-                </td>
-            </tr>
+            
         </table>
     </body>
 </html>

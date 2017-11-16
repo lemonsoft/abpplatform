@@ -4,7 +4,7 @@
     Author     : ss
 --%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page pageEncoding="UTF-8"%>
 <%
     String body = (String) request.getSession().getAttribute("body");
     System.out.println("body page..."+ body);

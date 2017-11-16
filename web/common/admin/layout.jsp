@@ -11,13 +11,13 @@
 
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
         <title><spring:message code="welcome.title" text="TAG" /></title>
         <link rel="stylesheet" type="text/css"  href="<%=request.getContextPath()%>/assets/css/smart-forms.css">    
         <link rel="stylesheet" type="text/css"  href="<%=request.getContextPath()%>/assets/css/font-awesome.min.css">
         <link rel="stylesheet" type="text/css"  href="<%=request.getContextPath()%>/assets/css/smart-themes/purple.css"> 
     </head>
-    <body>
+    <body style="background-color: #f1f1f1;">
         <table width="100%" height="100%" align="center">
             <tr>
                 <td height="20%" colspan="2">
