@@ -1,0 +1,308 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.abp.admin.batches;
+
+import com.abp.admin.project.ProjectDAO;
+import com.abp.admin.qualificationpack.QualificationPackDAO;
+import com.abp.admin.ssc.SSCDAO;
+import com.abp.statedistrict.DistrictDAO;
+import com.abp.statedistrict.StateDAO;
+import com.abp.superdao.SuperBean;
+import com.abp.superservice.SuperService;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+/**
+ *
+ * @author ss
+ */
+@Controller
+@RequestMapping("/admin/batches")
+public class BatchesController {
+
+    private SuperService superService;
+
+    @Autowired(required = true)
+    @Qualifier(value = "superService")
+    public void setSuperService(SuperService superService) {
+        this.superService = superService;
+    }
+
+    @RequestMapping(value = "/init", method = RequestMethod.GET)
+    public String init(HttpServletRequest request, HttpServletResponse response, Model model) {
+
+        model.addAttribute("batches", new BatchesDAO());
+        model.addAttribute("ssc", getSectorSkillCouncil());
+
+        model.addAttribute("action", "search.io");
+
+        request.getSession().setAttribute("body", "/admin/batches/batches.jsp");
+        return "/common";
+    }
+
+    @RequestMapping(value = "/initadd", method = RequestMethod.GET)
+    public String initadd(HttpServletRequest request, HttpServletResponse response, Model model) {
+
+        BatchesDAO batches = new BatchesDAO();
+        String recid = request.getParameter("recid");
+        batches.setQpackId(new Integer(recid));
+        model.addAttribute("batches", batches);
+        model.addAttribute("allstates", getAllStatesValues());
+        model.addAttribute("projects", getAllProjectValues());
+        model.addAttribute("action", "add.io");
+        model.addAttribute("mode", "add");
+
+        request.getSession().setAttribute("body", "/admin/batches/addbatches.jsp");
+        return "/common";
+    }
+
+    @RequestMapping(value = "/add", method = {RequestMethod.GET, RequestMethod.POST})
+    public String add(@ModelAttribute("batches") BatchesDAO beanObj, HttpServletRequest request, HttpServletResponse response, Model model) {
+
+        System.out.println("data ::" + beanObj.getQpackId());
+        this.superService.saveObject(beanObj);
+
+        return "redirect:/admin/batches/init.io";
+    }
+
+    @RequestMapping(value = "/initupdate", method = RequestMethod.GET)
+    public String initupdate(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
+
+        String recid = request.getParameter("recid");
+        BatchesDAO batches = (BatchesDAO) this.superService.getObjectById(new BatchesDAO(), new Integer(recid));
+        String startdate = batches.getAssessmentStartDate();
+        String enddate = batches.getAssessmentEndDate();
+
+        DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyy-mm-dd HH:mm:ss.s");
+        DateTime jodastarttime = dtf.parseDateTime(startdate);
+        DateTime jodaendtime = dtf.parseDateTime(enddate);
+        
+        
+        batches.setAssessmentStartDate(jodastarttime.toString().substring(0, 16));
+        batches.setAssessmentEndDate(jodaendtime.toString().substring(0, 16));
+        model.addAttribute("batches", batches);
+        model.addAttribute("allstates", getAllStatesValues());
+        model.addAttribute("projects", getAllProjectValues());
+        model.addAttribute("district", getDistrictById(batches.getDistrict_id()));
+        model.addAttribute("action", "update.io");
+        model.addAttribute("mode", "update");
+
+        request.getSession().setAttribute("body", "/admin/batches/addbatches.jsp");
+        return "/common";
+    }
+    @RequestMapping(value = "/update", method = {RequestMethod.GET, RequestMethod.POST})
+    public String update(@ModelAttribute("batches") BatchesDAO beanObj, HttpServletRequest request, HttpServletResponse response, Model model) {
+
+        
+        this.superService.updateObject(beanObj);
+
+        return "redirect:/admin/batches/init.io";
+    }
+
+    @RequestMapping(value = "/getDistricts", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    String getDistricts(@RequestParam("s_id") String stateid) {
+
+        System.out.println("State ID::" + stateid);
+        String districts = getAllDistricts(stateid);
+
+        return districts;
+    }
+    @RequestMapping(value = "/checkBatchID", method = RequestMethod.GET)
+    public @ResponseBody
+    String checkBatchID(@RequestParam("batchid") String batchid) {
+        String status = "avail";
+        boolean flag = false;
+        try {
+            if (batchid != null && !batchid.isEmpty()  ) {
+                System.out.println("getting data from jquery----------------" + batchid);
+                Map param = new HashMap();
+                param.put("batch_id", new Integer(batchid));
+                flag = this.superService.duplicateCheck(new BatchesDAO(), param);
+                if (flag) {
+                    status = "notavail";
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            status = "notavail";
+        }
+
+        return status;
+    }
+    public Map<String, String> getDistrictById(int districtid) {
+
+        Map<String, String> district = new HashMap();
+        DistrictDAO records = (DistrictDAO) this.superService.getObjectById(new DistrictDAO(), districtid);
+        System.out.println("record :" + records.getDistrictID());
+        district.put("" + records.getDistrictID(), records.getDistrictName());
+        return district;
+    }
+
+    @RequestMapping(value = "/getbatches", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    String getBatches(@RequestParam("qpid") String qpid) {
+
+        System.out.println("Qpack ID ID::" + qpid);
+        JSONArray jsonarr = new JSONArray();
+        Map param = new HashMap();
+        param.put("qpackId", new Integer(qpid));
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new BatchesDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                BatchesDAO batchdo = (BatchesDAO) itr.next();
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.append("ID", batchdo.getID());
+                jsonObj.append("batch_id", batchdo.getBatch_id());
+                jsonObj.append("batch_size", batchdo.getBatch_size());
+                jsonObj.append("state", getStateById(batchdo.getState_id()));
+                jsonObj.append("centerAddress", batchdo.getCenterAddress());
+                jsonObj.append("assessmentStartDate", batchdo.getAssessmentStartDate());
+                jsonObj.append("assessmentEndDate", batchdo.getAssessmentEndDate());
+                jsonObj.append("tpName", batchdo.getTpName());
+                jsonObj.append("assessorId", batchdo.getAssessorId());
+                jsonObj.append("questionPaperId", batchdo.getQuestionPaperId());
+                System.out.println(jsonObj.toString());
+                jsonarr.put(jsonObj);
+            }
+        }
+
+        return jsonarr.toString();
+    }
+
+    @RequestMapping(value = "/getQP", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    String getQP(@RequestParam("ssc_id") String sscid) {
+
+        System.out.println("SSC ID::" + sscid);
+        String districts = getQualificationPackByID(sscid);
+
+        return districts;
+    }
+
+    public String getQualificationPackByID(String sscid) {
+
+        JSONObject jsonObj = new JSONObject();
+        JSONArray jsonarr = new JSONArray();
+        Map param = new HashMap();
+        param.put("sscid", sscid);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QualificationPackDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                QualificationPackDAO data = (QualificationPackDAO) itr.next();
+                if (data.getSscid().equals(sscid)) {
+                    jsonObj.append("ID", data.getQpid());
+                    jsonObj.append("NAME", data.getQpackname());
+                    jsonarr.put(jsonObj);
+                }
+
+                jsonObj = new JSONObject();
+            }
+        }
+
+        return jsonarr.toString();
+    }
+
+    public String getAllDistricts(String stateid) {
+
+        JSONObject jsonObj = new JSONObject();
+        JSONArray jsonarr = new JSONArray();
+
+        List<SuperBean> records = this.superService.listAllObjects(new DistrictDAO());
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                DistrictDAO data = (DistrictDAO) itr.next();
+                if (data.getState().getStateID() == Integer.parseInt(stateid)) {
+                    jsonObj.append("ID", data.getDistrictID());
+                    jsonObj.append("NAME", data.getDistrictName());
+                    jsonarr.put(jsonObj);
+                }
+
+                jsonObj = new JSONObject();
+            }
+        }
+
+        return jsonarr.toString();
+    }
+
+    public Map<Integer, String> getSectorSkillCouncil() {
+
+        Map<Integer, String> states = new HashMap();
+        List<SuperBean> records = this.superService.listAllObjects(new SSCDAO());
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                SSCDAO data = (SSCDAO) itr.next();
+                states.put(data.getSscId(), data.getSscName());
+            }
+        }
+
+        return states;
+    }
+
+    public Map<Integer, String> getAllStatesValues() {
+
+        Map<Integer, String> states = new HashMap();
+        List<SuperBean> records = this.superService.listAllObjects(new StateDAO());
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                StateDAO data = (StateDAO) itr.next();
+                states.put(data.getStateID(), data.getStateName());
+            }
+        }
+
+        return states;
+    }
+
+    public String getStateById(int stateid) {
+
+        String statename = "";
+        StateDAO records = (StateDAO) this.superService.getObjectById(new StateDAO(), stateid);
+        System.out.println("record :" + records.getStateName());
+        statename = records.getStateName();
+        return statename;
+    }
+
+    public Map<Integer, String> getAllProjectValues() {
+
+        Map<Integer, String> projects = new HashMap();
+        List<SuperBean> records = this.superService.listAllObjects(new ProjectDAO());
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                ProjectDAO data = (ProjectDAO) itr.next();
+                projects.put(data.getID(), data.getProjectname());
+            }
+        }
+
+        return projects;
+    }
+}

@@ -85,7 +85,7 @@
                                     <label for="names" class="field-label"><spring:message code="ssc.title" text="Sector Skill Council" /></label>
                                     <label class="field prepend-icon">
                                         <form:select path="ssc_id" name="ssc_id" id="ssc_id" class="gui-input" >
-
+                                            <form:option value="">--Select--</form:option>
                                             <form:options items="${ssc}"/>
                                         </form:select>
 
@@ -308,11 +308,11 @@
 //
 //                                $('#pc2 tr:last').after('<tr ><td>1</td><td>DWC/N0105</td><td>Carry out basic domestic cooking services for the house</td><td>0.00</td><td>0.00</td><td>0</td><td><a href="#">Edit</a>|<a href="#">Delete</a></td></tr>');
                                 //alert(data[1].length);
-                                for (var i = 0, len = data[1].length; i < len; i++) {
-                                    alert(data[1][i].NOSNAME);
+                                for (var i = 0, lennos = data[1].length; i < lennos; i++) {
+                                    //alert(i+""+data[1].length);
 
                                     $('#example-basic4').append('<tr style="height: 50px;font-size:12px;"><td colspan="11"><table id="nos' + i + '" border="1" cellpadding="2" cellspacing="2" align="center" width="90%"><thead><tr ><th align="center">Sr.#</th><th align="center">NOS ID</th><th align="center">NOS </th><th align="center">Theory Cutoff</th><th align="center">Practical Cutoff</th><th align="center">Practical Cutoff</th><th align="center">Weighted Average (%)</th><th align="center">Actions</th></tr></thead></table></td></tr>');
-                                    $('#nos' + i + '').append('<tr ><td>' + i + '</td><td>' + data[1][i].NOSID + '</td><td>' + data[1][i].NOSNAME + '</td><td>' + data[1][i].Theorycutoffmarks + '</td><td>' + data[1][i].Practicalcutoffmarks + '</td><td>' + data[1][i].Overallcutoffmarks + '</td><td>' + data[1][i].Weightedavgmarks + '</td><td><a href="#">Edit</a>|<a href="#">Delete</a></td></tr>');
+                                    $('#nos' + i + '').append('<tr ><td align="center">' + i + '</td><td align="center">' + data[1][i].NOSID + '</td><td align="center">' + data[1][i].NOSNAME + '</td><td align="center">' + data[1][i].Theorycutoffmarks + '</td><td align="center">' + data[1][i].Practicalcutoffmarks + '</td><td align="center">' + data[1][i].Overallcutoffmarks + '</td><td align="center">' + data[1][i].Weightedavgmarks + '</td><td align="center"><a href="#" onclick="openeditnos(' + data[1][i].ID + ');">Edit</a>|<a href="#" onclick="opendeletenos(' + data[1][i].ID + ');">Delete</a></td></tr>');
                                     $('#nos' + i + ' tr:last').after('<tr><td colspan="11" align="right"><button type="button" class="button btn-blue" onClick="openpcdialog(' + data[1][i].ID + ');">Add New PC</button></td></tr>');
 
                                     $('#nos' + i + ' tr:last').after('<tr style="height: 50px;font-size:12px;"><td colspan="11"><table id="pc' + i + '" border="1" cellpadding="2" cellspacing="2" align="center" width="90%"><thead><tr ><th align="center">Sr.#</th><th align="center">PC ID</th><th align="center">PC Name</th><th align="center">Maximum Marks</th><th align="center">Theory Marks</th><th align="center">Practical Marks</th><th align="center">Actions</th></tr></thead></table></td></tr>');
@@ -321,6 +321,7 @@
                                     var totaltheory = 0;
                                     var totalpractical = 0;
                                     var index = 1;
+                                    var flag = false;
                                     for (var j = 0, len = data[2].length; j < len; j++) {
                                         //alert(data[1][i].ID + "=====" + data[2][j].NOSID);
                                         var val1 = parseInt(data[1][i].ID);
@@ -328,16 +329,19 @@
 
                                         if (val1 === val2) {
                                             //alert(data[2][j].PCID);
-
+                                            flag = true;
                                             totalmax = totalmax + parseInt(data[2][j].Theorycutoffmarks);
                                             //alert(parseInt(data[2][j].Theorycutoffmarks) + "=====" + totalmax);
                                             totaltheory = totaltheory + parseInt(data[2][j].Practicalcutoffmarks);
                                             totalpractical = totalpractical + parseInt(data[2][j].Overallcutoffmarks);
-                                            $('#pc' + i + ' tr:last').after('<tr ><td>' + index + '</td><td>' + data[2][j].PCID + '</td><td>' + data[2][j].PCNAME + '</td><td>' + data[2][j].Theorycutoffmarks + '</td><td>' + data[2][j].Practicalcutoffmarks + '</td><td>' + data[2][j].Overallcutoffmarks + '</td><td><a href="#">Edit</a>|<a href="#">Delete</a></td></tr>');
+                                            $('#pc' + i + ' tr:last').after('<tr ><td align="center">' + index + '</td><td align="center">' + data[2][j].PCID + '</td><td align="center">' + data[2][j].PCNAME + '</td><td align="center">' + data[2][j].Theorycutoffmarks + '</td><td align="center">' + data[2][j].Practicalcutoffmarks + '</td><td align="center">' + data[2][j].Overallcutoffmarks + '</td><td align="center"><a href="#" onclick="openeditpc(' + data[2][j].ID + ');">Edit</a>|<a href="#" onclick="opendeletepc(' + data[2][j].ID + ');">Delete</a></td></tr>');
                                             index++;
                                         }
                                     }
-                                    $('#pc' + i + ' tr:last').after('<tr ><td>&nbsp;</td><td>&nbsp;</td><td>Total</td><td>' + totalmax + '</td><td>' + totaltheory + '</td><td>' + totalpractical + '</td><td>&nbsp;</td></tr>');
+                                    if (flag) {
+                                        $('#pc' + i + ' tr:last').after('<tr ><td>&nbsp;</td><td>&nbsp;</td><td align="center"><b>Total</b></td><td align="center">' + totalmax + '</td><td align="center">' + totaltheory + '</td><td align="center">' + totalpractical + '</td><td>&nbsp;</td></tr>');
+                                    }
+
                                     //$('#nos' + i + ' tr:last').after('<tr><td colspan="11" align="right"><button type="button" class="button btn-blue" onClick="openpcdialog(' + data[1][i].ID + ');">Add New PC</button></td></tr>');
                                     //$('#nos' + i + ' tr:last').after('<tr style="height: 50px;font-size:12px;"><td colspan="11"><table id="pc" border="1" cellpadding="2" cellspacing="2" align="center" width="90%"><thead><tr ><th align="center">Sr.#</th><th align="center">PC ID</th><th align="center">PC Name</th><th align="center">Maximum Marks</th><th align="center">Theory Marks</th><th align="center">Practical Marks</th><th align="center">Actions</th></tr></thead></table></td></tr>');
                                     //$('#pc tr:last').after('<tr ><td>1</td><td>DWC/N0105</td><td>Carry out basic domestic cooking services for the house</td><td>0.00</td><td>0.00</td><td>0</td><td><a href="#">Edit</a>|<a href="#">Delete</a></td></tr>');
@@ -348,7 +352,8 @@
                             }
                         });
                     } else {
-                        $("#qpid").html("<option value=''>------- Select --------</option>");
+                        $("#example-basic4").empty();
+                        //$("#qpid").html("<option value=''>------- Select --------</option>");
                     }
                 });
             });
@@ -375,8 +380,62 @@
             }
             function openeditqp(id) {
                 //var qpid = $('select[name=qpid]').val();
-                alert("Test code" + id);
+                //alert("Test code" + id);
                 var w = window.open("<%=request.getContextPath()%>/admin/qualificationpack/initupdateqp.io?recid=" + id, "popupWindow", "width=1024, height=500, scrollbars=yes");
+            }
+            function openeditnos(id) {
+                //var qpid = $('select[name=qpid]').val();
+                //alert("Test code" + id);
+                var w = window.open("<%=request.getContextPath()%>/admin/qualificationpack/initUpdatenos.io?recid=" + id, "popupWindow", "width=1024, height=500, scrollbars=yes");
+            }
+            function openeditpc(id) {
+                //var qpid = $('select[name=qpid]').val();
+                //alert("Test code" + id);
+                var w = window.open("<%=request.getContextPath()%>/admin/qualificationpack/initUpdatepc.io?recid=" + id, "popupWindow", "width=1024, height=500, scrollbars=yes");
+            }
+            function opendeletenos(id) {
+                //var qpid = $('select[name=qpid]').val();
+               // alert("Test code" + id);
+                var r = confirm("Are you sure you want to delete!\nAll PC,Batches, Theory and Practical questions under this QualityPack will be deleted permenantly. .");
+                var txt;
+                if (r === true) {
+                    txt = "You pressed OK!";
+                    $.ajax({
+                        url: "deletenos.io",
+                        data: {nosid: id},
+                        type: 'GET',
+                        success: function (data) {
+
+                            //alert(data);
+                            $('#qpid').trigger("change");
+
+                        }
+                    });
+                } else {
+                    txt = "You pressed Cancel!";
+                }
+            }
+            function opendeletepc(id) {
+                //var qpid = $('select[name=qpid]').val();
+                //alert("Test code" + id);
+                var r = confirm("Are you sure you want to delete!\n PC,Batches, Theory and Practical questions under this QualityPack will be deleted permenantly. .");
+                var txt;
+                if (r === true) {
+                    txt = "You pressed OK!";
+                    $.ajax({
+                        url: "deletepc.io",
+                        data: {pcid: id},
+                        type: 'GET',
+                        success: function (data) {
+
+                            //alert(data);
+                            $('#qpid').trigger("change");
+
+                        }
+                    });
+                } else {
+                    txt = "You pressed Cancel!";
+                }
             }
             function opendeleteqp(id) {
                 //var qpid = $('select[name=qpid]').val();
@@ -384,12 +443,30 @@
                 var txt;
                 if (r === true) {
                     txt = "You pressed OK!";
+                    $.ajax({
+                        url: "deleteqp.io",
+                        data: {qpid: id},
+                        type: 'GET',
+                        success: function (data) {
+
+                            //alert(data);
+                            window.location.reload();
+                            //$('#qpid').trigger("change");
+                        }
+                    });
                 } else {
                     txt = "You pressed Cancel!";
                 }
-                alert(txt);
+                //alert(txt);
                 //var w = window.open("<%=request.getContextPath()%>/admin/qualificationpack/openaddpc.io?nosid=" + id, "popupWindow", "width=1024, height=500, scrollbars=yes");
             }
+            function refresh() {
+                $('#qpid').trigger("change");
+            }
+            function refreshqp() {
+                $('#ssc_id').trigger("change");
+            }
+
         </script>
     </body>
 

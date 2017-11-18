@@ -39,6 +39,7 @@
                 </div><!-- end .form-header section -->
 
                 <form:form method="post" action="${action}"  commandName="nosdao" id="submitForm">
+                    <form:hidden path="nosID" id="nosID"/>
                     <form:hidden path="qpackid" id="qpackid"/>
                     <div class="form-body theme-blue">
 
@@ -48,7 +49,13 @@
                             <div class="section colm colm6">
                                 <label for="names" class="field-label"><spring:message code="nos.packid" text="NOS ID" /></label>
                                 <label class="field prepend-icon">
-                                    <form:input path="nosid" id="nosid" class="gui-input" placeholder="NOS ID" required="true"/>
+                                    <c:if test = "${mode == 'add'}">
+                                        <form:input path="nosid" id="nosid" class="gui-input" placeholder="NOS ID" required="true"/>
+                                    </c:if>
+                                    <c:if test = "${mode=='update'}">
+                                        <form:input path="nosid" id="nosid" class="gui-input" readonly="true" placeholder="NOS ID" required="true"/>
+                                    </c:if>
+
 
                                     <span class="field-icon"><i class="fa fa-language"></i></span>  
                                 </label><div id="result"></div>
@@ -72,7 +79,7 @@
                             <div class="section colm colm6" >
                                 <label for="names" class="field-label"><input type="checkbox" id="theorycutoffmarksopen" value="on"/><spring:message code="nos.theorycutoff" text="Is theory cutoff available" /></label>
                                 <label class="field prepend-icon" >
-                                    <form:input path="theorycutoffmarks" type="number" id="theorycutoffmarks" class="gui-input" value="0" placeholder=""/>
+                                    <form:input path="theorycutoffmarks" type="number" id="theorycutoffmarks" class="gui-input"  placeholder=""/>
 
 
                                 </label>
@@ -80,7 +87,7 @@
                             <div class="section colm colm6" >
                                 <label for="names" class="field-label"><input type="checkbox" id="practicalcutoffmarksopen" value="on"/><spring:message code="nos.practicalcutoff" text="Is practical cutoff available" /></label>
                                 <label class="field prepend-icon" >
-                                    <form:input path="practicalcutoffmarks" type="number" id="practicalcutoffmarks" class="gui-input" value="0" placeholder=""/>
+                                    <form:input path="practicalcutoffmarks" type="number" id="practicalcutoffmarks" class="gui-input"  placeholder=""/>
 
 
                                 </label>
@@ -92,7 +99,7 @@
                             <div class="section colm colm6" >
                                 <label for="names" class="field-label"><input type="checkbox" id="overallcutoffmarksopen" value="on"/><spring:message code="nos.overallcutoff" text="Is overall cutoff available" /></label>
                                 <label class="field prepend-icon" >
-                                    <form:input path="overallcutoffmarks" type="number" id="overallcutoffmarks" class="gui-input" value="0" placeholder=""/>
+                                    <form:input path="overallcutoffmarks" type="number" id="overallcutoffmarks" class="gui-input"  placeholder=""/>
 
 
                                 </label>
@@ -100,7 +107,7 @@
                             <div class="section colm colm6" >
                                 <label for="names" class="field-label"><input type="checkbox" id="weightedavgmarksopen" value="on"/><spring:message code="nos.weightedavg" text="Is Weighted available" /></label>
                                 <label class="field prepend-icon" >
-                                    <form:input path="weightedavgmarks" type="number" id="weightedavgmarks" class="gui-input" value="0" placeholder=""/>
+                                    <form:input path="weightedavgmarks" type="number" id="weightedavgmarks" class="gui-input"  placeholder=""/>
 
 
                                 </label>
@@ -113,9 +120,9 @@
                             <button type="submit" class="button btn-blue"><spring:message code="common.button.submit" text="Submit" /></button>
                         </c:if>
                         <c:if test = "${mode=='update'}">
-                            <button type="submit" class="button btn-blue"><spring:message code="common.button.update" text="Update" /></button>
+                            <button type="button" class="button btn-blue" onclick="update();"><spring:message code="common.button.update" text="Update" /></button>
                         </c:if>
-                        <button type="button" class="button btn-blue" onclick="window.close();" ><spring:message code="common.button.cancel" text="Cancel" /></button>
+                        <button type="button" class="button btn-blue" onclick="window.close();window.opener.refresh();" ><spring:message code="common.button.cancel" text="Cancel" /></button>
                     </div><!-- end .form-footer section -->
                 </form:form>
 
@@ -128,10 +135,19 @@
 
         <script>
                             $(document).ready(function () {
+            <c:if test = "${mode == 'add'}">
                                 $('#theorycutoffmarks').hide();
                                 $('#practicalcutoffmarks').hide();
                                 $('#overallcutoffmarks').hide();
                                 $('#weightedavgmarks').hide();
+            </c:if>
+            <c:if test = "${mode=='update'}">
+                                $('#theorycutoffmarks').show();
+                                $('#practicalcutoffmarks').show();
+                                $('#overallcutoffmarks').show();
+                                $('#weightedavgmarks').show();
+            </c:if>
+
                                 $('#theorycutoffmarksopen').change(function () {
                                     //alert("hi");
                                     if (this.checked) {
@@ -204,7 +220,7 @@
 
                 $('#submitForm').submit(function (e) {
                     e.preventDefault();
-                     var qpackid = $('#qpackid').val();
+                    var qpackid = $('#qpackid').val();
                     var nosid = $('#nosid').val();
                     var nosname = $('#nosname').val();
 
@@ -212,7 +228,19 @@
                     var practicalcutoffmarks = $('#practicalcutoffmarks').val();
                     var overallcutoffmarks = $('#overallcutoffmarks').val();
                     var weightedavgmarks = $('#weightedavgmarks').val();
-
+                    
+                    if(!theorycutoffmarks){
+                        theorycutoffmarks=0;
+                    }
+                    if(!practicalcutoffmarks){
+                        practicalcutoffmarks=0;
+                    }
+                    if(!overallcutoffmarks){
+                        overallcutoffmarks=0;
+                    }
+                    if(!weightedavgmarks){
+                        weightedavgmarks=0;
+                    }
                     //alert($('#theorycutoffmarks').val());
                     if (qpackid.trim()) {
                         $.ajax({
@@ -221,7 +249,8 @@
                             success: function (data) {
 
                                 $('#msg').html("<font color=\"green\">" + data + "</font>");
-                                $('#nosid').val('');$('#nosname').val('');
+                                $('#nosid').val('');
+                                $('#nosname').val('');
                                 $('#theorycutoffmarks').val('');
                                 $('#practicalcutoffmarks').val('');
                                 $('#overallcutoffmarks').val('');
@@ -234,6 +263,37 @@
 
                 });
             });
+            function update() {
+                //alert("going to update..");
+                var nosID = $('#nosID').val();
+                var qpackid = $('#qpackid').val();
+                var nosid = $('#nosid').val();
+                var nosname = $('#nosname').val();
+                var theorycutoffmarks = $('#theorycutoffmarks').val();
+                var practicalcutoffmarks = $('#practicalcutoffmarks').val();
+                var overallcutoffmarks = $('#overallcutoffmarks').val();
+                var weightedavgmarks = $('#weightedavgmarks').val();
+
+                //alert($('#theorycutoffmarks').val());
+                if (qpackid.trim()) {
+                    $.ajax({
+                        url: 'updatenos.io',
+                        data: {nosID: nosID, qpackid:qpackid, nosid: nosid, nosname: nosname,theorycutoffmarks: theorycutoffmarks, practicalcutoffmarks: practicalcutoffmarks, overallcutoffmarks: overallcutoffmarks, weightedavgmarks: weightedavgmarks},
+                        success: function (data) {
+
+                            $('#msg').html("<font color=\"green\">" + data + "</font>");
+                            
+                            window.close();
+                            window.opener.refresh();
+                            
+
+
+                        }
+                    });
+                } else {
+                    $('#msg').html("<font color=\"red\">Error submitting form ...</font>");
+                }
+            }
         </script>
     </body>
 

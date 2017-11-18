@@ -39,6 +39,7 @@
                 </div><!-- end .form-header section -->
 
                 <form:form method="post" action="${action}"  commandName="pcdao" id="submitForm">
+                    <form:hidden path="pcID" id="pcID"/>
                     <form:hidden path="nosid" id="nosid"/>
                     <div class="form-body theme-blue">
 
@@ -72,7 +73,7 @@
                             <div class="section colm colm6" >
                                 <label for="names" class="field-label"><spring:message code="pc.theorycutoff" text="Theory Marks" /></label>
                                 <label class="field prepend-icon" >
-                                    <form:input path="theorycutoffmarks" type="number"  class="gui-input" value="0" placeholder=""/>
+                                    <form:input path="theorycutoffmarks" type="number"  class="gui-input"  placeholder=""/>
 
 
                                 </label>
@@ -80,7 +81,7 @@
                             <div class="section colm colm6" >
                                 <label for="names" class="field-label"><spring:message code="pc.practicalcutoff" text="Practical Marks" /></label>
                                 <label class="field prepend-icon" >
-                                    <form:input path="practicalcutoffmarks" type="number"  class="gui-input" value="0" placeholder=""/>
+                                    <form:input path="practicalcutoffmarks" type="number"  class="gui-input"  placeholder=""/>
 
 
                                 </label>
@@ -92,7 +93,7 @@
                             <div class="section colm colm6" >
                                 <label for="names" class="field-label"><spring:message code="pc.overallcutoff" text="Maximum Marks" /></label>
                                 <label class="field prepend-icon" >
-                                    <form:input path="overallcutoffmarks" type="number"  class="gui-input" value="0" placeholder=""/>
+                                    <form:input path="overallcutoffmarks" type="number"  class="gui-input"  placeholder=""/>
 
 
                                 </label>
@@ -106,9 +107,9 @@
                             <button type="submit" class="button btn-blue"><spring:message code="common.button.submit" text="Submit" /></button>
                         </c:if>
                         <c:if test = "${mode=='update'}">
-                            <button type="submit" class="button btn-blue"><spring:message code="common.button.update" text="Update" /></button>
+                            <button type="button" class="button btn-blue" onclick="update();"><spring:message code="common.button.update" text="Update" /></button>
                         </c:if>
-                        <button type="button" class="button btn-blue" onclick="window.close();" ><spring:message code="common.button.cancel" text="Cancel" /></button>
+                        <button type="button" class="button btn-blue" onclick="window.close();window.opener.refresh();" ><spring:message code="common.button.cancel" text="Cancel" /></button>
                     </div><!-- end .form-footer section -->
                 </form:form>
 
@@ -121,7 +122,7 @@
 
         <script>
                             $(document).ready(function () {
-                                
+
 
                                 $('#closewindow').click(function () {
                                     $("#dialog").dialog("close");
@@ -134,16 +135,25 @@
 
                 $('#submitForm').submit(function (e) {
                     e.preventDefault();
+
                     var nosid = $('#nosid').val();
-                   
                     var pcid = $('#pcid').val();
                     var pcname = $('#pcname').val();
-                     alert(pcid+"::::::"+pcname);
+
                     var theorycutoffmarks = $('#theorycutoffmarks').val();
                     var practicalcutoffmarks = $('#practicalcutoffmarks').val();
                     var overallcutoffmarks = $('#overallcutoffmarks').val();
-                    
 
+                    if(!theorycutoffmarks){
+                        theorycutoffmarks=0;
+                    }
+                    if(!practicalcutoffmarks){
+                        practicalcutoffmarks=0;
+                    }
+                    if(!overallcutoffmarks){
+                        overallcutoffmarks=0;
+                    }
+                    
                     //alert($('#theorycutoffmarks').val());
                     if (pcid.trim()) {
                         $.ajax({
@@ -157,7 +167,7 @@
                                 $('#theorycutoffmarks').val('');
                                 $('#practicalcutoffmarks').val('');
                                 $('#overallcutoffmarks').val('');
-                                
+
                             }
                         });
                     } else {
@@ -166,6 +176,36 @@
 
                 });
             });
+            function update() {
+                //alert("going to update..");
+                var pcID = $('#pcID').val();
+                var nosid = $('#nosid').val();
+                var pcid = $('#pcid').val();
+                var pcname = $('#pcname').val();
+                var theorycutoffmarks = $('#theorycutoffmarks').val();
+                var practicalcutoffmarks = $('#practicalcutoffmarks').val();
+                var overallcutoffmarks = $('#overallcutoffmarks').val();
+                //alert($('#theorycutoffmarks').val());
+                if (pcID) {
+                    $.ajax({
+                        url: 'updatepc.io',
+                        data: {pcID: pcID, nosid: nosid, pcid: pcid,pcname:pcname, theorycutoffmarks: theorycutoffmarks, practicalcutoffmarks: practicalcutoffmarks, overallcutoffmarks: overallcutoffmarks},
+                        success: function (data) {
+
+                            $('#msg').html("<font color=\"green\">" + data + "</font>");
+                            window.close();
+                            window.opener.refresh();
+//                            window.onunload = refreshParent;
+//                            function refreshParent() {
+//                                window.opener.location.reload();
+//                            }
+
+                        }
+                    });
+                } else {
+                    $('#msg').html("<font color=\"red\">Error submitting form ...</font>");
+                }
+            }
         </script>
     </body>
 

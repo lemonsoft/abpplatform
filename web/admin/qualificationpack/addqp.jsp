@@ -158,7 +158,7 @@
                         <c:if test = "${mode=='update'}">
                             <button type="button" class="button btn-blue" onclick="update();"><spring:message code="common.button.update" text="Update" /></button>
                         </c:if>
-                        <button type="button" class="button btn-blue" onclick="window.close();" ><spring:message code="common.button.cancel" text="Cancel" /></button>
+                        <button type="button" class="button btn-blue" onclick="window.close();window.opener.refreshqp();" ><spring:message code="common.button.cancel" text="Cancel" /></button>
                     </div><!-- end .form-footer section -->
                 </form:form>
 
@@ -288,6 +288,18 @@
                     var weightedavgmarks = $('#weightedavgmarks').val();
 
                     //alert($('#theorycutoffmarks').val());
+                    if (!theorycutoffmarks) {
+                        theorycutoffmarks = 0;
+                    }
+                    if (!practicalcutoffmarks) {
+                        practicalcutoffmarks = 0;
+                    }
+                    if (!overallcutoffmarks) {
+                        overallcutoffmarks = 0;
+                    }
+                    if (!weightedavgmarks) {
+                        weightedavgmarks = 0;
+                    }
                     if (qpackid.trim()) {
                         $.ajax({
                             url: 'saveqp.io',
@@ -340,6 +352,7 @@
 
                             $('#msg').html("<font color=\"green\">" + data + "</font>");
                             window.close();
+                            window.opener.refresh();
 //                            window.onunload = refreshParent;
 //                            function refreshParent() {
 //                                window.opener.location.reload();

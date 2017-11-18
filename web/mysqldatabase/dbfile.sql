@@ -198,5 +198,78 @@
 -- PRIMARY KEY (pcID) USING BTREE
 -- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+-- create table batches(
+-- ID int(20) unsigned NOT NULL AUTO_INCREMENT,
+-- batch_id int(20) NOT NULL,
+-- batch_size int(20) NOT NULL,
+-- center_id varchar(50) NOT NULL,
+-- project_id int(20) NOT NULL,
+-- assessment_start_date datetime,
+-- assessment_end_date datetime,
+-- state_id int(20) NOT NULL,
+-- district_id int(20) NOT NULL,
+-- center_pincode varchar(50) NOT NULL,
+-- center_contactno varchar(50) NOT NULL,
+-- center_emailid varchar(50) NOT NULL,
+-- center_address varchar(100) NOT NULL,
+-- tp_name varchar(50) NOT NULL,
+-- login_restrict int(5) NOT NULL,
+-- capture_image CHAR(2),
+-- qpack_id int(20) NOT NULL,
+-- assessor_id int(20) NOT NULL,
+-- question_paper_id int(20) NOT NULL,
+-- PRIMARY KEY (ID) USING BTREE
+-- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
- select * from pc;
+-- create table project(
+-- ID int(20) unsigned NOT NULL AUTO_INCREMENT,
+-- projectname varchar(20) NOT NULL,
+-- PRIMARY KEY (ID) USING BTREE
+-- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- create table users(
+-- ID int(20) unsigned NOT NULL AUTO_INCREMENT,
+-- batchid int(20) NOT NULL,
+-- enrollmentno int(20) NOT NULL,
+-- trainingagency varchar(50) NOT NULL,
+-- traineename varchar(50) NOT NULL,
+-- gender varchar(5) NOT NULL,
+-- category varchar(20) NOT NULL,
+-- dateofbirth varchar(50) NOT NULL,
+-- fathername varchar(50) NULL,
+-- mothername varchar(50) NULL,
+-- traineeadress varchar(50) NOT NULL,
+-- district varchar(20) NOT NULL,
+-- states varchar(20) NOT NULL,
+-- traineephone varchar(50) NOT NULL,
+-- eduqualification varchar(50) NOT NULL,
+-- techqualification varchar(50) NOT NULL,
+-- istraineconductocupstd varchar(20) NOT NULL,
+-- jobrole varchar(20) NOT NULL,
+-- istagencynsdcpartner varchar(20) NOT NULL,
+-- skillingupskilling varchar(20) NOT NULL,
+-- coursestartdate varchar(50) NULL,
+-- dateofcompletion varchar(50) NULL,
+-- trainersname varchar(50) NULL,
+-- tproviderspocname varchar(20)NULL,
+-- contactno varchar(50) NULL,
+-- emailid varchar(20) NULL,
+-- totalfeefortraining varchar(50) NULL,
+-- dateofassessment varchar(50) NULL,
+-- assessmentagency varchar(50) NULL,
+-- totalfeeforassessment varchar(50) NULL,
+-- assessmentfeefromwhom varchar(50) NULL,
+-- totalfeeforcertification varchar(50) NULL,
+-- certificationchargefromwhom varchar(50) NULL,
+-- priorworkexpyear varchar(50) NULL,
+-- employed varchar(20) NULL,
+-- nameofemployer varchar(50) NULL,
+-- keycontactfrmemployer varchar(50) NULL,
+-- phonenoofkeycontact varchar(50) NULL,
+-- perageincreasewagepostcert varchar(50) NULL,
+-- benifitgainfrmcert varchar(50) NULL,
+-- PRIMARY KEY (ID) USING BTREE
+-- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+select * from users;

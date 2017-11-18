@@ -231,6 +231,149 @@ public class QualificationPackController {
         return status;
     }
 
+    @RequestMapping(value = "/deleteqp", method = RequestMethod.GET)
+    public @ResponseBody
+    String deleteqp(@RequestParam("qpid") String qpid, HttpServletRequest request, HttpServletResponse response, Model model) {
+
+        QualificationPackDAO qpObj = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(qpid));
+
+        System.out.println("qpack id " + qpid);
+        Map param = new HashMap();
+        param.put("qpackid", qpid);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new NOSDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                NOSDAO data = (NOSDAO) itr.next();
+                System.out.println("Getting nos id" + data.getNosID());
+                Map paramnos = new HashMap();
+                paramnos.put("nosid", "" + data.getNosID());
+                List<SuperBean> recordspc = this.superService.listAllObjectsByCriteria(new PCDAO(), paramnos);
+                if (recordspc.size() > 0) {
+                    Iterator itrpc = recordspc.iterator();
+                    while (itrpc.hasNext()) {
+                        PCDAO pcdata = (PCDAO) itrpc.next();
+                        System.out.println("Getting pc id" + pcdata.getPcID());
+                        this.superService.deleteObject(pcdata);
+                    }
+                }
+                this.superService.deleteObject(data);
+            }
+            
+        }
+        this.superService.deleteObject(qpObj);
+        
+        return "delete";
+    }
+
+    @RequestMapping(value = "/initUpdatenos", method = RequestMethod.GET)
+    public String initUpdatenos(HttpServletRequest request, HttpServletResponse response, Model model) {
+
+        String recid = request.getParameter("recid");
+        NOSDAO beanObj = (NOSDAO) this.superService.getObjectById(new NOSDAO(), new Integer(recid));
+
+        beanObj.setQpackid(beanObj.getQpackid());
+        model.addAttribute("nosdao", beanObj);
+
+        model.addAttribute("action", "updatenos.io");
+        model.addAttribute("mode", "update");
+
+        request.getSession().setAttribute("body", "/admin/qualificationpack/addnos.jsp");
+        return "/commonmodal";
+    }
+
+    @RequestMapping(value = "/updatenos", method = RequestMethod.GET)
+    public @ResponseBody
+    String updatenos(@RequestParam("nosID") String nosID, @RequestParam("qpackid") String qpackid, @RequestParam("nosid") String nosid, @RequestParam("nosname") String nosname,
+            @RequestParam("theorycutoffmarks") String theorycutoffmarks, @RequestParam("practicalcutoffmarks") String practicalcutoffmarks,
+            @RequestParam("overallcutoffmarks") String overallcutoffmarks, @RequestParam("weightedavgmarks") String weightedavgmarks) {
+
+        String status = "Record Update Successfully";
+        NOSDAO beanObj = (NOSDAO) this.superService.getObjectById(new NOSDAO(), new Integer(nosID));
+        beanObj.setQpackid(qpackid);
+        beanObj.setNosid(nosid);
+        beanObj.setNosname(nosname);
+
+        beanObj.setTheorycutoffmarks(theorycutoffmarks);
+        beanObj.setPracticalcutoffmarks(practicalcutoffmarks);
+        beanObj.setOverallcutoffmarks(overallcutoffmarks);
+        beanObj.setWeightedavgmarks(weightedavgmarks);
+        //beanObj.setSscid(ssid);
+        this.superService.updateObject(beanObj);
+        System.out.println("goin to save...." + nosID);
+        return status;
+    }
+
+    @RequestMapping(value = "/deletenos", method = RequestMethod.GET)
+    public @ResponseBody
+    String deletenos(@RequestParam("nosid") String nosid, HttpServletRequest request, HttpServletResponse response, Model model) {
+
+        NOSDAO nosObj = (NOSDAO) this.superService.getObjectById(new NOSDAO(), new Integer(nosid));
+
+        System.out.println("nosid id " + nosid);
+        Map paramnos = new HashMap();
+        paramnos.put("nosid", "" + nosObj.getNosID());
+        List<SuperBean> recordspc = this.superService.listAllObjectsByCriteria(new PCDAO(), paramnos);
+        if (recordspc.size() > 0) {
+            Iterator itrpc = recordspc.iterator();
+            while (itrpc.hasNext()) {
+                PCDAO pcdata = (PCDAO) itrpc.next();
+                System.out.println("Getting pc id" + pcdata.getPcID());
+                this.superService.deleteObject(pcdata);
+            }
+        }
+        this.superService.deleteObject(nosObj);
+        return "delete";
+    }
+
+    @RequestMapping(value = "/initUpdatepc", method = RequestMethod.GET)
+    public String initUpdatepc(HttpServletRequest request, HttpServletResponse response, Model model) {
+
+        String recid = request.getParameter("recid");
+        PCDAO beanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), new Integer(recid));
+
+        beanObj.setNosid(beanObj.getNosid());
+        model.addAttribute("pcdao", beanObj);
+
+        model.addAttribute("action", "updatepc.io");
+        model.addAttribute("mode", "update");
+
+        request.getSession().setAttribute("body", "/admin/qualificationpack/addpc.jsp");
+        return "/commonmodal";
+    }
+
+    @RequestMapping(value = "/updatepc", method = RequestMethod.GET)
+    public @ResponseBody
+    String updatepc(@RequestParam("pcID") String pcID, @RequestParam("nosid") String nosid, @RequestParam("pcid") String pcid, @RequestParam("pcname") String pcname,
+             @RequestParam("theorycutoffmarks") String theorycutoffmarks, @RequestParam("practicalcutoffmarks") String practicalcutoffmarks,
+            @RequestParam("overallcutoffmarks") String overallcutoffmarks) {
+
+        String status = "Record Update Successfully";
+        PCDAO beanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), new Integer(pcID));
+        beanObj.setNosid(nosid);
+        beanObj.setPcid(pcid);
+        beanObj.setPcname(pcname);
+
+        beanObj.setTheorycutoffmarks(theorycutoffmarks);
+        beanObj.setPracticalcutoffmarks(practicalcutoffmarks);
+        beanObj.setOverallcutoffmarks(overallcutoffmarks);
+
+        //beanObj.setSscid(ssid);
+        this.superService.updateObject(beanObj);
+        System.out.println("goin to save...." + pcID);
+        return status;
+    }
+    @RequestMapping(value = "/deletepc", method = RequestMethod.GET)
+    public @ResponseBody
+    String deletepc(@RequestParam("pcid") String pcid, HttpServletRequest request, HttpServletResponse response, Model model) {
+
+        PCDAO pcObj = (PCDAO) this.superService.getObjectById(new PCDAO(), new Integer(pcid));
+
+        System.out.println("pcid id " + pcid);
+        this.superService.deleteObject(pcObj);
+        return "delete";
+    }
+
     @RequestMapping(value = "/checkQPID", method = RequestMethod.GET)
     public @ResponseBody
     String checkQPID(@RequestParam("name") String qpid) {

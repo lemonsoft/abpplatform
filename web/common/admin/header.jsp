@@ -114,10 +114,10 @@
                                                         <div class="col-md-4">
                                                             <ul class="mega-menu-submenu">
                                                                 <li>
-                                                                    <a href="ui_colors.html"> Assessment Location </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/#"> Assessment Location </a>
                                                                 </li>
                                                                 <li>
-                                                                    <a href="ui_metronic_grid.html">Monitor Assessment </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/#">Monitor Assessment </a>
                                                                 </li>
                                                                 <li>
                                                                     <a href="<%=request.getContextPath()%>/admin/ssc/initSearch.io"> Sectors </a>
@@ -129,7 +129,7 @@
                                                                     <a href="<%=request.getContextPath()%>/admin/qualificationpack/init.io"> Qualification Pack </a>
                                                                 </li>
                                                                 <li>
-                                                                    <a href="ui_confirmations.html"> Batches </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/batches/init.io"> Batches </a>
                                                                 </li>
 
 
@@ -139,16 +139,16 @@
                                                         <div class="col-md-4">
                                                             <ul class="mega-menu-submenu">
                                                                 <li>
-                                                                    <a href="ui_sweetalert.html"> Results </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/#"> Results </a>
                                                                 </li>
                                                                 <li>
-                                                                    <a href="ui_icons.html"> Questions </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/#"> Questions </a>
                                                                 </li>
                                                                 <li>
-                                                                    <a href="maps_vector.html"> Question usage </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/#"> Question usage </a>
                                                                 </li>
                                                                 <li>
-                                                                    <a href="ui_timeline.html"> Settings </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/#"> Settings </a>
                                                                 </li>
                                                                 <li>
                                                                     <a href="<%=request.getContextPath()%>/admin/statedistricts/init.io"> State & Districts </a>
@@ -162,19 +162,19 @@
                                                         <div class="col-md-4">
                                                             <ul class="mega-menu-submenu">
                                                                 <li>
-                                                                    <a href="ui_tabs_accordions_navs.html"> Generate QP </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/#"> Generate QP </a>
                                                                 </li>
                                                                 <li>
-                                                                    <a href="ui_tree.html"> Question Papers </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/#"> Question Papers </a>
                                                                 </li>
                                                                 <li>
-                                                                    <a href="maps_google.html"> Question Approval </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/#"> Question Approval </a>
                                                                 </li>
                                                                 <li>
-                                                                    <a href="ui_socicons.html"> Theory MMQ </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/#"> Theory MMQ </a>
                                                                 </li>
                                                                 <li>
-                                                                    <a href="ui_typography.html"> Practical MMQ </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/#"> Practical MMQ </a>
                                                                 </li>
 
                                                             </ul>

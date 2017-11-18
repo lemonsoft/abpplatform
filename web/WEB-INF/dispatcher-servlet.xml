@@ -59,6 +59,9 @@
                 <value>com.abp.admin.qualificationpack.QualificationPackDAO</value>
                 <value>com.abp.admin.qualificationpack.NOSDAO</value>
                 <value>com.abp.admin.qualificationpack.PCDAO</value>
+                <value>com.abp.admin.project.ProjectDAO</value>
+                <value>com.abp.admin.batches.BatchesDAO</value>
+                <value>com.abp.admin.batches.UserDAO</value>
             </list>
         </property>
         <property name="hibernateProperties">
