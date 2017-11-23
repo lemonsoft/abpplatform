@@ -142,7 +142,7 @@
                                                                     <a href="<%=request.getContextPath()%>/admin/#"> Results </a>
                                                                 </li>
                                                                 <li>
-                                                                    <a href="<%=request.getContextPath()%>/admin/#"> Questions </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/questions/init.io"> Questions </a>
                                                                 </li>
                                                                 <li>
                                                                     <a href="<%=request.getContextPath()%>/admin/#"> Question usage </a>
@@ -171,7 +171,7 @@
                                                                     <a href="<%=request.getContextPath()%>/admin/#"> Question Approval </a>
                                                                 </li>
                                                                 <li>
-                                                                    <a href="<%=request.getContextPath()%>/admin/#"> Theory MMQ </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/theorymmq/init.io"> Theory MMQ </a>
                                                                 </li>
                                                                 <li>
                                                                     <a href="<%=request.getContextPath()%>/admin/#"> Practical MMQ </a>

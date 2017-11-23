@@ -109,11 +109,18 @@ public class UserDAO implements SuperBean, Serializable {
     private String perageincreasewagepostcert;
     @Column(name = "benifitgainfrmcert")
     private String benifitgainfrmcert;
+    @Column(name = "username")
+    private String username;
+    @Column(name = "webcam")
+    private String webcam;
+    
 
     @Transient
     private MultipartFile files;
     @Transient
     private String status;
+    @Transient
+    private String photoname;
 
     public MultipartFile getFiles() {
         return files;
@@ -146,8 +153,6 @@ public class UserDAO implements SuperBean, Serializable {
     public void setEnrollmentno(int enrollmentno) {
         this.enrollmentno = enrollmentno;
     }
-
-    
 
     public String getTrainingagency() {
         return trainingagency;
@@ -451,6 +456,30 @@ public class UserDAO implements SuperBean, Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getWebcam() {
+        return webcam;
+    }
+
+    public void setWebcam(String webcam) {
+        this.webcam = webcam;
+    }
+
+    public String getPhotoname() {
+        return photoname;
+    }
+
+    public void setPhotoname(String photoname) {
+        this.photoname = photoname;
     }
 
 }

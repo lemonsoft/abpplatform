@@ -220,6 +220,7 @@
 -- question_paper_id int(20) NOT NULL,
 -- PRIMARY KEY (ID) USING BTREE
 -- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+--ALTER TABLE batches ADD capturetime int(5) NOT NULL;
 
 -- create table project(
 -- ID int(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -271,5 +272,85 @@
 -- PRIMARY KEY (ID) USING BTREE
 -- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+-- ALTER TABLE users
+--  ADD username varchar(50) NOT NULL,ADD webcam varchar(20) NOT NULL;
 
-select * from users;
+--  create table questions(
+--  question_id int(20) unsigned NOT NULL AUTO_INCREMENT,
+--  question_title varchar(100) NOT NULL,
+--  option1 varchar(100) NOT NULL,
+--  option2 varchar(100) NOT NULL,
+--  option3 varchar(100) NOT NULL,
+--  option4 varchar(100) NOT NULL,
+--  option5 varchar(100) NULL,
+--  marks int(20) NOT NULL,
+--  correct_option varchar(10) NOT NULL,
+--  cans1 varchar(10) NULL,
+--  cans2 varchar(10)  NULL,
+--  cans3 varchar(10)  NULL,
+--  cans4 varchar(10)  NULL,
+--  solution varchar(50) NOT NULL,
+--  noofoption int(10) NOT NULL,
+--  question_type varchar(50) NOT NULL,
+--  question_level varchar(50) NOT NULL,
+-- questionimgurl varchar(100),
+--  imageurl1 varchar(100),
+--  imageurl2 varchar(100),
+--  imageurl3 varchar(100),
+--  imageurl4 varchar(100),
+--  qpackid int(10) NOT NULL,
+--  nosid int(10) NOT NULL,
+--  pcid int(10) NOT NULL,
+--  PRIMARY KEY (question_id) USING BTREE
+--  )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- ALTER TABLE questions
+-- ADD cans5 varchar(10) NULL;
+
+--  ALTER TABLE questions MODIFY question_title varchar(500) NOT NULL;
+--  ALTER TABLE questions MODIFY solution varchar(500) NOT NULL;
+
+-- ALTER TABLE questions
+-- ADD imageurl5 varchar(100) NULL;
+ 
+
+-- create table multilangquestion(
+-- id int(20) unsigned NOT NULL AUTO_INCREMENT,
+-- language_id int(20) NOT NULL,
+-- question_id int(20) NOT NULL,
+-- question_title varchar(500) NOT NULL,
+-- option1 varchar(100) NOT NULL,
+-- option2 varchar(100) NOT NULL,
+-- option3 varchar(100) NOT NULL,
+-- option4 varchar(100) NOT NULL,
+-- option5 varchar(100) NOT NULL,
+-- PRIMARY KEY (id) USING BTREE
+-- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+--  create table theorymmq(
+--  question_id int(20) unsigned NOT NULL AUTO_INCREMENT,
+--  question_title varchar(300) NOT NULL,
+--  option1 varchar(100) NOT NULL,
+--  option2 varchar(100) NOT NULL,
+--  option3 varchar(100) NOT NULL,
+--  option4 varchar(100) NOT NULL,
+--  option5 varchar(100) NULL,
+--  marks int(20) NOT NULL,
+--  correct_option varchar(10) NOT NULL,
+--  solution varchar(50) NOT NULL,
+--  noofoption int(10) NOT NULL,
+--  question_type varchar(50) NOT NULL,
+--  question_level varchar(50) NOT NULL,
+-- questionimgurl varchar(100),
+--  imageurl1 varchar(100),
+--  imageurl2 varchar(100),
+--  imageurl3 varchar(100),
+--  imageurl4 varchar(100),
+--  qpackid int(10) NOT NULL,
+--  isactive varchar(50) NULL,
+--  pcidwithmarks varchar(200) NOT NULL,
+--  PRIMARY KEY (question_id) USING BTREE
+--  )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+select * from theorymmq;
+

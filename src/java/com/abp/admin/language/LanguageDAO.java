@@ -26,6 +26,7 @@ public class LanguageDAO implements SuperBean {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+    
     private String name;
     @Transient
     private String actions;

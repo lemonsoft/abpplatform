@@ -41,6 +41,8 @@
                 <form:form method="post" action="${action}"  commandName="batches">
                     <form:hidden path="ID" />
                     <form:hidden path="qpackId" />
+                    <form:hidden path="assessorId" />
+                    <form:hidden path="questionPaperId" />
                     <div class="form-body theme-blue">
 
                         <div class="frm-row">
@@ -222,9 +224,9 @@
                             <div class="section colm colm4"> 
                                 <div class="section">
                                     <label for="names" class="field-label"><spring:message code="batches.captureimage" text="Capture Image" /></label>
-                                    <label class="mt-checkbox">
-                                        <form:checkbox path="captureImage" id="captureImage" class="gui-input" value="Y" checked="true"/>
-
+                                    <label class="field prepend-icon">
+                                        <form:input type="number" path="capturetime" id="capturetime" class="gui-input" placeholder="Image Capture Time(sec)"/>
+                                        <span class="field-icon"><i class="fa fa-location-arrow"></i></span> 
                                         
                                     </label>
                                 </div><!-- end section -->

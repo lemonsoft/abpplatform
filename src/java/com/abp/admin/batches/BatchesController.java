@@ -5,6 +5,7 @@
  */
 package com.abp.admin.batches;
 
+import com.abp.admin.assessor.AssessorDAO;
 import com.abp.admin.project.ProjectDAO;
 import com.abp.admin.qualificationpack.QualificationPackDAO;
 import com.abp.admin.ssc.SSCDAO;
@@ -12,14 +13,13 @@ import com.abp.statedistrict.DistrictDAO;
 import com.abp.statedistrict.StateDAO;
 import com.abp.superdao.SuperBean;
 import com.abp.superservice.SuperService;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.hibernate.ObjectNotFoundException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -99,8 +99,7 @@ public class BatchesController {
         DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyy-mm-dd HH:mm:ss.s");
         DateTime jodastarttime = dtf.parseDateTime(startdate);
         DateTime jodaendtime = dtf.parseDateTime(enddate);
-        
-        
+
         batches.setAssessmentStartDate(jodastarttime.toString().substring(0, 16));
         batches.setAssessmentEndDate(jodaendtime.toString().substring(0, 16));
         model.addAttribute("batches", batches);
@@ -113,13 +112,66 @@ public class BatchesController {
         request.getSession().setAttribute("body", "/admin/batches/addbatches.jsp");
         return "/common";
     }
+
+    @RequestMapping(value = "/addassessor", method = RequestMethod.GET)
+    public String addAssessor(HttpServletRequest request, HttpServletResponse response, Model model) {
+
+        String batchid = request.getParameter("batchid");
+        String sscid = request.getParameter("sscid");
+        String qid = request.getParameter("qid");
+        if (batchid == null) {
+            batchid = (String) request.getSession().getAttribute("batchid");
+        }
+        if (sscid == null) {
+            sscid = (String) request.getSession().getAttribute("sscid");
+        }
+        if (qid == null) {
+            qid = (String) request.getSession().getAttribute("qid");
+        }
+
+        try {
+            BatchesDAO batch = (BatchesDAO) this.superService.getObjectById(new BatchesDAO(), new Integer(batchid));
+            model.addAttribute("sscid", sscid);
+            model.addAttribute("qid", qid);
+            model.addAttribute("batch_id", batch.getBatch_id());
+            model.addAttribute("pincode", batch.getCenterPincode());
+            model.addAttribute("district", getDistrictNameById(batch.getDistrict_id()));
+            model.addAttribute("state", getStateById(batch.getState_id()));
+
+            AssessorDAO assessor = (AssessorDAO) this.superService.getObjectById(new AssessorDAO(), batch.getAssessorId());
+            assessor.setState(getStateById(assessor.getStateid()));
+            assessor.setDistrict(getDistrictNameById(assessor.getDistrictid()));
+            assessor.setActions(batchid);
+            model.addAttribute("record", assessor);
+        } catch (ObjectNotFoundException e) {
+            model.addAttribute("record", null);
+        }
+        request.getSession().setAttribute("batchid", batchid);
+        request.getSession().setAttribute("sscid", sscid);
+        request.getSession().setAttribute("qid", qid);
+        model.addAttribute("allstates", getAllStatesValues());
+        model.addAttribute("assessor", new AssessorDAO());
+
+        request.getSession().setAttribute("body", "/admin/batches/addassessor.jsp");
+        return "/common";
+    }
+
     @RequestMapping(value = "/update", method = {RequestMethod.GET, RequestMethod.POST})
     public String update(@ModelAttribute("batches") BatchesDAO beanObj, HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        
         this.superService.updateObject(beanObj);
 
         return "redirect:/admin/batches/init.io";
+    }
+
+    @RequestMapping(value = "/deleteAssessor", method = {RequestMethod.GET, RequestMethod.POST})
+    public String deleteAssessor(@ModelAttribute("batches") BatchesDAO beanObj, HttpServletRequest request, HttpServletResponse response, Model model) {
+
+        String batchid = request.getParameter("recid");
+        BatchesDAO batch = (BatchesDAO) this.superService.getObjectById(new BatchesDAO(), new Integer(batchid));
+        batch.setAssessorId(0);
+        this.superService.updateObject(batch);
+        return "redirect:/admin/batches/addassessor.io";
     }
 
     @RequestMapping(value = "/getDistricts", method = RequestMethod.GET, produces = "application/json")
@@ -131,13 +183,38 @@ public class BatchesController {
 
         return districts;
     }
+
+    @RequestMapping(value = "/loadassessor", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    String loadAssessor(HttpServletRequest request, @RequestParam("stateid") String stateid, @RequestParam("districtid") String districtid) {
+
+        String batchid = (String) request.getSession().getAttribute("batchid");
+
+        System.out.println("batchid ID::" + batchid);
+        BatchesDAO batchObj = (BatchesDAO) this.superService.getObjectById(new BatchesDAO(), new Integer(batchid));
+        String assessors = getAllAssessor(batchObj.getAssessorId(), stateid, districtid);
+
+        return assessors;
+    }
+
+    @RequestMapping(value = "/asignassessor", method = RequestMethod.GET)
+    public String asignassessor(HttpServletRequest request, HttpServletResponse response, Model model) {
+
+        String assessorid = request.getParameter("assid");
+        String batchid = (String) request.getSession().getAttribute("batchid");
+        BatchesDAO batchObj = (BatchesDAO) this.superService.getObjectById(new BatchesDAO(), new Integer(batchid));
+        batchObj.setAssessorId(new Integer(assessorid));
+        this.superService.updateObject(batchObj);
+        return "redirect:/admin/batches/addassessor.io";
+    }
+
     @RequestMapping(value = "/checkBatchID", method = RequestMethod.GET)
     public @ResponseBody
     String checkBatchID(@RequestParam("batchid") String batchid) {
         String status = "avail";
         boolean flag = false;
         try {
-            if (batchid != null && !batchid.isEmpty()  ) {
+            if (batchid != null && !batchid.isEmpty()) {
                 System.out.println("getting data from jquery----------------" + batchid);
                 Map param = new HashMap();
                 param.put("batch_id", new Integer(batchid));
@@ -154,6 +231,76 @@ public class BatchesController {
 
         return status;
     }
+
+    public Map<Integer, String> getAllStatesValues() {
+
+        Map<Integer, String> states = new HashMap();
+        List<SuperBean> records = this.superService.listAllObjects(new StateDAO());
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                StateDAO data = (StateDAO) itr.next();
+                states.put(data.getStateID(), data.getStateName());
+            }
+        }
+
+        return states;
+    }
+
+    public String getAllAssessor(int assid, String stateid, String districtid) {
+
+        JSONObject jsonObj = new JSONObject();
+        JSONArray jsonarr = new JSONArray();
+        Map param = new HashMap();
+        param.put("stateid", new Integer(stateid));
+        param.put("districtid", new Integer(districtid));
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new AssessorDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                AssessorDAO data = (AssessorDAO) itr.next();
+                if (data.getAssessorid() != assid) {
+                    jsonObj.append("ID", data.getAssessorid());
+                    jsonObj.append("LoginID", data.getLoginid());
+                    jsonObj.append("Name", data.getFirstname());
+                    jsonObj.append("EmailID", data.getEmailid());
+                    jsonObj.append("State", getStateById(data.getStateid()));
+                    jsonObj.append("District", getDistrictNameById(data.getDistrictid()));
+                    jsonObj.append("Pincode", data.getPincode());
+                    jsonObj.append("ContactNo", data.getContactno());
+                    jsonarr.put(jsonObj);
+                }
+
+                jsonObj = new JSONObject();
+            }
+        }
+
+        return jsonarr.toString();
+    }
+
+    public String getAllDistricts(String stateid) {
+
+        JSONObject jsonObj = new JSONObject();
+        JSONArray jsonarr = new JSONArray();
+
+        List<SuperBean> records = this.superService.listAllObjects(new DistrictDAO());
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                DistrictDAO data = (DistrictDAO) itr.next();
+                if (data.getState().getStateID() == Integer.parseInt(stateid)) {
+                    jsonObj.append("ID", data.getDistrictID());
+                    jsonObj.append("NAME", data.getDistrictName());
+                    jsonarr.put(jsonObj);
+                }
+
+                jsonObj = new JSONObject();
+            }
+        }
+
+        return jsonarr.toString();
+    }
+
     public Map<String, String> getDistrictById(int districtid) {
 
         Map<String, String> district = new HashMap();
@@ -185,7 +332,7 @@ public class BatchesController {
                 jsonObj.append("assessmentStartDate", batchdo.getAssessmentStartDate());
                 jsonObj.append("assessmentEndDate", batchdo.getAssessmentEndDate());
                 jsonObj.append("tpName", batchdo.getTpName());
-                jsonObj.append("assessorId", batchdo.getAssessorId());
+                jsonObj.append("assessorId", getAssessorById(batchdo.getAssessorId()));
                 jsonObj.append("questionPaperId", batchdo.getQuestionPaperId());
                 System.out.println(jsonObj.toString());
                 jsonarr.put(jsonObj);
@@ -229,29 +376,6 @@ public class BatchesController {
         return jsonarr.toString();
     }
 
-    public String getAllDistricts(String stateid) {
-
-        JSONObject jsonObj = new JSONObject();
-        JSONArray jsonarr = new JSONArray();
-
-        List<SuperBean> records = this.superService.listAllObjects(new DistrictDAO());
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                DistrictDAO data = (DistrictDAO) itr.next();
-                if (data.getState().getStateID() == Integer.parseInt(stateid)) {
-                    jsonObj.append("ID", data.getDistrictID());
-                    jsonObj.append("NAME", data.getDistrictName());
-                    jsonarr.put(jsonObj);
-                }
-
-                jsonObj = new JSONObject();
-            }
-        }
-
-        return jsonarr.toString();
-    }
-
     public Map<Integer, String> getSectorSkillCouncil() {
 
         Map<Integer, String> states = new HashMap();
@@ -267,21 +391,6 @@ public class BatchesController {
         return states;
     }
 
-    public Map<Integer, String> getAllStatesValues() {
-
-        Map<Integer, String> states = new HashMap();
-        List<SuperBean> records = this.superService.listAllObjects(new StateDAO());
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                StateDAO data = (StateDAO) itr.next();
-                states.put(data.getStateID(), data.getStateName());
-            }
-        }
-
-        return states;
-    }
-
     public String getStateById(int stateid) {
 
         String statename = "";
@@ -289,6 +398,28 @@ public class BatchesController {
         System.out.println("record :" + records.getStateName());
         statename = records.getStateName();
         return statename;
+    }
+
+    public String getDistrictNameById(int districtid) {
+
+        String districtname = "";
+        DistrictDAO records = (DistrictDAO) this.superService.getObjectById(new DistrictDAO(), districtid);
+
+        districtname = records.getDistrictName();
+        return districtname;
+    }
+
+    public String getAssessorById(int assorid) {
+
+        String assoridname = "";
+        try {
+            AssessorDAO records = (AssessorDAO) this.superService.getObjectById(new AssessorDAO(), assorid);
+            assoridname = records.getLoginid();
+        } catch (Exception e) {
+            assoridname = "Assessor";
+        }
+
+        return assoridname;
     }
 
     public Map<Integer, String> getAllProjectValues() {

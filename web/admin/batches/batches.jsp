@@ -164,8 +164,9 @@
                                     '<th align="center">Assessment Start Date</th><th align="center">Assessment End Date</th><th align="center">Training Partner Name</th><th align="center">Edit</th><th align="center">Users</th><th align="center">Assessors</th><th align="center">Question Paper</th><th align="center">Result</th></tr></thead >');
 
                             for (var i = 0, lennos = data.length; i < lennos; i++) {
-
-                                $('#example-basic4 tr:last').after('<tr data-tt-id="1" id="qpack" style="height: 50px;font-size:12px;color: #000;background-color: #fff;"><td align="center">' + data[i].batch_id + '</td><td align="center">' + data[i].batch_size + '</td><td align="center">' + data[i].state + '</td><td align="center">' + data[i].centerAddress + '</td><td align="center">' + data[i].assessmentStartDate + '</td><td align="center">' + data[i].assessmentEndDate + '</td><td align="center">' + data[i].tpName + '</td><td align="center"><button type="button" class="button btn-blue" onclick="callEdit(' + data[i].ID + ');">Edit</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callUser(' + data[i].ID + ');">User</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callAssessor(' + data[i].ID + ');">Assessor</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callQuestionPaper(' + data[i].ID + ');">Question Paper</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callResult(' + data[i].ID + ');">Result</button><button type="button" class="button btn-blue" onclick="callResultNOS(' + data[i].ID + ');">NOS Result</button></td></tr>');
+                                var assessor=data[i].assessorId;
+                                
+                                $('#example-basic4 tr:last').after('<tr data-tt-id="1" id="qpack" style="height: 50px;font-size:12px;color: #000;background-color: #fff;"><td align="center">' + data[i].batch_id + '</td><td align="center">' + data[i].batch_size + '</td><td align="center">' + data[i].state + '</td><td align="center">' + data[i].centerAddress + '</td><td align="center">' + data[i].assessmentStartDate + '</td><td align="center">' + data[i].assessmentEndDate + '</td><td align="center">' + data[i].tpName + '</td><td align="center"><button type="button" class="button btn-blue" onclick="callEdit(' + data[i].ID + ');">Edit</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callUser(' + data[i].ID + ');">User</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callAssessor(' + data[i].ID + ');">' + assessor + '</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callQuestionPaper(' + data[i].ID + ');">Question Paper</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callResult(' + data[i].ID + ');">Result</button><button type="button" class="button btn-blue" onclick="callResultNOS(' + data[i].ID + ');">NOS Result</button></td></tr>');
 
 
                             }
@@ -182,17 +183,37 @@
             });
 
             function callEdit(id) {
-                alert(id);
+                //alert(id);
                 window.location.href = "<%=request.getContextPath()%>/admin/batches/initupdate.io?recid=" + id;
 
             }
             function callUser(id) {
-                alert(id);
+                //alert(id);
+                var sscidval = $('#ssc_id').val();
+                var qidval = $('#qpid').val();
+                var sscid = $("#ssc_id option:selected").text();
+                var qid = $("#qpid option:selected").text();
+                //alert(sscid);
+                if (sscidval) {
+                    if (qidval) {
+                        if (id) {
+                            window.location.href = "<%=request.getContextPath()%>/admin/users/showuser.io?batchid=" + id + "&sscid=" + sscid + "&qid=" + qid;
+                        }
+
+                    } else {
+                        alert("Please select Qualification Packs");
+                    }
+                } else {
+                    alert("Please select Sector Skill Council");
+                }
 
             }
             function callAssessor(id) {
-                alert(id);
-
+                //alert(id);
+                var sscid = $("#ssc_id option:selected").text();
+                var qid = $("#qpid option:selected").text();
+                //var w = window.open("<%=request.getContextPath()%>/admin/batches/addassessor.io?batchid=" +id, "popupWindow", "width=1024, height=500, scrollbars=yes");
+                window.location.href = "<%=request.getContextPath()%>/admin/batches/addassessor.io?batchid=" + id + "&sscid=" + sscid + "&qid=" + qid;
             }
             function callQuestionPaper(id) {
                 alert(id);
@@ -209,15 +230,22 @@
 
             $(document).ready(function () {
                 $("#addbatch").click(function () {
-
+                    var sscidval = $('#ssc_id').val();
                     var qid = $('#qpid').val();
                     //alert("Yes" + qid);
-                    if (qid) {
-                        window.location.href = "<%=request.getContextPath()%>/admin/batches/initadd.io?recid=" + qid;
+                    if (sscidval) {
+                        if (qid) {
 
+                            window.location.href = "<%=request.getContextPath()%>/admin/batches/initadd.io?recid=" + qid;
+
+
+                        } else {
+                            alert("Please select Qualification Packs");
+                        }
                     } else {
-                        alert("Please select Qualification Pack");
+                        alert("Please select Sector Skill Council");
                     }
+
 
 
                 });

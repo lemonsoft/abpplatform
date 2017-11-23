@@ -65,8 +65,8 @@ public class BatchesDAO implements SuperBean {
     private int assessorId;
     @Column(name = "question_paper_id")
     private int questionPaperId;
-    @Column(name = "capture_image")
-    private char captureImage;
+    @Column(name = "capturetime")
+    private int capturetime;
 
     @Transient
     private String ssc_id;
@@ -217,13 +217,15 @@ public class BatchesDAO implements SuperBean {
         this.questionPaperId = questionPaperId;
     }
 
-    public char getCaptureImage() {
-        return captureImage;
+    public int getCapturetime() {
+        return capturetime;
     }
 
-    public void setCaptureImage(char captureImage) {
-        this.captureImage = captureImage;
+    public void setCapturetime(int capturetime) {
+        this.capturetime = capturetime;
     }
+
+   
 
     public String getSsc_id() {
         return ssc_id;

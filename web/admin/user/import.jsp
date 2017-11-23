@@ -44,9 +44,9 @@
                         <div class="frm-row">
                             <div class="section colm colm4"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Sector Skill Council :${sscid}</label>
+                                    <label for="names" class="field-label">Sector Skill Council :${sscname}</label>
                                     <label class="field prepend-icon">
-                                        
+                                        Qualification Pack :${qpname}
                                     </label>
                                 </div><!-- end section -->
                             </div><!-- end section -->
@@ -54,9 +54,9 @@
                         <div class="frm-row">
                             <div class="section colm colm4"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Qualification Pack :${qid}</label>
+                                    <label for="names" class="field-label">Note :  It will accept only Excel files with *.xls and.xlsx extension only.</label>
                                     <label class="field prepend-icon">
-                                        
+                                        Use the same format as given below :<a href="#" id="download">Download</a> 
                                     </label>
                                 </div><!-- end section -->
                             </div><!-- end section -->
@@ -81,7 +81,7 @@
                                 </div><!-- end section -->
                             </div><!-- end section -->
                         </div><!-- end frm-row section -->
-                        
+
                         <div class="frm-row">
                             <div class="section colm colm12"> 
                                 <div class="section" style='overflow:auto;width:1200px;'>
@@ -160,7 +160,7 @@
 
                                 </display:table>
                                 <c:if test = "${displaybtn == 'yes'}">
-                                <button type="button" onclick="startimport();" class="button btn-blue">Import Users</button>
+                                    <button type="button" onclick="startimport();" class="button btn-blue">Import Users</button>
                                 </c:if>
                             </div>
                         </c:if>
@@ -183,10 +183,14 @@
                 }
             });
             function startimport() {
-                
+
                 window.location.href = "<%=request.getContextPath()%>/admin/users/importusers.io";
 
             }
+            $('#download').click(function (e) {
+                e.preventDefault();  //stop the browser from following
+                window.location.href = '<%=request.getContextPath()%>/uploaded/download/sample_students_excel.xls';
+            });
         </script>
 
     </body>

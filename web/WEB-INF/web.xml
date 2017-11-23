@@ -36,12 +36,34 @@
         <filter-name>springSecurityFilterChain</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
- 
+    <filter>
+        <filter-name>SetCharacterEncodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
     <filter-mapping>
+        <filter-name>SetCharacterEncodingFilter</filter-name>
+        <url-pattern>*</url-pattern>
+    </filter-mapping>
+    <!--    <filter-mapping>
         <filter-name>springSecurityFilterChain</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-    
+    <filter>
+        <filter-name>requestEncodeFilter</filter-name>
+        <filter-class>com.abp.admin.filter.RequestEncodeFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>requestEncodeFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>-->
     <session-config>
         <session-timeout>
             30
