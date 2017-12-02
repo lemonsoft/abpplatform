@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  *
@@ -39,6 +40,9 @@ public class PCDAO implements SuperBean, Serializable {
     private String overallcutoffmarks;
     @Column(name = "nosid")
     private String nosid;
+    
+    @Column(name = "qpack_id")
+    private int qpackid;
 
     public int getPcID() {
         return pcID;
@@ -94,6 +98,14 @@ public class PCDAO implements SuperBean, Serializable {
 
     public void setNosid(String nosid) {
         this.nosid = nosid;
+    }
+
+    public int getQpackid() {
+        return qpackid;
+    }
+
+    public void setQpackid(int qpackid) {
+        this.qpackid = qpackid;
     }
     
     

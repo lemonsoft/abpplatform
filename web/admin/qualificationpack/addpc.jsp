@@ -41,6 +41,7 @@
                 <form:form method="post" action="${action}"  commandName="pcdao" id="submitForm">
                     <form:hidden path="pcID" id="pcID"/>
                     <form:hidden path="nosid" id="nosid"/>
+                    <form:hidden path="qpackid" id="qpackid"/>
                     <div class="form-body theme-blue">
 
                         <div id="msg"></div>
@@ -73,18 +74,18 @@
                             <div class="section colm colm6" >
                                 <label for="names" class="field-label"><spring:message code="pc.theorycutoff" text="Theory Marks" /></label>
                                 <label class="field prepend-icon" >
-                                    <form:input path="theorycutoffmarks" type="number"  class="gui-input"  placeholder=""/>
+                                    <form:input path="theorycutoffmarks" id="theorymarks" type="number"  class="gui-input"  placeholder=""/>
 
 
-                                </label>
+                                </label><span id="errortheory"></span>
                             </div><!-- end section -->
                             <div class="section colm colm6" >
                                 <label for="names" class="field-label"><spring:message code="pc.practicalcutoff" text="Practical Marks" /></label>
                                 <label class="field prepend-icon" >
-                                    <form:input path="practicalcutoffmarks" type="number"  class="gui-input"  placeholder=""/>
+                                    <form:input path="practicalcutoffmarks" id="practicalmarks" type="number"  class="gui-input"  placeholder=""/>
 
 
-                                </label>
+                                </label><span id="errorpractical"></span>
                             </div><!-- end section -->
 
                         </div><!-- end frm-row section -->
@@ -93,7 +94,7 @@
                             <div class="section colm colm6" >
                                 <label for="names" class="field-label"><spring:message code="pc.overallcutoff" text="Maximum Marks" /></label>
                                 <label class="field prepend-icon" >
-                                    <form:input path="overallcutoffmarks" type="number"  class="gui-input"  placeholder=""/>
+                                    <form:input path="overallcutoffmarks" readonly="true" id="maximummarks" type="number"  class="gui-input"  placeholder=""/>
 
 
                                 </label>
@@ -104,7 +105,7 @@
                     </div><!-- end .form-body section -->
                     <div class="form-footer">
                         <c:if test = "${mode == 'add'}">
-                            <button type="submit" class="button btn-blue"><spring:message code="common.button.submit" text="Submit" /></button>
+                            <button type="submit" class="button btn-blue" id="submitbtn"><spring:message code="common.button.submit" text="Submit" /></button>
                         </c:if>
                         <c:if test = "${mode=='update'}">
                             <button type="button" class="button btn-blue" onclick="update();"><spring:message code="common.button.update" text="Update" /></button>
@@ -133,46 +134,130 @@
 
             $(document).ready(function () {
 
+                $('input[name="theorycutoffmarks"]').change(function () {
+                    var theorymarks = $(this).val();
+                    var practicalmarks = $('#practicalmarks').val();
+                    var maxmarks = parseInt(theorymarks) + parseInt(practicalmarks);
+                    $('#maximummarks').val(maxmarks);
+                });
+                $('input[name="practicalcutoffmarks"]').change(function () {
+                    var practicalmarks = $(this).val();
+                    var theorymarks = $('#theorymarks').val();
+                    var maxmarks = parseInt(theorymarks) + parseInt(practicalmarks);
+                    $('#maximummarks').val(maxmarks);
+                });
+
+                $("#theorymarks").on("change", function () {
+                    var val = $(this).val();
+                    var nosid = $('#nosid').val();
+                    var pcID = $('#pcID').val();
+
+                    $.ajax({
+                        url: 'checkPCTheoryMarks.io',
+                        data: {nosid: nosid, pcID: pcID, theorymarks: val},
+                        success: function (data) {
+
+                            if (data.status == 'greator') {
+
+                                $("#theorymarks").val(0);
+                                $('#errortheory').html("<font color=red>Theory Marks Should Not Be Greator Than NOS Marks</font>");
+                            } else {
+                                $('#errortheory').html("");
+                            }
+                        }
+                    });
+
+                });
+                $("#practicalmarks").on("change", function () {
+                    var val = $(this).val();
+                    var nosid = $('#nosid').val();
+                    var pcID = $('#pcID').val();
+                    $.ajax({
+                        url: 'checkPCPracticalMarks.io',
+                        data: {nosid: nosid, pcID: pcID, practicalmarks: val},
+                        success: function (data) {
+
+                            if (data.status == 'greator') {
+
+                                $("#practicalmarks").val(0);
+                                $('#errorpractical').html("<font color=red>Practical Marks Should Not Be Greator Than NOS Marks</font>");
+                            } else {
+                                $('#errorpractical').html("");
+                            }
+                        }
+                    });
+
+                });
+
                 $('#submitForm').submit(function (e) {
                     e.preventDefault();
 
+                    var qpackid = $('#qpackid').val();
                     var nosid = $('#nosid').val();
                     var pcid = $('#pcid').val();
                     var pcname = $('#pcname').val();
 
-                    var theorycutoffmarks = $('#theorycutoffmarks').val();
-                    var practicalcutoffmarks = $('#practicalcutoffmarks').val();
-                    var overallcutoffmarks = $('#overallcutoffmarks').val();
+                    var theorycutoffmarks = $('#theorymarks').val();
+                    var practicalcutoffmarks = $('#practicalmarks').val();
+                    var overallcutoffmarks = $('#maximummarks').val();
 
-                    if(!theorycutoffmarks){
-                        theorycutoffmarks=0;
+                    if (!theorycutoffmarks) {
+                        theorycutoffmarks = 0;
                     }
-                    if(!practicalcutoffmarks){
-                        practicalcutoffmarks=0;
+                    if (!practicalcutoffmarks) {
+                        practicalcutoffmarks = 0;
                     }
-                    if(!overallcutoffmarks){
-                        overallcutoffmarks=0;
+                    if (!overallcutoffmarks) {
+                        overallcutoffmarks = 0;
                     }
-                    
-                    //alert($('#theorycutoffmarks').val());
-                    if (pcid.trim()) {
+                    var flag = false;
+                    //alert($('#maximummarks').val());
+                    if (qpackid.trim()) {
+
                         $.ajax({
-                            url: 'savepc.io',
-                            data: {nosid: nosid, pcid: pcid, pcname: pcname, theorycutoffmarks: theorycutoffmarks, practicalcutoffmarks: practicalcutoffmarks, overallcutoffmarks: overallcutoffmarks},
+                            url: 'checkMaximumMarks.io',
+                            data: {qpackid: qpackid, maximummarks: overallcutoffmarks},
                             success: function (data) {
+                                if (data.status == "yes") {
+                                    //alert(data.status);
+                                    $('#msg').html("<font color=\"red\">Maximum marks should not exceed the total marks of Quality Pack.</font>");
+                                    // $('#submitbtn').prop('disabled', true);
+                                } else {
+                                    alert(data.status);
+                                    $('#msg').html("");
+                                    //$('#submitbtn').prop('disabled', false);
+                                    flag = true;
+                                    alert(flag);
+                                    if (flag) {
 
-                                $('#msg').html("<font color=\"green\">" + data + "</font>");
-                                //$('#nosid').val('');
-                                $('#pcname').val('');
-                                $('#theorycutoffmarks').val('');
-                                $('#practicalcutoffmarks').val('');
-                                $('#overallcutoffmarks').val('');
+                                        $.ajax({
+                                            url: 'savepc.io',
+                                            data: {qpackid: qpackid, nosid: nosid, pcid: pcid, pcname: pcname, theorycutoffmarks: theorycutoffmarks, practicalcutoffmarks: practicalcutoffmarks, overallcutoffmarks: overallcutoffmarks},
+                                            success: function (data) {
+
+                                                $('#msg').html("<font color=\"green\">" + data + "</font>");
+                                                //$('#nosid').val('');
+                                                $('#pcname').val('');
+                                                $('#theorymarks').val('');
+                                                $('#practicalmarks').val('');
+                                                $('#maximummarks').val('');
+
+                                            }
+                                        });
+                                    } else {
+                                        //$('#msg').html("<font color=\"red\">Error submitting form ...</font>");
+                                    }
+
+                                }
+
 
                             }
                         });
                     } else {
                         $('#msg').html("<font color=\"red\">Error submitting form ...</font>");
                     }
+
+
 
                 });
             });
@@ -182,14 +267,14 @@
                 var nosid = $('#nosid').val();
                 var pcid = $('#pcid').val();
                 var pcname = $('#pcname').val();
-                var theorycutoffmarks = $('#theorycutoffmarks').val();
-                var practicalcutoffmarks = $('#practicalcutoffmarks').val();
-                var overallcutoffmarks = $('#overallcutoffmarks').val();
+                var theorycutoffmarks = $('#theorymarks').val();
+                var practicalcutoffmarks = $('#practicalmarks').val();
+                var overallcutoffmarks = $('#maximummarks').val();
                 //alert($('#theorycutoffmarks').val());
                 if (pcID) {
                     $.ajax({
                         url: 'updatepc.io',
-                        data: {pcID: pcID, nosid: nosid, pcid: pcid,pcname:pcname, theorycutoffmarks: theorycutoffmarks, practicalcutoffmarks: practicalcutoffmarks, overallcutoffmarks: overallcutoffmarks},
+                        data: {pcID: pcID, nosid: nosid, pcid: pcid, pcname: pcname, theorycutoffmarks: theorycutoffmarks, practicalcutoffmarks: practicalcutoffmarks, overallcutoffmarks: overallcutoffmarks},
                         success: function (data) {
 
                             $('#msg').html("<font color=\"green\">" + data + "</font>");
@@ -206,6 +291,7 @@
                     $('#msg').html("<font color=\"red\">Error submitting form ...</font>");
                 }
             }
+
         </script>
     </body>
 

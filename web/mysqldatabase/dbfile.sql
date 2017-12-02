@@ -195,6 +195,7 @@
 -- practicalcutoffmarks int(20) NULL,
 -- overallcutoffmarks int(20) NULL,
 -- nosid int(20) NOT NULL,
+-- qpack_id int(20) NOT NULL,
 -- PRIMARY KEY (pcID) USING BTREE
 -- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
@@ -352,5 +353,85 @@
 --  PRIMARY KEY (question_id) USING BTREE
 --  )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
-select * from theorymmq;
+-- create table multilangquestiontheorymmq(
+-- id int(20) unsigned NOT NULL AUTO_INCREMENT,
+-- language_id int(20) NOT NULL,
+-- question_id int(20) NOT NULL,
+-- question_title varchar(500) NOT NULL,
+-- option1 varchar(100) NOT NULL,
+-- option2 varchar(100) NOT NULL,
+-- option3 varchar(100) NOT NULL,
+-- option4 varchar(100) NOT NULL,
+-- PRIMARY KEY (id) USING BTREE
+-- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+-- create table theorypcwithmarks(
+-- id int(20) unsigned NOT NULL AUTO_INCREMENT,
+-- pcid int(50) NULL,
+-- marks int(50) NULL,
+-- question_id int(50) NULL,
+-- PRIMARY KEY (id) USING BTREE
+-- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+-- create table practicalmmq(
+-- id int(20) unsigned NOT NULL AUTO_INCREMENT,
+-- qpackid int(10) NOT NULL,
+-- senario varchar(100) NOT NULL,
+-- marks varchar(100) NOT NULL,
+-- PRIMARY KEY (id) USING BTREE
+--)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- create table senarioquestions(
+-- srno int(20) unsigned NOT NULL AUTO_INCREMENT,
+-- question varchar(100) NOT NULL,
+-- pcsselectedmarks varchar(100) NOT NULL,
+-- totalmarks int(50) NOT NULL,
+-- senario_id int(50) NOT NULL,
+-- PRIMARY KEY (srno) USING BTREE
+-- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- create table pcwithmarks(
+-- id int(20) unsigned NOT NULL AUTO_INCREMENT,
+-- pcid int(50) NULL,
+-- marks int(50) NULL,
+-- question_id int(50) NULL,
+-- PRIMARY KEY (id) USING BTREE
+-- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+
+-- create table pcwisequestion(
+-- id int(20) unsigned NOT NULL AUTO_INCREMENT,
+-- qpackid int(20) NOT NULL,
+-- pcid int(20) NOT NULL,
+-- totaladdedmarks int(20) NULL,
+-- marks1 int(20) NULL,
+-- marks2 int(20) NULL,
+-- marks3 int(20) NULL,
+-- marks4 int(20) NULL,
+-- marks5 int(20) NULL,
+-- marks6 int(20) NULL,
+-- marks7 int(20) NULL,
+-- marks8 int(20) NULL,
+-- marks9 int(20) NULL,
+-- marks10 int(20) NULL,
+-- marks11 int(20) NULL,
+-- marks12 int(20) NULL,
+-- marks13 int(20) NULL,
+-- marks14 int(20) NULL,
+-- marks15 int(20) NULL,
+-- marks16 int(20) NULL,
+-- marks17 int(20) NULL,
+-- marks18 int(20) NULL,
+-- marks19 int(20) NULL,
+-- marks20 int(20) NULL,
+-- marks21 int(20) NULL,
+-- marks22 int(20) NULL,
+-- marks23 int(20) NULL,
+-- marks24 int(20) NULL,
+-- marks25 int(20) NULL,
+-- PRIMARY KEY (id) USING BTREE
+-- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+select * from pcwithmarks;

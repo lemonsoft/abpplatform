@@ -74,11 +74,11 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i> Multimapping Questions</h4>
+                    <h4><i class="fa fa-pencil-square"></i>Practical Multi Mapping Questions</h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
-                <form:form method="post" action="${action}"   commandName="theorymmq" > 
+                <form:form method="post" action="${action}"   commandName="practicalmmq" > 
                     <div class="form-body theme-blue">
                         <div class="frm-row">
                             <div class="section colm colm6"> 
@@ -109,7 +109,7 @@
                             </div><!-- end section -->
                         </div><!-- end frm-row section -->
                         <div class="frm-row" id="displaytabledata">
-                            <button type="button" class="button btn-blue" onclick="importQuestions();">Import MMQ's</button>&nbsp;<button type="button" id="importmultilang" class="button btn-blue" onclick="importmultilanguage();">Import Multi Lingual MMQ's</button>
+                            <button type="button" class="button btn-blue" onclick="addSenario();">Add New Senario</button>
                             <table id="example-basic4" class="table table-striped table-bordered table-hover dt-responsive"  border="1" cellpadding="2" cellspacing="2" width="100%">
 
                             </table>
@@ -156,18 +156,18 @@
                 if (qpackid) {
 
                     $.ajax({
-                        url: "getQuestions.io",
-                        data: {qp_id: qpackid},
+                        url: "getSenario.io",
+                        data: {qid: qpackid},
                         type: 'GET',
                         success: function (data) {
 
                             $("#example-basic4").empty();
-                            $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center">Question ID</th><th align="center">Question Title</th><th align="center">Option 1</th><th align="center">Option 2</th>' +
-                                    '<th align="center">Option 3</th><th align="center">Option 4</th><th align="center">Marks</th><th align="center">PCs with Selected Marks</th><th align="center">Is Active</th><th align="center">Correct Option</th><th align="center">Edit</th><th align="center">Multilingual</th><th align="center">Action</th></tr></thead >');
+                            $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center">Senario</th><th align="center">Marks</th>' +
+                                    '<th align="center">View Questions</th><th align="center">Edit</th></tr></thead >');
                             //alert(data.length);
                             for (var i = 0, lennos = data.length; i < lennos; i++) {
                                 //alert(window.location.host);
-                                $('#example-basic4 tr:last').after('<tr data-tt-id="1" id="qpack" style="height: 50px;font-size:12px;color: #000;background-color: #fff;"><td align="center">' + data[i].ID + '</td><td align="center">' + data[i].question_title + '</td><td align="center">' + data[i].option1 + '</td><td align="center">' + data[i].option2 + '</td><td align="center">' + data[i].option3 + '</td><td align="center">' + data[i].option4 + '</td><td align="center">' + data[i].marks + '</td><td align="center">' + data[i].pcwithmarks + '</td><td align="center">' + data[i].isactive + '</td><td align="center">' + data[i].correctOption + '</td><td align="center"><a href=initUpdate.io?recid=' + data[i].ID + '>Edit</a></td><td align="center"><a href="#" onclick="showmultilanguage(' + data[i].ID + ');">View</a></td><td align="center"><a href="#" onclick="deleteClick(' + data[i].ID + ',event);">Delete</a></td></tr>');
+                                $('#example-basic4 tr:last').after('<tr data-tt-id="1" id="qpack" style="height: 50px;font-size:12px;color: #000;background-color: #fff;"><td align="center">' + data[i].senario + '</td><td align="center">' + data[i].marks + '</td><td align="center"><a href="#" onclick="viewShow(' + data[i].id + ');">View</a></td><td align="center"><a href=# onclick="editShow(' + data[i].id + ');">Edit</a></td></tr>');
 
 
                             }
@@ -182,11 +182,12 @@
 
                 }
             });
-            function importQuestions() {
+            function addSenario() {
                 var qpid = $("#qpackid").val();
-
+                var sscname = $("#ssc_id option:selected").text();
+                var qpname = $("#qpackid option:selected").text();
                 if (parseInt(qpid) !== 0) {
-                    window.location.href = "<%=request.getContextPath()%>/admin/theorymmq/importMMQQuestions.io?qpid=" + qpid;
+                    window.location.href = "<%=request.getContextPath()%>/admin/practicalmmq/initadd.io?qpid=" + qpid + "&sscname=" + sscname + "&qpname=" + qpname;
                 } else {
                     alert("Please select Qualification Pack");
                 }
@@ -203,7 +204,24 @@
                 event.preventDefault();
                 var w = window.open("<%=request.getContextPath()%>/admin/theorymmq/openqplang.io?qid=" + id, "popupWindow", "width=1024, height=500, scrollbars=yes");
             }
-            
+            function editShow(id) {
+                // alert(id);
+                var qpid = $("#qpackid").val();
+                var sscname = $("#ssc_id option:selected").text();
+                var qpname = $("#qpackid option:selected").text();
+                if (parseInt(qpid) !== 0) {
+                    window.location.href = "<%=request.getContextPath()%>/admin/practicalmmq/initUpdate.io?recid=" + id + "&sscname=" + sscname + "&qpname=" + qpname + "&qid=" + qpid;
+                } else {
+                    alert("Please select Qualification Pack");
+                }
+            }
+            function viewShow(id) {
+
+                event.preventDefault();
+                var w = window.open("<%=request.getContextPath()%>/admin/practicalmmq/viewQuestions.io?recid=" + id, "popupWindow", "width=1024, height=500, scrollbars=yes");
+               
+
+            }
 
             $('#onchange').on('click', function (event) {
                 event.preventDefault();
@@ -229,9 +247,9 @@
                     }
                 });
             }
-            function deleteClick(id,event) {
+            function deleteClick(id, event) {
                 event.preventDefault();
-                
+
                 $.ajax({
                     url: "delete.io",
                     data: {recid: id},

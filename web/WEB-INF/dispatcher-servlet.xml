@@ -68,6 +68,12 @@
                 <value>com.abp.admin.project.questions.QuestionDAO</value>
                 <value>com.abp.admin.project.questions.MultiLangQuestionDAO</value>
                 <value>com.abp.admin.project.theorymmq.TheoryMMQDAO</value>
+                <value>com.abp.admin.project.theorymmq.MultiLangMMQQuestionDAO</value>
+                <value>com.abp.admin.practicalmmq.PracticalMMQDAO</value>
+                <value>com.abp.admin.practicalmmq.SenarioQuestionDAO</value>
+                <value>com.abp.admin.practicalmmq.PCWithMarksDAO</value>
+                <value>com.abp.admin.generateqp.PCWiseQuestionDAO</value>
+                <value>com.abp.admin.project.theorymmq.TheoryPCIDWithMarks</value>
             </list>
         </property>
         <property name="hibernateProperties">

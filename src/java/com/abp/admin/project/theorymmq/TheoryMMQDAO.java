@@ -67,7 +67,7 @@ public class TheoryMMQDAO implements SuperBean,Serializable {
 
     @Column(name = "marks")
     private int marks;
-
+                                          
     @Column(name = "correct_option")
     private String correct_option;
     @Column(name = "isactive")

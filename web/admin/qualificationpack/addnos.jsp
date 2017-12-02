@@ -82,7 +82,7 @@
                                     <form:input path="theorycutoffmarks" type="number" id="theorycutoffmarks" class="gui-input"  placeholder=""/>
 
 
-                                </label>
+                                </label>  <span id="errortheory"></span>  
                             </div><!-- end section -->
                             <div class="section colm colm6" >
                                 <label for="names" class="field-label"><input type="checkbox" id="practicalcutoffmarksopen" value="on"/><spring:message code="nos.practicalcutoff" text="Is practical cutoff available" /></label>
@@ -90,7 +90,7 @@
                                     <form:input path="practicalcutoffmarks" type="number" id="practicalcutoffmarks" class="gui-input"  placeholder=""/>
 
 
-                                </label>
+                                </label><span id="errorpractical"></span> 
                             </div><!-- end section -->
 
                         </div><!-- end frm-row section -->
@@ -218,6 +218,48 @@
 
                 });
 
+                $("#theorycutoffmarks").on("change", function () {
+                    var val = $(this).val();
+                    var qpackid = $('#qpackid').val();
+                    var nosID = $('#nosID').val();
+
+                    $.ajax({
+                        url: 'checkTheoryMarks.io',
+                        data: {qpackid: qpackid, nosID: nosID, theorymarks: val},
+                        success: function (data) {
+
+                            if (data.status == 'greator') {
+                               
+                                $("#theorycutoffmarks").val(0);
+                                $('#errortheory').html("<font color=red>Theory Marks Should Not Be Greator Than Qualification Pack</font>");
+                            } else {
+                                $('#errortheory').html("");
+                            }
+                        }
+                    });
+
+                });
+                $("#practicalcutoffmarks").on("change", function () {
+                    var val = $(this).val();
+                    var qpackid = $('#qpackid').val();
+                    var nosID = $('#nosID').val();
+                    $.ajax({
+                        url: 'checkPracticalMarks.io',
+                        data: {qpackid: qpackid, nosID: nosID, practicalmarks: val},
+                        success: function (data) {
+
+                            if (data.status == 'greator') {
+                                
+                                $("#practicalcutoffmarks").val(0);
+                                $('#errorpractical').html("<font color=red>Practical Marks Should Not Be Greator Than Qualification Pack</font>");
+                            } else {
+                                $('#errorpractical').html("");
+                            }
+                        }
+                    });
+
+                });
+
                 $('#submitForm').submit(function (e) {
                     e.preventDefault();
                     var qpackid = $('#qpackid').val();
@@ -228,18 +270,18 @@
                     var practicalcutoffmarks = $('#practicalcutoffmarks').val();
                     var overallcutoffmarks = $('#overallcutoffmarks').val();
                     var weightedavgmarks = $('#weightedavgmarks').val();
-                    
-                    if(!theorycutoffmarks){
-                        theorycutoffmarks=0;
+
+                    if (!theorycutoffmarks) {
+                        theorycutoffmarks = 0;
                     }
-                    if(!practicalcutoffmarks){
-                        practicalcutoffmarks=0;
+                    if (!practicalcutoffmarks) {
+                        practicalcutoffmarks = 0;
                     }
-                    if(!overallcutoffmarks){
-                        overallcutoffmarks=0;
+                    if (!overallcutoffmarks) {
+                        overallcutoffmarks = 0;
                     }
-                    if(!weightedavgmarks){
-                        weightedavgmarks=0;
+                    if (!weightedavgmarks) {
+                        weightedavgmarks = 0;
                     }
                     //alert($('#theorycutoffmarks').val());
                     if (qpackid.trim()) {
@@ -278,14 +320,14 @@
                 if (qpackid.trim()) {
                     $.ajax({
                         url: 'updatenos.io',
-                        data: {nosID: nosID, qpackid:qpackid, nosid: nosid, nosname: nosname,theorycutoffmarks: theorycutoffmarks, practicalcutoffmarks: practicalcutoffmarks, overallcutoffmarks: overallcutoffmarks, weightedavgmarks: weightedavgmarks},
+                        data: {nosID: nosID, qpackid: qpackid, nosid: nosid, nosname: nosname, theorycutoffmarks: theorycutoffmarks, practicalcutoffmarks: practicalcutoffmarks, overallcutoffmarks: overallcutoffmarks, weightedavgmarks: weightedavgmarks},
                         success: function (data) {
 
                             $('#msg').html("<font color=\"green\">" + data + "</font>");
-                            
+
                             window.close();
                             window.opener.refresh();
-                            
+
 
 
                         }

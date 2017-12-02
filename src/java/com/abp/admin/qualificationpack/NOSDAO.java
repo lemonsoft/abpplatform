@@ -6,12 +6,14 @@
 package com.abp.admin.qualificationpack;
 
 import com.abp.superdao.SuperBean;
+import java.util.ArrayList;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  *
@@ -20,16 +22,17 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "nos")
 public class NOSDAO implements SuperBean {
+
     @Id
     @Column(name = "nosID")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int nosID;
-    
+
     @Column(name = "nos_id")
     private String nosid;
     @Column(name = "nos_name")
     private String nosname;
-    
+
     @Column(name = "theorycutoffmarks")
     private String theorycutoffmarks;
     @Column(name = "practicalcutoffmarks")
@@ -40,6 +43,9 @@ public class NOSDAO implements SuperBean {
     private String weightedavgmarks;
     @Column(name = "qpack_id")
     private String qpackid;
+
+    @Transient
+    ArrayList pcdata = new ArrayList();
 
     public int getNosID() {
         return nosID;
@@ -104,7 +110,13 @@ public class NOSDAO implements SuperBean {
     public void setQpackid(String qpackid) {
         this.qpackid = qpackid;
     }
-    
-    
-    
+
+    public ArrayList getPcdata() {
+        return pcdata;
+    }
+
+    public void setPcdata(ArrayList pcdata) {
+        this.pcdata = pcdata;
+    }
+
 }

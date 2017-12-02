@@ -33,12 +33,12 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i>Import MMQ</h4>
-                    <div style="position: absolute;top:5px;right:15px;width: 200px;"><a href="<%=request.getContextPath()%>/admin/theorymmq/init.io" class="button btn-primary block pushed expand">Theory MMQ </a></div>
+                    <h4><i class="fa fa-pencil-square"></i>Import Multilingual Theory MMQ</h4>
+                    <div style="position: absolute;top:5px;right:5px;width: 200px;"><a href="<%=request.getContextPath()%>/admin/theorymmq/init.io" class="button btn-primary block pushed expand">Theory MMQ </a></div>
 
                 </div><!-- end .form-header section -->
 
-                <form:form method="post" action="${action}"  commandName="theorymmq" enctype="multipart/form-data">
+                <form:form method="post" action="${action}"  commandName="questionsmultilang" enctype="multipart/form-data">
 
                     <div class="form-body theme-blue">
 
@@ -78,41 +78,26 @@
                                 <div class="section" style='overflow:auto;width:1200px;'>
                                     <table id="example-basic4" class="table table-striped table-bordered table-hover dt-responsive"  border="1" cellpadding="2" cellspacing="2" id="format">
                                         <thead>
-                                        <th>Question</th><th>Option1</th>
+                                        <th>QuestionID</th><th>LanguageID</th><th>Question</th><th>Option1</th>
                                         <th>Option2</th><th>Option3</th>
                                         <th>Option4</th>
-                                        <th>CANS1</th><th>CANS2</th>
-                                        <th>CANS3</th><th>CANS4</th>
-                                        <th>Solution</th>
-                                        <th>NoofOptions</th><th>QuestionTypeID</th>
-                                        <th>QuestionLevelID</th>
-                                        <th>PCIDsWithMarks</th>
-
                                         </thead>
                                     </table>
                                 </div><!-- end section -->
                             </div><!-- end section -->
 
                         </div><!-- end frm-row section -->
-                        <c:if test = "${theorydata !=null}">
-                            <div class="frm-row" >
-                                <div class="section" style='overflow:auto;width:1200px;'>
-                                <display:table name="theorydata" class="table table-bordered" requestURI="importQuestionExcel.io"  pagesize="50">
+                        <c:if test = "${importdata !=null}">
+                            <div class="frm-row" style='overflow:auto;width:1200px;height:650px;'>
+                                <display:table name="importdata" class="table table-bordered" requestURI="importQuestionExcel.io"  pagesize="50">
+                                   <display:column property="question_id" title="QuestionID" />
+                                    <display:column property="language_id" title="LanguageID" />
                                     <display:column property="question_title" title="Question" />
                                     <display:column property="option1" title="Option1" />
                                     <display:column property="option2" title="Option2" />
                                     <display:column property="option3" title="Option3" />
                                     <display:column property="option4" title="Option4" />
-                                    <display:column property="cans1" title="CANS1" />
-                                    <display:column property="cans2" title="CANS2" />
-                                    <display:column property="cans3" title="CANS3" />
-                                    <display:column property="cans4" title="CANS4" />
-                                    <display:column property="solution" title="Solution" />
-                                    <display:column property="noofoption" title="NoofOptions" />
-                                    <display:column property="question_type" title="QuestionTypeID" />
-                                    <display:column property="question_level" title="QuestionLevelID" />
-                                    <display:column property="pcidwithmarks" title="PCIDWITHMARKS" />
-                                    <display:column property="status" title="Status" />
+                                     <display:column property="status" title="Status" />
 
                                 </display:table>
                                 <c:if test = "${isError == true}">
@@ -121,7 +106,7 @@
                                 <c:if test = "${isError == false}">
                                     <button type="button" onclick="startimport();" class="button btn-blue">Import Question</button>
                                 </c:if>
-                            </div> </div>
+                            </div>
                         </c:if>
 
                     </div><!-- end .form-body section -->
@@ -143,12 +128,12 @@
             });
             function startimport() {
 
-                window.location.href = "<%=request.getContextPath()%>/admin/theorymmq/inserttheorymmq.io";
+                window.location.href = "<%=request.getContextPath()%>/admin/theorymmq/insertMultiQuestions.io";
 
             }
             $('#download').click(function (e) {
                 e.preventDefault();  //stop the browser from following
-                window.location.href = '<%=request.getContextPath()%>/uploaded/download/sample_question_excel_mmq.xls';
+                window.location.href = '<%=request.getContextPath()%>/uploaded/download/sample_question_excel.xls';
             });
         </script>
 

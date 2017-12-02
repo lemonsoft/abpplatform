@@ -174,6 +174,40 @@ public class BatchesController {
         return "redirect:/admin/batches/addassessor.io";
     }
 
+    @RequestMapping(value = "/searchbatch", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    String searchbatch(@RequestParam("batchid") String batchid) {
+
+        JSONArray jsonarrbatch = new JSONArray();
+        Map param = new HashMap();
+        param.put("batch_id", new Integer(batchid));
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new BatchesDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                BatchesDAO batchdo = (BatchesDAO) itr.next();
+                JSONObject jsonObj = new JSONObject();
+                jsonObj.append("ID", batchdo.getID());
+                jsonObj.append("batch_id", batchdo.getBatch_id());
+                jsonObj.append("batch_size", batchdo.getBatch_size());
+                jsonObj.append("state", getStateById(batchdo.getState_id()));
+                jsonObj.append("centerAddress", batchdo.getCenterAddress());
+                jsonObj.append("assessmentStartDate", batchdo.getAssessmentStartDate());
+                jsonObj.append("assessmentEndDate", batchdo.getAssessmentEndDate());
+                jsonObj.append("tpName", batchdo.getTpName());
+                jsonObj.append("assessorId", getAssessorById(batchdo.getAssessorId()));
+                jsonObj.append("questionPaperId", batchdo.getQuestionPaperId());
+                System.out.println(jsonObj.toString());
+                jsonarrbatch.put(jsonObj);
+                
+                System.out.println("  batch record count :::::::::::::::::::::::::::::::");
+            }
+        }
+
+        return jsonarrbatch.toString();
+
+    }
+
     @RequestMapping(value = "/getDistricts", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     String getDistricts(@RequestParam("s_id") String stateid) {

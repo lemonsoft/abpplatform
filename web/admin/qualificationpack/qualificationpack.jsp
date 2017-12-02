@@ -269,49 +269,19 @@
                             data: {qp_id: qpid},
                             type: 'GET',
                             success: function (data) {
-
-                                //alert(data[1]);
-                                //alert("key : " + data[0].QpackID + " ; value : " + data[0].QpackName);
-
-
-                                // Iterate through items.
-                                //for (var i = 0, len = data[2].length; i < len; i++) {
-                                //   alert(data[2][i].PCID);
-                                //}
-
-                                //$('#displaytabledata').html('');
-                                //var tbl = $("<table></table>").attr("id", "example-basic");
-                                //$("#displaytabledata").append(tbl);
-
-
-
                                 $("#example-basic4").empty();
                                 $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center">Qualification Pack ID</th><th align="center">Qualification Pack Name</th><th align="center">Qualification Pack Level</th><th align="center">Total Marks</th>' +
                                         '<th align="center">Total Theory Marks</th><th align="center">Total Practical Marks</th><th align="center">Theory Cutoff</th><th align="center">Practical Cutoff</th><th align="center">Overall Cutoff</th><th align="center">Weighted Average (%)</th><th align="center">Actions</th></tr></thead >');
-                                $('#example-basic4 tr:last').after('<tr data-tt-id="1" id="qpack" style="height: 50px;font-size:12px;color: #000;background-color: #fff;"><td align="center">' + data[0].QpackID + '</td><td align="center">' + data[0].QpackName + '</td><td align="center">' + data[0].QpackLevel + '</td><td align="center">' + data[0].Totaltheorymarks + '</td><td align="center">' + data[0].Totalpracticalmarks + '</td><td align="center">' + data[0].Totalmarks + '</td><td align="center">' + data[0].Theorycutoffmarks + '</td><td align="center">' + data[0].Practicalcutoffmarks + '</td><td align="center">' + data[0].Overallcutoffmarks + '</td><td align="center">' + data[0].Weightedavgmarks + '</td>'
+                                $('#example-basic4 tr:last').after('<tr data-tt-id="1" id="qpack" style="height: 50px;font-size:12px;color: #000;background-color: #fff;"><td align="center">' + data[0].QpackID + '</td><td align="center">' + data[0].QpackName + '</td><td align="center">' + data[0].QpackLevel + '</td><td align="center">' + data[0].Totalmarks + '</td><td align="center">' + data[0].Totaltheorymarks + '</td><td align="center">' + data[0].Totalpracticalmarks + '</td><td align="center">' + data[0].Theorycutoffmarks + '</td><td align="center">' + data[0].Practicalcutoffmarks + '</td><td align="center">' + data[0].Overallcutoffmarks + '</td><td align="center">' + data[0].Weightedavgmarks + '</td>'
                                         + '<td><a href="initupdateqp.io?recid=' + data[0].ID + '" id="openeditqp" data-target="#ajax3" data-toggle="modal" onclick="openeditqp(' + data[0].ID + ');">Edit</a>|<a href="deleteqp.io?recid=' + data[0].ID + '" data-target="#ajax2" data-toggle="modal" onclick="opendeleteqp(' + data[0].ID + ');">Delete</a></td></tr>');
 
 
                                 $('#example-basic4 tr:last').after('<tr><td colspan="11" align="right"><button type="button" id="OpenNOSDialog" onClick="divFunction();" class="button btn-blue">Add New NOS</button></td></tr>');
-//                               $('#example-basic4 tr:last').after('<tr style="height: 50px;font-size:12px;"><td colspan="11"><table id="nos" border="1" cellpadding="2" cellspacing="2" align="center" width="90%"><thead><tr ><th align="center">Sr.#</th><th align="center">NOS ID</th><th align="center">NOS </th><th align="center">Theory Cutoff</th><th align="center">Practical Cutoff</th><th align="center">Practical Cutoff</th><th align="center">Weighted Average (%)</th><th align="center">Actions</th></tr></thead></table></td></tr>');
-//                                 $('#nos tr:last').after('<tr ><td>1</td><td>DWC/N0105</td><td>Carry out basic domestic cooking services for the house</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0</td><td><a href="#">Edit</a>|<a href="#">Delete</a></td></tr>');
-//                                $('#nos tr:last').after('<tr><td colspan="11" align="right"><button type="button" class="button btn-blue">Add New PC</button></td></tr>');
-//                                $('#nos tr:last').after('<tr style="height: 50px;font-size:12px;"><td colspan="11"><table id="pc" border="1" cellpadding="2" cellspacing="2" align="center" width="90%"><thead><tr ><th align="center">Sr.#</th><th align="center">PC ID</th><th align="center">PC Name</th><th align="center">Maximum Marks</th><th align="center">Theory Marks</th><th align="center">Practical Marks</th><th align="center">Actions</th></tr></thead></table></td></tr>');
-//                                $('#pc tr:last').after('<tr ><td>1</td><td>DWC/N0105</td><td>Carry out basic domestic cooking services for the house</td><td>0.00</td><td>0.00</td><td>0</td><td><a href="#">Edit</a>|<a href="#">Delete</a></td></tr>');
-//
-//
-//
-//                                $('#example-basic4').append('<tr style="height: 50px;font-size:12px;"><td colspan="11"><table id="nos2" border="1" cellpadding="2" cellspacing="2" align="center" width="90%"><thead><tr ><th align="center">Sr.#</th><th align="center">NOS ID</th><th align="center">NOS </th><th align="center">Theory Cutoff</th><th align="center">Practical Cutoff</th><th align="center">Practical Cutoff</th><th align="center">Weighted Average (%)</th><th align="center">Actions</th></tr></thead></table></td></tr>');
-//                                $('#nos2 tr:last').after('<tr ><td>2</td><td>DWC/N0105</td><td>Carry out basic domestic cooking services for the house</td><td>0.00</td><td>0.00</td><td>0.00</td><td>0</td><td><a href="#">Edit</a>|<a href="#">Delete</a></td></tr>');
-//                                $('#nos2 tr:last').after('<tr><td colspan="11" align="right"><button type="button" class="button btn-blue">Add New PC</button></td></tr>');
-//                                $('#nos2 tr:last').after('<tr style="height: 50px;font-size:12px;"><td colspan="11"><table id="pc2" border="1" cellpadding="2" cellspacing="2" align="center" width="90%"><thead><tr ><th align="center">Sr.#</th><th align="center">PC ID</th><th align="center">PC Name</th><th align="center">Maximum Marks</th><th align="center">Theory Marks</th><th align="center">Practical Marks</th><th align="center">Actions</th></tr></thead></table></td></tr>');
-//
-//                                $('#pc2 tr:last').after('<tr ><td>1</td><td>DWC/N0105</td><td>Carry out basic domestic cooking services for the house</td><td>0.00</td><td>0.00</td><td>0</td><td><a href="#">Edit</a>|<a href="#">Delete</a></td></tr>');
-                                //alert(data[1].length);
+
                                 for (var i = 0, lennos = data[1].length; i < lennos; i++) {
                                     //alert(i+""+data[1].length);
 
-                                    $('#example-basic4').append('<tr style="height: 50px;font-size:12px;"><td colspan="11"><table id="nos' + i + '" border="1" cellpadding="2" cellspacing="2" align="center" width="90%"><thead><tr ><th align="center">Sr.#</th><th align="center">NOS ID</th><th align="center">NOS </th><th align="center">Theory Cutoff</th><th align="center">Practical Cutoff</th><th align="center">Practical Cutoff</th><th align="center">Weighted Average (%)</th><th align="center">Actions</th></tr></thead></table></td></tr>');
+                                    $('#example-basic4').append('<tr style="height: 50px;font-size:12px;"><td colspan="11"><table id="nos' + i + '" border="1" cellpadding="2" cellspacing="2" align="center" width="90%"><thead><tr ><th align="center">Sr.#</th><th align="center">NOS ID</th><th align="center">NOS </th><th align="center">Theory Cutoff</th><th align="center">Practical Cutoff</th><th align="center">Overall Cutoff</th><th align="center">Weighted Average (%)</th><th align="center">Actions</th></tr></thead></table></td></tr>');
                                     $('#nos' + i + '').append('<tr ><td align="center">' + i + '</td><td align="center">' + data[1][i].NOSID + '</td><td align="center">' + data[1][i].NOSNAME + '</td><td align="center">' + data[1][i].Theorycutoffmarks + '</td><td align="center">' + data[1][i].Practicalcutoffmarks + '</td><td align="center">' + data[1][i].Overallcutoffmarks + '</td><td align="center">' + data[1][i].Weightedavgmarks + '</td><td align="center"><a href="#" onclick="openeditnos(' + data[1][i].ID + ');">Edit</a>|<a href="#" onclick="opendeletenos(' + data[1][i].ID + ');">Delete</a></td></tr>');
                                     $('#nos' + i + ' tr:last').after('<tr><td colspan="11" align="right"><button type="button" class="button btn-blue" onClick="openpcdialog(' + data[1][i].ID + ');">Add New PC</button></td></tr>');
 
@@ -330,11 +300,11 @@
                                         if (val1 === val2) {
                                             //alert(data[2][j].PCID);
                                             flag = true;
-                                            totalmax = totalmax + parseInt(data[2][j].Theorycutoffmarks);
+                                            totalmax = totalmax + parseInt(data[2][j].Overallcutoffmarks);
                                             //alert(parseInt(data[2][j].Theorycutoffmarks) + "=====" + totalmax);
-                                            totaltheory = totaltheory + parseInt(data[2][j].Practicalcutoffmarks);
-                                            totalpractical = totalpractical + parseInt(data[2][j].Overallcutoffmarks);
-                                            $('#pc' + i + ' tr:last').after('<tr ><td align="center">' + index + '</td><td align="center">' + data[2][j].PCID + '</td><td align="center">' + data[2][j].PCNAME + '</td><td align="center">' + data[2][j].Theorycutoffmarks + '</td><td align="center">' + data[2][j].Practicalcutoffmarks + '</td><td align="center">' + data[2][j].Overallcutoffmarks + '</td><td align="center"><a href="#" onclick="openeditpc(' + data[2][j].ID + ');">Edit</a>|<a href="#" onclick="opendeletepc(' + data[2][j].ID + ');">Delete</a></td></tr>');
+                                            totaltheory = totaltheory +   parseInt(data[2][j].Theorycutoffmarks);
+                                            totalpractical = totalpractical +parseInt(data[2][j].Practicalcutoffmarks);
+                                            $('#pc' + i + ' tr:last').after('<tr ><td align="center">' + index + '</td><td align="center">' + data[2][j].PCID + '</td><td align="center">' + data[2][j].PCNAME + '</td><td align="center">' + data[2][j].Overallcutoffmarks + '</td><td align="center">' + data[2][j].Theorycutoffmarks + '</td><td align="center">' + data[2][j].Practicalcutoffmarks + '</td><td align="center"><a href="#" onclick="openeditpc(' + data[2][j].ID + ');">Edit</a>|<a href="#" onclick="opendeletepc(' + data[2][j].ID + ');">Delete</a></td></tr>');
                                             index++;
                                         }
                                     }
@@ -342,13 +312,10 @@
                                         $('#pc' + i + ' tr:last').after('<tr ><td>&nbsp;</td><td>&nbsp;</td><td align="center"><b>Total</b></td><td align="center">' + totalmax + '</td><td align="center">' + totaltheory + '</td><td align="center">' + totalpractical + '</td><td>&nbsp;</td></tr>');
                                     }
 
-                                    //$('#nos' + i + ' tr:last').after('<tr><td colspan="11" align="right"><button type="button" class="button btn-blue" onClick="openpcdialog(' + data[1][i].ID + ');">Add New PC</button></td></tr>');
-                                    //$('#nos' + i + ' tr:last').after('<tr style="height: 50px;font-size:12px;"><td colspan="11"><table id="pc" border="1" cellpadding="2" cellspacing="2" align="center" width="90%"><thead><tr ><th align="center">Sr.#</th><th align="center">PC ID</th><th align="center">PC Name</th><th align="center">Maximum Marks</th><th align="center">Theory Marks</th><th align="center">Practical Marks</th><th align="center">Actions</th></tr></thead></table></td></tr>');
-                                    //$('#pc tr:last').after('<tr ><td>1</td><td>DWC/N0105</td><td>Carry out basic domestic cooking services for the house</td><td>0.00</td><td>0.00</td><td>0</td><td><a href="#">Edit</a>|<a href="#">Delete</a></td></tr>');
+                                    
                                 }
 
-
-                                //$("#qpid").html(data);
+                                
                             }
                         });
                     } else {
@@ -374,9 +341,9 @@
                 var w = window.open("<%=request.getContextPath()%>/admin/qualificationpack/openaddnos.io?qpid=" + qpid, "popupWindow", "width=1024, height=500, scrollbars=yes");
             }
             function openpcdialog(id) {
-                //var qpid = $('select[name=qpid]').val();
-                //alert("Test code" + id);
-                var w = window.open("<%=request.getContextPath()%>/admin/qualificationpack/openaddpc.io?nosid=" + id, "popupWindow", "width=1024, height=500, scrollbars=yes");
+                var qpid = $('select[name=qpid]').val();
+                 //alert("Test code" + qpid);
+                 var w = window.open("<%=request.getContextPath()%>/admin/qualificationpack/openaddpc.io?nosid="+id+"&qpid="+qpid, "popupWindow", "width=1024, height=500, scrollbars=yes");
             }
             function openeditqp(id) {
                 //var qpid = $('select[name=qpid]').val();

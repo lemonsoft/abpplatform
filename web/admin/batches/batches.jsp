@@ -94,7 +94,7 @@
                                     <label for="names" class="field-label">&nbsp;</label>
                                     <label class="field prepend-icon">
 
-                                        <button type="submit" class="button btn-blue" ><spring:message code="common.button.search" text="Search" /></button>
+                                        <%--<button type="submit" class="button btn-blue" ><spring:message code="common.button.search" text="Search" /></button>--%>
                                         <button type="button" class="button btn-red" onclick="importusers();">Import Users</button>
 
                                     </label>
@@ -180,6 +180,36 @@
                     $("#example-basic4").empty();
                     //$("#qpid").html("<option value=''>------- Select --------</option>");
                 }
+            });
+             $("#batch_id").on("change", function () {
+            
+                var batchid = $(this).val();
+                
+                if (batchid) {
+
+                    $.ajax({
+                        url: "searchbatch.io",
+                        data: {batchid: batchid},
+                        type: 'GET',
+                        success: function (databatch) {
+                            
+                            $("#example-basic4").empty();
+                            $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center">Batch ID</th><th align="center">Batch Size</th><th align="center">State</th><th align="center">Center Address</th>' +
+                                    '<th align="center">Assessment Start Date</th><th align="center">Assessment End Date</th><th align="center">Training Partner Name</th><th align="center">Edit</th><th align="center">Users</th><th align="center">Assessors</th><th align="center">Question Paper</th><th align="center">Result</th></tr></thead >');
+
+                            for (var i = 0, lennos = databatch.length; i < lennos; i++) {
+                                var assessor=databatch[i].assessorId;
+                                
+                                $('#example-basic4 tr:last').after('<tr data-tt-id="1" id="qpack" style="height: 50px;font-size:12px;color: #000;background-color: #fff;"><td align="center">' + databatch[i].batch_id + '</td><td align="center">' + databatch[i].batch_size + '</td><td align="center">' + databatch[i].state + '</td><td align="center">' + databatch[i].centerAddress + '</td><td align="center">' + databatch[i].assessmentStartDate + '</td><td align="center">' + databatch[i].assessmentEndDate + '</td><td align="center">' + databatch[i].tpName + '</td><td align="center"><button type="button" class="button btn-blue" onclick="callEdit(' + databatch[i].ID + ');">Edit</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callUser(' + databatch[i].ID + ');">User</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callAssessor(' + databatch[i].ID + ');">' + assessor + '</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callQuestionPaper(' + databatch[i].ID + ');">Question Paper</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callResult(' + databatch[i].ID + ');">Result</button><button type="button" class="button btn-blue" onclick="callResultNOS(' + databatch[i].ID + ');">NOS Result</button></td></tr>');
+
+
+                            }
+                           
+                        }
+                    });
+                } else {
+                    $("#example-basic4").empty();
+                   }
             });
 
             function callEdit(id) {
