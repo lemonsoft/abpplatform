@@ -40,7 +40,7 @@ public class SuperServiceImpl implements SuperService {
     @Override
     @Transactional
     public void updateObjectFields(SuperBean obj, Map<String, String> Param) {
-         this.superDAO.updateObjectFields(obj, Param);
+        this.superDAO.updateObjectFields(obj, Param);
     }
 
     @Override
@@ -53,6 +53,20 @@ public class SuperServiceImpl implements SuperService {
     @Transactional
     public List<SuperBean> listAllObjectsByCriteria(SuperBean obj, Map<String, String> param) {
         return this.superDAO.listAllObjectsByCriteria(obj, param);
+    }
+
+    @Override
+    @Transactional
+    public List<SuperBean> listAllObjectsByAndCriteria(SuperBean obj, Map<String, String> param) {
+
+        return this.superDAO.listAllObjectsByAndCriteria(obj, param);
+    }
+
+    @Override
+    @Transactional
+    public List<SuperBean> listAllObjectsByORCriteria(SuperBean obj, Map<String, String> param) {
+
+        return this.superDAO.listAllObjectsByORCriteria(obj, param);
     }
 
     @Override
@@ -72,9 +86,10 @@ public class SuperServiceImpl implements SuperService {
     public void deleteObject(SuperBean obj) {
         this.superDAO.deleteObject(obj);
     }
+
     @Override
     @Transactional
-    public boolean duplicateCheck(SuperBean obj,Map<String, String> Param){
-       return this.superDAO.duplicateCheck(obj, Param);
+    public boolean duplicateCheck(SuperBean obj, Map<String, String> Param) {
+        return this.superDAO.duplicateCheck(obj, Param);
     }
 }

@@ -434,4 +434,22 @@
 -- PRIMARY KEY (id) USING BTREE
 -- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
-select * from pcwithmarks;
+
+-- create table questionpaper(
+-- questionpaperid int(20) unsigned NOT NULL AUTO_INCREMENT,
+-- questionpapername varchar(200) NOT NULL,
+-- totaltime int(20) NOT NULL,
+-- israndom varchar(50) NULL,
+-- isoptionrandom varchar(50) NULL,
+-- isactive varchar(50) NULL,
+-- qpackid int(50) NOT NULL,
+-- createddatetime datetime,
+-- questionids varchar(200) NOT NULL,
+-- PRIMARY KEY (questionpaperid) USING BTREE
+-- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- ALTER TABLE questionpaper ADD theorymmqids varchar(200) NULL;
+-- ALTER TABLE questionpaper ADD practicalmmqids varchar(200) NULL;
+-- ALTER TABLE questionpaper ADD totalmarks varchar(200) NULL;
+
+select * from questionpaper;

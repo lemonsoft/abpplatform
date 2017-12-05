@@ -5,6 +5,7 @@
  */
 package com.abp.admin.generateqp;
 
+import com.abp.admin.practicalmmq.PCWithMarksDAO;
 import com.abp.admin.project.questions.QuestionDAO;
 import com.abp.admin.project.theorymmq.TheoryMMQDAO;
 import com.abp.admin.project.theorymmq.TheoryPCIDWithMarks;
@@ -13,6 +14,8 @@ import com.abp.admin.qualificationpack.QualificationPackDAO;
 import com.abp.admin.ssc.SSCDAO;
 import com.abp.superdao.SuperBean;
 import com.abp.superservice.SuperService;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -20,6 +23,10 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import static org.joda.time.format.ISODateTimeFormat.dateTime;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -162,8 +169,10 @@ public class GenerateQPController {
 
         JSONObject jsonObj = new JSONObject();
         jsonObj.append("totaltheorymarksqp", beanObj.getTotaltheorymarks());
-        jsonarrsend.put(jsonObj);
 
+        boolean flag = checkAllMarksEqualtoQp(new Integer(qpackid));
+        jsonObj.append("generate", flag);
+        jsonarrsend.put(jsonObj);
         return jsonarrsend.toString();
     }
 
@@ -266,6 +275,426 @@ public class GenerateQPController {
 
         }
         return jsonObj.toString();
+    }
+
+    @RequestMapping(value = "/openquestionpaper", method = RequestMethod.GET)
+    public String openquestionpaper(HttpServletRequest request, HttpServletResponse response, Model model) {
+
+        String qpackid = request.getParameter("qpackid");
+        QuestionPaperDAO qpaper = new QuestionPaperDAO();
+        qpaper.setQpackid(new Integer(qpackid));
+
+        model.addAttribute("qpaper", qpaper);
+
+        model.addAttribute("action", "add.io");
+
+        model.addAttribute("mode", "add");
+
+        request.getSession().setAttribute("body", "/admin/generateqp/questionpaper.jsp");
+        return "/commonmodal";
+    }
+
+    @RequestMapping(value = "/generateQuestionPaper", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    String generateQuestionPaper(@RequestParam("qpackid") String qpackid, @RequestParam("questionpapername") String questionpapername, @RequestParam("totaltime") String totaltime, @RequestParam("israndom") String israndom, @RequestParam("isoptionrandom") String isoptionrandom, @RequestParam("isactive") String isactive) {
+
+        JSONObject jsonObj = new JSONObject();
+        QualificationPackDAO beanObj = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(qpackid));
+        String questionids = "";
+        String theorymmqids = "";
+        String practicalids = "";
+        boolean flag = true;
+        Map param = new HashMap();
+        param.put("qpackid", new Integer(qpackid));
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PCWiseQuestionDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                PCWiseQuestionDAO pcwisequestion = (PCWiseQuestionDAO) itr.next();
+                if (pcwisequestion.getMarks1() > 0) {
+                    String ids = getQuestionIDsByPCID(pcwisequestion.getPcid(), pcwisequestion.getMarks1(), 1);
+                    if (ids.equals("insufficient")) {
+                        flag = false;
+                        PCDAO pcbeanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), pcwisequestion.getPcid());
+                        jsonObj.append("error", "Question Paper not created due to insufficient Questions in " + pcbeanObj.getPcid() + " for marks 1");
+                    } else {
+                        questionids = questionids + ids;
+                    }
+                }
+                if (pcwisequestion.getMarks2() > 0) {
+                    String ids = getQuestionIDsByPCID(pcwisequestion.getPcid(), pcwisequestion.getMarks2(), 2);
+                    if (ids.equals("insufficient")) {
+                        flag = false;
+                        PCDAO pcbeanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), pcwisequestion.getPcid());
+                        jsonObj.append("error", "Question Paper not created due to insufficient Questions in " + pcbeanObj.getPcid() + " for marks 2");
+                    } else {
+                        questionids = questionids + ids;
+                    }
+                }
+                if (pcwisequestion.getMarks3() > 0) {
+                    String ids = getQuestionIDsByPCID(pcwisequestion.getPcid(), pcwisequestion.getMarks3(), 3);
+                    if (ids.equals("insufficient")) {
+                        flag = false;
+                        PCDAO pcbeanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), pcwisequestion.getPcid());
+                        jsonObj.append("error", "Question Paper not created due to insufficient Questions in " + pcbeanObj.getPcid() + " for marks 3");
+                    } else {
+                        questionids = questionids + ids;
+                    }
+                }
+                if (pcwisequestion.getMarks4() > 0) {
+                    String ids = getQuestionIDsByPCID(pcwisequestion.getPcid(), pcwisequestion.getMarks4(), 4);
+                    if (ids.equals("insufficient")) {
+                        flag = false;
+                        PCDAO pcbeanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), pcwisequestion.getPcid());
+                        jsonObj.append("error", "Question Paper not created due to insufficient Questions in " + pcbeanObj.getPcid() + " for marks 4");
+                    } else {
+                        questionids = questionids + ids;
+                    }
+                }
+                if (pcwisequestion.getMarks5() > 0) {
+                    String ids = getQuestionIDsByPCID(pcwisequestion.getPcid(), pcwisequestion.getMarks5(), 5);
+                    if (ids.equals("insufficient")) {
+                        flag = false;
+                        PCDAO pcbeanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), pcwisequestion.getPcid());
+                        jsonObj.append("error", "Question Paper not created due to insufficient Questions in " + pcbeanObj.getPcid() + " for marks 5");
+                    } else {
+                        questionids = questionids + ids;
+                    }
+                }
+                if (pcwisequestion.getMarks6() > 0) {
+                    String ids = getQuestionIDsByPCID(pcwisequestion.getPcid(), pcwisequestion.getMarks6(), 6);
+                    if (ids.equals("insufficient")) {
+                        flag = false;
+                        PCDAO pcbeanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), pcwisequestion.getPcid());
+                        jsonObj.append("error", "Question Paper not created due to insufficient Questions in " + pcbeanObj.getPcid() + " for marks 6");
+                    } else {
+                        questionids = questionids + ids;
+                    }
+                }
+                if (pcwisequestion.getMarks7() > 0) {
+                    String ids = getQuestionIDsByPCID(pcwisequestion.getPcid(), pcwisequestion.getMarks7(), 7);
+                    if (ids.equals("insufficient")) {
+                        flag = false;
+                        PCDAO pcbeanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), pcwisequestion.getPcid());
+                        jsonObj.append("error", "Question Paper not created due to insufficient Questions in " + pcbeanObj.getPcid() + " for marks 7");
+                    } else {
+                        questionids = questionids + ids;
+                    }
+                }
+                if (pcwisequestion.getMarks8() > 0) {
+                    String ids = getQuestionIDsByPCID(pcwisequestion.getPcid(), pcwisequestion.getMarks8(), 8);
+                    if (ids.equals("insufficient")) {
+                        flag = false;
+                        PCDAO pcbeanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), pcwisequestion.getPcid());
+                        jsonObj.append("error", "Question Paper not created due to insufficient Questions in " + pcbeanObj.getPcid() + " for marks 8");
+                    } else {
+                        questionids = questionids + ids;
+                    }
+                }
+                if (pcwisequestion.getMarks9() > 0) {
+                    String ids = getQuestionIDsByPCID(pcwisequestion.getPcid(), pcwisequestion.getMarks9(), 9);
+                    if (ids.equals("insufficient")) {
+                        flag = false;
+                        PCDAO pcbeanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), pcwisequestion.getPcid());
+                        jsonObj.append("error", "Question Paper not created due to insufficient Questions in " + pcbeanObj.getPcid() + " for marks 9");
+                    } else {
+                        questionids = questionids + ids;
+                    }
+                }
+                if (pcwisequestion.getMarks10() > 0) {
+                    String ids = getQuestionIDsByPCID(pcwisequestion.getPcid(), pcwisequestion.getMarks10(), 10);
+                    if (ids.equals("insufficient")) {
+                        flag = false;
+                        PCDAO pcbeanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), pcwisequestion.getPcid());
+                        jsonObj.append("error", "Question Paper not created due to insufficient Questions in " + pcbeanObj.getPcid() + " for marks 10");
+                    } else {
+                        questionids = questionids + ids;
+                    }
+                }
+                if (pcwisequestion.getMarks11() > 0) {
+                    String ids = getQuestionIDsByPCID(pcwisequestion.getPcid(), pcwisequestion.getMarks11(), 11);
+                    if (ids.equals("insufficient")) {
+                        flag = false;
+                        PCDAO pcbeanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), pcwisequestion.getPcid());
+                        jsonObj.append("error", "Question Paper not created due to insufficient Questions in " + pcbeanObj.getPcid() + " for marks 11");
+                    } else {
+                        questionids = questionids + ids;
+                    }
+                }
+                if (pcwisequestion.getMarks12() > 0) {
+                    String ids = getQuestionIDsByPCID(pcwisequestion.getPcid(), pcwisequestion.getMarks12(), 12);
+                    if (ids.equals("insufficient")) {
+                        flag = false;
+                        PCDAO pcbeanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), pcwisequestion.getPcid());
+                        jsonObj.append("error", "Question Paper not created due to insufficient Questions in " + pcbeanObj.getPcid() + " for marks 12");
+                    } else {
+                        questionids = questionids + ids;
+                    }
+                }
+                if (pcwisequestion.getMarks13() > 0) {
+                    String ids = getQuestionIDsByPCID(pcwisequestion.getPcid(), pcwisequestion.getMarks13(), 13);
+                    if (ids.equals("insufficient")) {
+                        flag = false;
+                        PCDAO pcbeanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), pcwisequestion.getPcid());
+                        jsonObj.append("error", "Question Paper not created due to insufficient Questions in " + pcbeanObj.getPcid() + " for marks 13");
+                    } else {
+                        questionids = questionids + ids;
+                    }
+                }
+                if (pcwisequestion.getMarks14() > 0) {
+                    String ids = getQuestionIDsByPCID(pcwisequestion.getPcid(), pcwisequestion.getMarks14(), 14);
+                    if (ids.equals("insufficient")) {
+                        flag = false;
+                        PCDAO pcbeanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), pcwisequestion.getPcid());
+                        jsonObj.append("error", "Question Paper not created due to insufficient Questions in " + pcbeanObj.getPcid() + " for marks 14");
+                    } else {
+                        questionids = questionids + ids;
+                    }
+                }
+                if (pcwisequestion.getMarks15() > 0) {
+                    String ids = getQuestionIDsByPCID(pcwisequestion.getPcid(), pcwisequestion.getMarks15(), 15);
+                    if (ids.equals("insufficient")) {
+                        flag = false;
+                        PCDAO pcbeanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), pcwisequestion.getPcid());
+                        jsonObj.append("error", "Question Paper not created due to insufficient Questions in " + pcbeanObj.getPcid() + " for marks 15");
+                    } else {
+                        questionids = questionids + ids;
+                    }
+                }
+                if (pcwisequestion.getMarks16() > 0) {
+                    String ids = getQuestionIDsByPCID(pcwisequestion.getPcid(), pcwisequestion.getMarks16(), 16);
+                    if (ids.equals("insufficient")) {
+                        flag = false;
+                        PCDAO pcbeanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), pcwisequestion.getPcid());
+                        jsonObj.append("error", "Question Paper not created due to insufficient Questions in " + pcbeanObj.getPcid() + " for marks 16");
+                    } else {
+                        questionids = questionids + ids;
+                    }
+                }
+                if (pcwisequestion.getMarks17() > 0) {
+                    String ids = getQuestionIDsByPCID(pcwisequestion.getPcid(), pcwisequestion.getMarks17(), 17);
+                    if (ids.equals("insufficient")) {
+                        flag = false;
+                        PCDAO pcbeanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), pcwisequestion.getPcid());
+                        jsonObj.append("error", "Question Paper not created due to insufficient Questions in " + pcbeanObj.getPcid() + " for marks 17");
+                    } else {
+                        questionids = questionids + ids;
+                    }
+                }
+                if (pcwisequestion.getMarks18() > 0) {
+                    String ids = getQuestionIDsByPCID(pcwisequestion.getPcid(), pcwisequestion.getMarks18(), 18);
+                    if (ids.equals("insufficient")) {
+                        flag = false;
+                        PCDAO pcbeanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), pcwisequestion.getPcid());
+                        jsonObj.append("error", "Question Paper not created due to insufficient Questions in " + pcbeanObj.getPcid() + " for marks 18");
+                    } else {
+                        questionids = questionids + ids;
+                    }
+                }
+                if (pcwisequestion.getMarks19() > 0) {
+                    String ids = getQuestionIDsByPCID(pcwisequestion.getPcid(), pcwisequestion.getMarks19(), 19);
+                    if (ids.equals("insufficient")) {
+                        flag = false;
+                        PCDAO pcbeanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), pcwisequestion.getPcid());
+                        jsonObj.append("error", "Question Paper not created due to insufficient Questions in " + pcbeanObj.getPcid() + " for marks 19");
+                    } else {
+                        questionids = questionids + ids;
+                    }
+                }
+                if (pcwisequestion.getMarks20() > 0) {
+                    String ids = getQuestionIDsByPCID(pcwisequestion.getPcid(), pcwisequestion.getMarks20(), 20);
+                    if (ids.equals("insufficient")) {
+                        flag = false;
+                        PCDAO pcbeanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), pcwisequestion.getPcid());
+                        jsonObj.append("error", "Question Paper not created due to insufficient Questions in " + pcbeanObj.getPcid() + " for marks 20");
+                    } else {
+                        questionids = questionids + ids;
+                    }
+                }
+                if (pcwisequestion.getMarks21() > 0) {
+                    String ids = getQuestionIDsByPCID(pcwisequestion.getPcid(), pcwisequestion.getMarks21(), 21);
+                    if (ids.equals("insufficient")) {
+                        flag = false;
+                        PCDAO pcbeanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), pcwisequestion.getPcid());
+                        jsonObj.append("error", "Question Paper not created due to insufficient Questions in " + pcbeanObj.getPcid() + " for marks 21");
+                    } else {
+                        questionids = questionids + ids;
+                    }
+                }
+                if (pcwisequestion.getMarks22() > 0) {
+                    String ids = getQuestionIDsByPCID(pcwisequestion.getPcid(), pcwisequestion.getMarks22(), 22);
+                    if (ids.equals("insufficient")) {
+                        flag = false;
+                        PCDAO pcbeanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), pcwisequestion.getPcid());
+                        jsonObj.append("error", "Question Paper not created due to insufficient Questions in " + pcbeanObj.getPcid() + " for marks 22");
+                    } else {
+                        questionids = questionids + ids;
+                    }
+                }
+                if (pcwisequestion.getMarks23() > 0) {
+                    String ids = getQuestionIDsByPCID(pcwisequestion.getPcid(), pcwisequestion.getMarks23(), 23);
+                    if (ids.equals("insufficient")) {
+                        flag = false;
+                        PCDAO pcbeanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), pcwisequestion.getPcid());
+                        jsonObj.append("error", "Question Paper not created due to insufficient Questions in " + pcbeanObj.getPcid() + " for marks 23");
+                    } else {
+                        questionids = questionids + ids;
+                    }
+                }
+                if (pcwisequestion.getMarks24() > 0) {
+                    String ids = getQuestionIDsByPCID(pcwisequestion.getPcid(), pcwisequestion.getMarks24(), 24);
+                    if (ids.equals("insufficient")) {
+                        flag = false;
+                        PCDAO pcbeanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), pcwisequestion.getPcid());
+                        jsonObj.append("error", "Question Paper not created due to insufficient Questions in " + pcbeanObj.getPcid() + " for marks 24");
+                    } else {
+                        questionids = questionids + ids;
+                    }
+                }
+                if (pcwisequestion.getMarks25() > 0) {
+                    String ids = getQuestionIDsByPCID(pcwisequestion.getPcid(), pcwisequestion.getMarks25(), 25);
+                    if (ids.equals("insufficient")) {
+                        flag = false;
+                        PCDAO pcbeanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), pcwisequestion.getPcid());
+                        jsonObj.append("error", "Question Paper not created due to insufficient Questions in " + pcbeanObj.getPcid() + " for marks 25");
+                    } else {
+                        questionids = questionids + ids;
+                    }
+                }
+
+            }
+            System.out.println(" questionids  " + questionids);
+
+            Map param2 = new HashMap();
+            param2.put("qpackid", new Integer(qpackid));
+            List<SuperBean> recordspc = this.superService.listAllObjectsByCriteria(new PCDAO(), param);
+            {
+                if (recordspc.size() > 0) {
+                    Iterator itrpc = recordspc.iterator();
+                    while (itrpc.hasNext()) {
+                        PCDAO pcdao = (PCDAO) itrpc.next();
+                        theorymmqids = theorymmqids + getTheoryMMQuestion(pcdao.getPcID());
+                        practicalids = practicalids + getPracticalMMQuestion(pcdao.getPcID());
+                    }
+
+                }
+
+            }
+            System.out.println(" theorymmqids  " + theorymmqids);
+            System.out.println(" practicalids  " + practicalids);
+
+            if (flag) {
+                QuestionPaperDAO questionpaper = new QuestionPaperDAO();
+                System.out.println(" qpackid  " + qpackid);
+                System.out.println(" questionpapername  " + questionpapername);
+                System.out.println(" totaltime  " + totaltime);
+                System.out.println(" israndom  " + israndom);
+                System.out.println(" isoptionrandom  " + isoptionrandom);
+                System.out.println(" isactive  " + isactive);
+                questionids = questionids.substring(0, questionids.length() - 1);
+                theorymmqids = theorymmqids.substring(0, theorymmqids.length() - 1);
+                practicalids = practicalids.substring(0, practicalids.length() - 1);
+                System.out.println(" questionids  " + questionids);
+                System.out.println(" theorymmqids  " + theorymmqids);
+                System.out.println(" practicalids  " + practicalids);
+
+                questionpaper.setQpackid(new Integer(qpackid));
+                questionpaper.setQuestionpapername(questionpapername);
+                questionpaper.setTotaltime(new Integer(totaltime));
+                questionpaper.setTotalmarks(beanObj.getTotalmarks());
+                questionpaper.setIsrandom(israndom);
+                questionpaper.setIsoptionrandom(isoptionrandom);
+                questionpaper.setIsactive(isactive);
+                questionpaper.setQuestionids(questionids);
+                questionpaper.setTheorymmqids(theorymmqids);
+                questionpaper.setPracticalmmqids(practicalids);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+                Date now = new Date();
+                String strDate = sdf.format(now);
+
+                questionpaper.setCreateddatetime(strDate);
+
+                try {
+                    this.superService.saveObject(questionpaper);
+                    jsonObj.append("status", "Question Paper created.");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    jsonObj.append("status", "Error in creating Question Paper.");
+                }
+
+            }
+        }
+
+        return jsonObj.toString();
+
+    }
+
+    @RequestMapping(value = "/createQuestionPaper", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    String createQuestionPaper() {
+
+        return "";
+    }
+
+    public String getQuestionIDsByPCID(int pcid, int number, int marks) {
+
+        String questionids = "";
+        Map param = new HashMap();
+        param.put("pcid", pcid);
+        param.put("marks", marks);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QuestionDAO(), param);
+        if (records.size() >= number) {
+
+            for (int i = 0; i < number; i++) {
+                QuestionDAO question = (QuestionDAO) records.get(i);
+                questionids = questionids + "" + question.getId() + ",";
+            }
+
+        } else {
+
+            questionids = "insufficient";
+        }
+
+        System.out.println("Marks " + marks + "     Number of question : " + number + "   Question ids  : " + questionids);
+        return questionids;
+    }
+
+    public String getPracticalMMQuestion(int pcid) {
+
+        String practicalmmqids = "";
+        Map param = new HashMap();
+        param.put("pcid", pcid);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PCWithMarksDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                PCWithMarksDAO pcwithmarkdao = (PCWithMarksDAO) itr.next();
+                practicalmmqids = practicalmmqids + pcwithmarkdao.getQuestion_id() + ",";
+            }
+
+        }
+
+        return practicalmmqids;
+
+    }
+
+    public String getTheoryMMQuestion(int pcid) {
+
+        String theorymmqids = "";
+        Map param = new HashMap();
+        param.put("pcid", pcid);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new TheoryPCIDWithMarks(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                TheoryPCIDWithMarks pcwithmarkdao = (TheoryPCIDWithMarks) itr.next();
+                theorymmqids = theorymmqids + pcwithmarkdao.getQuestion_id() + ",";
+            }
+
+        }
+
+        return theorymmqids;
+
     }
 
     public Map<Integer, String> getSectorSkillCouncil() {
@@ -562,6 +991,59 @@ public class GenerateQPController {
             }
         }
         return pcidwithmarks;
+    }
+
+    public boolean checkAllMarksEqualtoQp(int qpackid) {
+
+        boolean flag = false;
+        int totaltheorymarks = 0;
+        int practicalmarks = 0;
+        QualificationPackDAO beanObj = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), qpackid);
+
+        Map paramnos = new HashMap();
+        paramnos.put("qpackid", qpackid);
+        List<SuperBean> recordspc = this.superService.listAllObjectsByCriteria(new PCDAO(), paramnos);
+        if (recordspc.size() > 0) {
+            Iterator itrpc = recordspc.iterator();
+            while (itrpc.hasNext()) {
+                PCDAO pcdata = (PCDAO) itrpc.next();
+
+                Map paramtheory = new HashMap();
+                paramtheory.put("pcid", pcdata.getPcID());
+                List<SuperBean> theorymarksrecords = this.superService.listAllObjectsByCriteria(new PCWiseQuestionDAO(), paramtheory);
+                PCWiseQuestionDAO theorymarks = (PCWiseQuestionDAO) theorymarksrecords.get(0);
+                totaltheorymarks = totaltheorymarks + theorymarks.getTotaladdedmarks();
+
+                Map parampractical = new HashMap();
+                parampractical.put("pcid", pcdata.getPcID());
+                List<SuperBean> recordspractical = this.superService.listAllObjectsByCriteria(new PCWithMarksDAO(), parampractical);
+                if (recordspractical.size() > 0) {
+                    Iterator itrpractical = recordspractical.iterator();
+                    while (itrpractical.hasNext()) {
+                        PCWithMarksDAO pcpractical = (PCWithMarksDAO) itrpractical.next();
+                        practicalmarks = practicalmarks + pcpractical.getMarks();
+
+                    }
+
+                }
+            }
+        }
+        System.out.println("Theory marks QP  :  " + beanObj.getTotaltheorymarks() + "   entered " + totaltheorymarks);
+        if (new Integer(beanObj.getTotaltheorymarks()) == totaltheorymarks) {
+
+            flag = true;
+        } else {
+            flag = false;
+        }
+        System.out.println("Practical marks QP  :  " + beanObj.getTotalpracticalmarks() + "   entered " + practicalmarks);
+        if (new Integer(beanObj.getTotalpracticalmarks()) == practicalmarks) {
+
+            flag = true;
+        } else {
+            flag = false;
+        }
+
+        return flag;
     }
 
 }

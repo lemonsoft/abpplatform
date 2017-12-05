@@ -5,10 +5,20 @@
  */
 package com.abp.admin.project.questions;
 
+import com.abp.admin.practicalmmq.SenarioQuestionDAO;
+import org.displaytag.decorator.TableDecorator;
+
 /**
  *
  * @author ss
  */
-public class SrcDecorator {
+public class SrcDecorator extends TableDecorator {
+
+    public String getActions() {
+        SenarioQuestionDAO actorData = (SenarioQuestionDAO) getCurrentRowObject();
+        String action;
+        action = "<button type=\"button\" class=\"button btn-blue\"  onclick=\"editMapping('" + actorData.getId() + "');\">Edit Mapping</button>";
+        return action;
+    }
     
 }

@@ -5,6 +5,7 @@
  */
 package com.abp.admin.practicalmmq;
 
+import com.abp.admin.generateqp.QuestionPaperDAO;
 import org.displaytag.decorator.TableDecorator;
 
 /**
@@ -14,9 +15,9 @@ import org.displaytag.decorator.TableDecorator;
 public class SrcDecorator extends TableDecorator {
 
     public String getActions() {
-        SenarioQuestionDAO actorData = (SenarioQuestionDAO) getCurrentRowObject();
+        QuestionPaperDAO actorData = (QuestionPaperDAO) getCurrentRowObject();
         String action;
-        action = "<button type=\"button\" class=\"button btn-blue\"  onclick=\"editMapping('" + actorData.getId() + "');\">Edit Mapping</button>";
+        action = "<button type=\"button\" class=\"button btn-blue\"  onclick=\"editMapping('" + actorData.getQuestionpaperid()+ "');\">View Questions</button>|<button type=\"button\" class=\"button btn-blue\"  onclick=\"editMapping('" + actorData.getQuestionpaperid() + "');\">Edit</button>";
         return action;
     }
 }

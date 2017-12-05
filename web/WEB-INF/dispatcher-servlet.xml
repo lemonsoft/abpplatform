@@ -74,6 +74,7 @@
                 <value>com.abp.admin.practicalmmq.PCWithMarksDAO</value>
                 <value>com.abp.admin.generateqp.PCWiseQuestionDAO</value>
                 <value>com.abp.admin.project.theorymmq.TheoryPCIDWithMarks</value>
+                <value>com.abp.admin.generateqp.QuestionPaperDAO</value>
             </list>
         </property>
         <property name="hibernateProperties">

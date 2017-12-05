@@ -74,11 +74,11 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i> Generate Question Paper</h4>
+                    <h4><i class="fa fa-pencil-square"></i>Question Papers</h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
-                <form:form method="post" action="${action}" commandName="generateqp" > 
+                <form:form method="post" action="${action}" commandName="questionpaperdao" > 
                     <div class="form-body theme-blue">
                         <div class="frm-row">
                             <div class="section colm colm6"> 
@@ -114,12 +114,9 @@
 
                         <div class="frm-row" id="displaytabledata">
 
-                            <span id="title1"><h5>Multi Tagged Questions</h5></span>
-                            <table id="example-basic4" class="table table-striped table-bordered table-hover dt-responsive"  border="1" cellpadding="2" cellspacing="2" width="100%">
 
-                            </table>
-                            <span id="title2"><h5>PCs</h5></span>
-                            <table id="example-basic5" class="table table-striped table-bordered table-hover dt-responsive"  border="1" cellpadding="2" cellspacing="2" width="100%">
+
+                            <table id="example-basic4" class="table table-striped table-bordered table-hover dt-responsive"  border="1" cellpadding="2" cellspacing="2" width="100%">
 
                             </table>
                         </div>
@@ -185,38 +182,26 @@
                     if (qpackid) {
 
                         $.ajax({
-                            url: "getAllPCByQPID.io",
+                            url: "getQuestionPaper.io",
                             data: {qpackid: qpackid},
                             type: 'GET',
                             success: function (data) {
-                                var totlen=data.length-1;
-                                                                
+
                                 $("#example-basic4").empty();
                                 $("#title1").show();
-                                $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center"></th><th align="center">Question ID</th><th align="center">Question Title</th><th align="center">Option 1</th><th align="center">Option 2</th><th align="center">Option 3</th><th align="center">Option 4</th><th align="center">Marks</th><th align="center">PC wise Added Marks</th></tr></thead >');
-                                for (var i = 0, lennos = data[0].length; i < lennos; i++) {
-                                   
-                                    $('#example-basic4 tr:last').after('<tr data-tt-id="1" id="qpack" style="height: 50px;font-size:12px;color: #000;background-color: #fff;"><td align="center"><input type="checkbox" name="option" id="questionid" value="' + data[0][i].ID + '"/></td><td align="center">' + data[0][i].ID + '</td><td align="center">' + data[0][i].question_title + '</td><td align="center">' + data[0][i].option1 + '</td><td align="center">' + data[0][i].option2 + '</td><td align="center">' + data[0][i].option3 + '</td><td align="center">' + data[0][i].option4 + '</td><td align="center">' + data[0][i].marks + '</td><td align="center">' + data[0][i].pcwithmarks + '</td></tr>');
+                                $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center">QPID</th><th align="center">QP Name</th><th align="center">Total Time</th><th align="center">Total Marks</th><th align="center">Quality Pack</th><th align="center">Is Random</th><th align="center">Is Active</th><th align="center">Created On</th><th align="center" colspan="2">View</th></tr></thead >');
+                                for (var i = 0, lennos = data.length; i < lennos; i++) {
+
+                                    $('#example-basic4 tr:last').after('<tr data-tt-id="1" id="qpack" style="height: 50px;font-size:12px;color: #000;background-color: #fff;"><td align="center">' + data[i].questionpaperid + '</td><td align="center">' + data[i].questionpapername + '</td><td align="center">' + data[i].totaltime + '</td><td align="center">' + data[i].totalmarks + '</td><td align="center">' + data[i].qpackname + '</td><td align="center">' + data[i].israndom + '</td><td align="center">' + data[i].isactive + '</td><td align="center">' + data[i].createddatetime + '</td><td align="center"><a hrfe="#" onclick="viewQuestions();">View Questions</a></td><td align="center"><a hrfe="#" onclick="editQuestionPaper(' + data[i].questionpaperid + ');">Edit</a></td></tr>');
                                 }
-                                
-                                $("#example-basic5").empty();
-                                $("#title2").show();
-                                $('#example-basic5').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center">Sr.#</th><th align="center">PCID</th><th align="center">Name</th><th align="center">Marks</th><th align="center">Action</th></tr></thead >');
-                                 for (var i = 0, lennos = data[1].length; i < lennos; i++) {
-                                   
-                                    $('#example-basic5 tr:last').after('<tr data-tt-id="1" id="qpack" style="height: 50px;font-size:12px;color: #000;background-color: #fff;"><td align="center">' + i + '</td><td align="center">' + data[1][i].PCID + '</td><td align="center">' + data[1][i].PCNAME + '</td><td align="center">' + data[1][i].Theorymarks + '</td><td align="center"><a href="#" onclick="showpcquestionmap(' + data[1][i].ID + ');">EDIT</a></td></tr>');
-                                }
-                                
-                                $('#example-basic5 tr:last').after('<tr data-tt-id="1" id="qpack" style="height: 50px;font-size:12px;color: #000;background-color: #fff;"><td align="center">&nbsp;</td><td align="center">&nbsp;</td><td align="center">Total QualityPack Marks :' + data[totlen].totaltheorymarksqp + '</td><td align="center">&nbsp;</td><td align="center">&nbsp;</td></tr>');
-                                if(data[totlen].generate){
-                                    $('#example-basic5 tr:last').after('<tr data-tt-id="1" id="qpack" style="height: 50px;font-size:12px;color: #000;background-color: #fff;"><td align="center">&nbsp;</td><td align="center">&nbsp;</td><td align="center"><button onclick="createQuestionPaper();" class="button btn-blue">Generate Question Paper</button></td><td align="center">&nbsp;</td><td align="center">&nbsp;</td></tr>');
-                                }
-                                
+
+
+
                             }
                         });
                     } else {
                         $("#example-basic4").empty();
-                        $("#example-basic5").empty();
+
 
                     }
                 });
@@ -224,19 +209,23 @@
 
 
 
-            function createQuestionPaper() {
-                var qpackid=$('#qpackid').val();
-                event.preventDefault();
-                var w = window.open("<%=request.getContextPath()%>/admin/generateqp/openquestionpaper.io?qpackid=" + qpackid, "popupWindow", "width=1024, height=500, scrollbars=yes");
-                
+            function viewQuestions() {
+                var qpackid = $('#qpackid').val();
+
+                window.location.href = "<%=request.getContextPath()%>/admin/questionpaper/viewquestions.io?qpackid=" + qpackid, "popupWindow", "width=1024, height=500, scrollbars=yes";
+
             }
 
 
-           
-            function showpcquestionmap(id) {
+
+            function editQuestionPaper(id) {
                 event.preventDefault();
-                var w = window.open("<%=request.getContextPath()%>/admin/generateqp/pcwisequestion.io?pcid=" + id, "popupWindow", "width=1024, height=500, scrollbars=yes");
+                var w = window.open("<%=request.getContextPath()%>/admin/questionpaper/editQuestionPaper.io?qpaperid=" + id, "popupWindow", "width=1024, height=500, scrollbars=yes");
+
+            }
+            function refresh() {
                 
+                $('#qpackid').trigger("change");
             }
 
         </script>

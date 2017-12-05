@@ -7,10 +7,12 @@ package com.abp.superdao;
 
 import java.util.List;
 import java.util.Map;
+import static javafx.scene.input.KeyCode.A;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,6 +109,77 @@ public class SuperDAOImpl implements SuperDAO {
             cr.add(Restrictions.eq(entry.getKey(), entry.getValue()));
 
         }
+        results = cr.list();
+
+        return results;
+    }
+
+    @Override
+    public List<SuperBean> listAllObjectsByAndCriteria(SuperBean obj, Map<String, String> param) {
+        List results = null;
+        Session session = this.sessionFactory.getCurrentSession();
+        Criteria cr = session.createCriteria(obj.getClass());
+        String keyand1 = "";
+        String valueand1 = "";
+        String keyand2 = "";
+        String valueand2 = "";
+        for (Map.Entry<String, String> entry : param.entrySet()) {
+            // System.out.println(entry.getKey() + "/" + entry.getValue());
+            if (!entry.getKey().contains("and1")) {
+                cr.add(Restrictions.eq(entry.getKey(), entry.getValue()));
+            }
+            if (entry.getKey().contains("and1")) {
+                keyand1 = entry.getKey();
+                keyand1 = keyand1.substring(0, keyand1.length() - 4);
+                System.out.println("After minus and2 key value is ::::::::::" + keyand1);
+                valueand1 = entry.getValue();
+            }
+            if (entry.getKey().contains("and2")) {
+                keyand2 = entry.getKey();
+                keyand2 = keyand2.substring(0, keyand2.length() - 4);
+                System.out.println("After minus and2 key value is ::::::::::" + keyand2);
+                valueand2 = entry.getValue();
+            }
+
+        }
+        Criterion andquery = Restrictions.and(Restrictions.eq(keyand1, valueand1), Restrictions.eq(keyand2, valueand2));
+        cr.add(andquery);
+
+        results = cr.list();
+
+        return results;
+
+    }
+
+    @Override
+    public List<SuperBean> listAllObjectsByORCriteria(SuperBean obj, Map<String, String> param) {
+        List results = null;
+        Session session = this.sessionFactory.getCurrentSession();
+        Criteria cr = session.createCriteria(obj.getClass());
+        String keyand1 = "";
+        String valueand1 = "";
+        String keyand2 = "";
+        String valueand2 = "";
+        for (Map.Entry<String, String> entry : param.entrySet()) {
+            // System.out.println(entry.getKey() + "/" + entry.getValue());
+            if (!entry.getKey().contains("or1")) {
+                cr.add(Restrictions.eq(entry.getKey(), entry.getValue()));
+            }
+            if (entry.getKey().contains("or1")) {
+                keyand1 = entry.getKey();
+                keyand1 = keyand1.substring(0, keyand1.length() - 3);
+                valueand1 = entry.getValue();
+            }
+            if (entry.getKey().contains("or2")) {
+                keyand2 = entry.getKey();
+                keyand2 = keyand2.substring(0, keyand2.length() - 3);
+                valueand2 = entry.getValue();
+            }
+
+        }
+        Criterion andquery = Restrictions.or(Restrictions.eq(keyand1, valueand1), Restrictions.eq(keyand2, valueand2));
+        cr.add(andquery);
+
         results = cr.list();
 
         return results;

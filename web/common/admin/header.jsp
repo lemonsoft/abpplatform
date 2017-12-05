@@ -181,7 +181,7 @@
                                                                     <a href="<%=request.getContextPath()%>/admin/generateqp/init.io"> Generate QP </a>
                                                                 </li>
                                                                 <li>
-                                                                    <a href="<%=request.getContextPath()%>/admin/#"> Question Papers </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/questionpaper/init.io"> Question Papers </a>
                                                                 </li>
                                                                 <li>
                                                                     <a href="<%=request.getContextPath()%>/admin/#"> Question Approval </a>
