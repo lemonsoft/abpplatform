@@ -17,9 +17,9 @@ public class SrcDecorator extends TableDecorator {
         UserDAO actorData = (UserDAO) getCurrentRowObject();
         String action;
         if(actorData.getWebcam().equalsIgnoreCase("Y")){
-            action = "<a href=\"initChange.io?recid=" + actorData.getID()+ "&webcam="+actorData.getWebcam()+"&batchid="+actorData.getBatchid()+"\"><img src=\"http://localhost:8084/ABP-Ver1/assets/images/Tick-Box.png\" width=20 height=20/></a>";
+            action = "<a href=\"initChange.io?recid=" + actorData.getID()+ "&webcam="+actorData.getWebcam()+"&batchid="+actorData.getBatchid()+"\"><img src=\"http://localhost:8085/ABP-Ver1/assets/images/Tick-Box.png\" width=20 height=20/></a>";
         }else{
-            action = "<a href=\"initChange.io?recid=" + actorData.getID()+ "&webcam="+actorData.getWebcam()+"&batchid="+actorData.getBatchid()+"\"><img src=\"http://localhost:8084/ABP-Ver1/assets/images/wrong.png\" width=20 height=20/></a>";
+            action = "<a href=\"initChange.io?recid=" + actorData.getID()+ "&webcam="+actorData.getWebcam()+"&batchid="+actorData.getBatchid()+"\"><img src=\"http://localhost:8085/ABP-Ver1/assets/images/wrong.png\" width=20 height=20/></a>";
         }
         
         return action;
@@ -27,7 +27,7 @@ public class SrcDecorator extends TableDecorator {
 
     public String getPhotoname() {
         UserDAO actorData = (UserDAO) getCurrentRowObject();
-        String photo = "<img src=\"http://localhost:8084/ABP-Ver1/assets/images/NoPhotoAvailable.jpg\" width=50 height=50 />";
+        String photo = "<img src=\"http://localhost:8085/ABP-Ver1/assets/images/NoPhotoAvailable.jpg\" width=50 height=50 />";
         return photo;
     }
     

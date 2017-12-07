@@ -66,7 +66,7 @@ public class UserController {
         model.addAttribute("mode", "add");
 
         request.getSession().setAttribute("body", "/admin/user/import.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/importshow", method = RequestMethod.POST)
@@ -425,7 +425,7 @@ public class UserController {
             e.printStackTrace();
         }
         request.getSession().setAttribute("body", "/admin/user/import.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/importusers", method = RequestMethod.GET)
@@ -475,7 +475,7 @@ public class UserController {
         model.addAttribute("mode", "add");
         model.addAttribute("displaybtn", "no");
         request.getSession().setAttribute("body", "/admin/user/import.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/showuser", method = {RequestMethod.GET, RequestMethod.POST})
@@ -491,7 +491,7 @@ public class UserController {
         model.addAttribute("importdata", users);
         model.addAttribute("batchid", batchid);
         request.getSession().setAttribute("body", "/admin/user/showusers.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/exportexcel", method = {RequestMethod.GET, RequestMethod.POST})
@@ -688,7 +688,7 @@ public class UserController {
         }
         model.addAttribute("importdata", users);
         request.getSession().setAttribute("body", "/admin/user/showusers.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/initChange", method = {RequestMethod.GET, RequestMethod.POST})
@@ -710,7 +710,7 @@ public class UserController {
         List<SuperBean> users = this.superService.listAllObjectsByCriteria(new UserDAO(), param);
         model.addAttribute("importdata", users);
         request.getSession().setAttribute("body", "/admin/user/showusers.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     public boolean checkBatchSize(int recid) {

@@ -164,9 +164,10 @@
                                     '<th align="center">Assessment Start Date</th><th align="center">Assessment End Date</th><th align="center">Training Partner Name</th><th align="center">Edit</th><th align="center">Users</th><th align="center">Assessors</th><th align="center">Question Paper</th><th align="center">Result</th></tr></thead >');
 
                             for (var i = 0, lennos = data.length; i < lennos; i++) {
-                                var assessor=data[i].assessorId;
-                                
-                                $('#example-basic4 tr:last').after('<tr data-tt-id="1" id="qpack" style="height: 50px;font-size:12px;color: #000;background-color: #fff;"><td align="center">' + data[i].batch_id + '</td><td align="center">' + data[i].batch_size + '</td><td align="center">' + data[i].state + '</td><td align="center">' + data[i].centerAddress + '</td><td align="center">' + data[i].assessmentStartDate + '</td><td align="center">' + data[i].assessmentEndDate + '</td><td align="center">' + data[i].tpName + '</td><td align="center"><button type="button" class="button btn-blue" onclick="callEdit(' + data[i].ID + ');">Edit</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callUser(' + data[i].ID + ');">User</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callAssessor(' + data[i].ID + ');">' + assessor + '</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callQuestionPaper(' + data[i].ID + ');">Question Paper</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callResult(' + data[i].ID + ');">Result</button><button type="button" class="button btn-blue" onclick="callResultNOS(' + data[i].ID + ');">NOS Result</button></td></tr>');
+                                var assessor = data[i].assessorId;
+                                var questionPaper = data[i].questionPaperId;
+
+                                $('#example-basic4 tr:last').after('<tr data-tt-id="1" id="qpack" style="height: 50px;font-size:12px;color: #000;background-color: #fff;"><td align="center">' + data[i].batch_id + '</td><td align="center">' + data[i].batch_size + '</td><td align="center">' + data[i].state + '</td><td align="center">' + data[i].centerAddress + '</td><td align="center">' + data[i].assessmentStartDate + '</td><td align="center">' + data[i].assessmentEndDate + '</td><td align="center">' + data[i].tpName + '</td><td align="center"><button type="button" class="button btn-blue" onclick="callEdit(' + data[i].ID + ');">Edit</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callUser(' + data[i].ID + ');">User</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callAssessor(' + data[i].ID + ');">' + assessor + '</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callQuestionPaper(' + data[i].ID + ');">'+questionPaper+'</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callResult(' + data[i].ID + ');">Result</button><button type="button" class="button btn-blue" onclick="callResultNOS(' + data[i].ID + ');">NOS Result</button></td></tr>');
 
 
                             }
@@ -181,10 +182,10 @@
                     //$("#qpid").html("<option value=''>------- Select --------</option>");
                 }
             });
-             $("#batch_id").on("change", function () {
-            
+            $("#batch_id").on("change", function () {
+
                 var batchid = $(this).val();
-                
+
                 if (batchid) {
 
                     $.ajax({
@@ -192,24 +193,24 @@
                         data: {batchid: batchid},
                         type: 'GET',
                         success: function (databatch) {
-                            
+
                             $("#example-basic4").empty();
                             $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center">Batch ID</th><th align="center">Batch Size</th><th align="center">State</th><th align="center">Center Address</th>' +
                                     '<th align="center">Assessment Start Date</th><th align="center">Assessment End Date</th><th align="center">Training Partner Name</th><th align="center">Edit</th><th align="center">Users</th><th align="center">Assessors</th><th align="center">Question Paper</th><th align="center">Result</th></tr></thead >');
 
                             for (var i = 0, lennos = databatch.length; i < lennos; i++) {
-                                var assessor=databatch[i].assessorId;
-                                
+                                var assessor = databatch[i].assessorId;
+
                                 $('#example-basic4 tr:last').after('<tr data-tt-id="1" id="qpack" style="height: 50px;font-size:12px;color: #000;background-color: #fff;"><td align="center">' + databatch[i].batch_id + '</td><td align="center">' + databatch[i].batch_size + '</td><td align="center">' + databatch[i].state + '</td><td align="center">' + databatch[i].centerAddress + '</td><td align="center">' + databatch[i].assessmentStartDate + '</td><td align="center">' + databatch[i].assessmentEndDate + '</td><td align="center">' + databatch[i].tpName + '</td><td align="center"><button type="button" class="button btn-blue" onclick="callEdit(' + databatch[i].ID + ');">Edit</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callUser(' + databatch[i].ID + ');">User</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callAssessor(' + databatch[i].ID + ');">' + assessor + '</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callQuestionPaper(' + databatch[i].ID + ');">Question Paper</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callResult(' + databatch[i].ID + ');">Result</button><button type="button" class="button btn-blue" onclick="callResultNOS(' + databatch[i].ID + ');">NOS Result</button></td></tr>');
 
 
                             }
-                           
+
                         }
                     });
                 } else {
                     $("#example-basic4").empty();
-                   }
+                }
             });
 
             function callEdit(id) {
@@ -247,6 +248,11 @@
             }
             function callQuestionPaper(id) {
                 alert(id);
+                var sscid = $("#ssc_id option:selected").text();
+                var qid = $("#qpid option:selected").text();
+                var qpackid = $("#qpid").val();
+
+                window.location.href = "<%=request.getContextPath()%>/admin/batches/addquestionpaper.io?batchid=" + id + "&sscid=" + sscid + "&qid=" + qid+"&qpackid="+qpackid;
 
             }
             function callResult(id) {

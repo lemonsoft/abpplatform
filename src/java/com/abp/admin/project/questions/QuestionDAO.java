@@ -78,6 +78,11 @@ public class QuestionDAO implements SuperBean {
     private String imageurl4;
     @Column(name = "imageurl5")
     private String imageurl5;
+    
+    @Column(name = "isapproved")
+    private String isapproved;
+    @Column(name = "isphaseout")
+    private String isphaseout;
 
     @Column(name = "qpackid")
     private int qpackid;
@@ -341,6 +346,22 @@ public class QuestionDAO implements SuperBean {
 
     public void setImageurl5(String imageurl5) {
         this.imageurl5 = imageurl5;
+    }
+
+    public String getIsapproved() {
+        return isapproved;
+    }
+
+    public void setIsapproved(String isapproved) {
+        this.isapproved = isapproved;
+    }
+
+    public String getIsphaseout() {
+        return isphaseout;
+    }
+
+    public void setIsphaseout(String isphaseout) {
+        this.isphaseout = isphaseout;
     }
 
     

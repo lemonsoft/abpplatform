@@ -61,7 +61,7 @@ public class PracticalMMQController {
         model.addAttribute("action", "search.io");
 
         request.getSession().setAttribute("body", "/admin/practicalmmq/practicalmmq.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/initadd", method = RequestMethod.GET)
@@ -81,7 +81,7 @@ public class PracticalMMQController {
 
         //request.getSession().setAttribute("body", "/admin/practicalmmq/addsenario.jsp");
         request.getSession().setAttribute("body", "/admin/testpage/tetspage.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
@@ -94,7 +94,7 @@ public class PracticalMMQController {
         model.addAttribute("mode", "update");
 
         request.getSession().setAttribute("body", "/admin/practicalmmq/addsenario.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/initUpdate", method = RequestMethod.GET)
@@ -123,7 +123,7 @@ public class PracticalMMQController {
         request.getSession().setAttribute("qpid", qpid);
 
         request.getSession().setAttribute("body", "/admin/practicalmmq/addsenario.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/editMapping", method = RequestMethod.GET)
@@ -143,7 +143,7 @@ public class PracticalMMQController {
         model.addAttribute("scenariommq", scenarioObj);
         model.addAttribute("mode", "update");
         request.getSession().setAttribute("body", "/admin/practicalmmq/editmapping.jsp");
-        return "/commonmodal";
+        return "admin/commonmodal";
     }
 
     @RequestMapping(value = "/viewQuestions", method = RequestMethod.GET)
@@ -181,7 +181,7 @@ public class PracticalMMQController {
         }
         model.addAttribute("alldata", alldata);
         request.getSession().setAttribute("body", "/admin/practicalmmq/viewQuestion.jsp");
-        return "/commonmodal";
+        return "admin/commonmodal";
     }
 
     public String getPCNameById(int pcid) {

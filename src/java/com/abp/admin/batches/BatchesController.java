@@ -6,6 +6,7 @@
 package com.abp.admin.batches;
 
 import com.abp.admin.assessor.AssessorDAO;
+import com.abp.admin.generateqp.QuestionPaperDAO;
 import com.abp.admin.project.ProjectDAO;
 import com.abp.admin.qualificationpack.QualificationPackDAO;
 import com.abp.admin.ssc.SSCDAO;
@@ -13,6 +14,9 @@ import com.abp.statedistrict.DistrictDAO;
 import com.abp.statedistrict.StateDAO;
 import com.abp.superdao.SuperBean;
 import com.abp.superservice.SuperService;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -21,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.hibernate.ObjectNotFoundException;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONArray;
@@ -60,7 +65,7 @@ public class BatchesController {
         model.addAttribute("action", "search.io");
 
         request.getSession().setAttribute("body", "/admin/batches/batches.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/initadd", method = RequestMethod.GET)
@@ -76,7 +81,7 @@ public class BatchesController {
         model.addAttribute("mode", "add");
 
         request.getSession().setAttribute("body", "/admin/batches/addbatches.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/add", method = {RequestMethod.GET, RequestMethod.POST})
@@ -110,7 +115,7 @@ public class BatchesController {
         model.addAttribute("mode", "update");
 
         request.getSession().setAttribute("body", "/admin/batches/addbatches.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/addassessor", method = RequestMethod.GET)
@@ -153,7 +158,55 @@ public class BatchesController {
         model.addAttribute("assessor", new AssessorDAO());
 
         request.getSession().setAttribute("body", "/admin/batches/addassessor.jsp");
-        return "/common";
+        return "admin/common";
+    }
+
+    @RequestMapping(value = "/addquestionpaper", method = RequestMethod.GET)
+    public String addQuestionpaper(HttpServletRequest request, HttpServletResponse response, Model model) {
+
+        String batchid = request.getParameter("batchid");
+        String sscid = request.getParameter("sscid");
+        String qid = request.getParameter("qid");
+        String qpackid = request.getParameter("qpackid");
+        if (batchid == null) {
+            batchid = (String) request.getSession().getAttribute("batchid");
+        }
+        if (sscid == null) {
+            sscid = (String) request.getSession().getAttribute("sscid");
+        }
+        if (qid == null) {
+            qid = (String) request.getSession().getAttribute("qid");
+        }
+        if (qpackid == null) {
+            qpackid = (String) request.getSession().getAttribute("qpackid");
+        }
+
+        try {
+            BatchesDAO batch = (BatchesDAO) this.superService.getObjectById(new BatchesDAO(), new Integer(batchid));
+            model.addAttribute("sscid", sscid);
+            model.addAttribute("qid", qid);
+            model.addAttribute("batch_id", batch.getBatch_id());
+
+            QuestionPaperDAO questionPaperDAO = (QuestionPaperDAO) this.superService.getObjectById(new QuestionPaperDAO(), batch.getQuestionPaperId());
+            questionPaperDAO.setActions(batchid);
+
+            model.addAttribute("record", questionPaperDAO);
+
+        } catch (ObjectNotFoundException e) {
+            model.addAttribute("record", null);
+        }
+        request.getSession().setAttribute("batchid", batchid);
+        request.getSession().setAttribute("sscid", sscid);
+        request.getSession().setAttribute("qid", qid);
+        request.getSession().setAttribute("qpackid", qpackid);
+        String error = request.getParameter("error");
+        if (error != null) {
+            model.addAttribute("error", error);
+        }
+        model.addAttribute("allquestionpapers", getAllQuestionPapers(new Integer(qpackid)));
+
+        request.getSession().setAttribute("body", "/admin/batches/addquestionpaper.jsp");
+        return "admin/common";
     }
 
     @RequestMapping(value = "/update", method = {RequestMethod.GET, RequestMethod.POST})
@@ -172,6 +225,39 @@ public class BatchesController {
         batch.setAssessorId(0);
         this.superService.updateObject(batch);
         return "redirect:/admin/batches/addassessor.io";
+    }
+
+    @RequestMapping(value = "/deleteQuestionPaper", method = {RequestMethod.GET}, produces = "application/json")
+    @ResponseBody
+    String deleteQuestionPaper(@RequestParam("batchid") String batchid, HttpServletRequest request, HttpServletResponse response, Model model)throws Exception {
+
+        boolean flag = true;
+        JSONObject jsonObj = new JSONObject();
+        BatchesDAO batch = (BatchesDAO) this.superService.getObjectById(new BatchesDAO(), new Integer(batchid));
+
+        String startdate = batch.getAssessmentStartDate();
+        String enddate = batch.getAssessmentEndDate();
+
+        SimpleDateFormat outFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.s");
+        Date jodastarttime = outFormat.parse(startdate);
+        Date jodaendtime = outFormat.parse(enddate);
+        Date currentdt = new Date();
+
+        if (currentdt.after(jodastarttime)) {
+            flag = false;
+        }
+        if (currentdt.after(jodaendtime)) {
+            flag = false;
+        }
+        if (flag) {
+            batch.setQuestionPaperId(0);
+            this.superService.updateObject(batch);
+            jsonObj.append("status", "Question Paper Deleted");
+        } else {
+            jsonObj.append("status", "Assesment Started Cannot Delete Question Paper.");
+        }
+
+        return jsonObj.toString();
     }
 
     @RequestMapping(value = "/searchbatch", method = RequestMethod.GET, produces = "application/json")
@@ -199,7 +285,7 @@ public class BatchesController {
                 jsonObj.append("questionPaperId", batchdo.getQuestionPaperId());
                 System.out.println(jsonObj.toString());
                 jsonarrbatch.put(jsonObj);
-                
+
                 System.out.println("  batch record count :::::::::::::::::::::::::::::::");
             }
         }
@@ -242,6 +328,46 @@ public class BatchesController {
         return "redirect:/admin/batches/addassessor.io";
     }
 
+    @RequestMapping(value = "/asignQuestionPaper", method = RequestMethod.GET)
+    public String asignQuestionPaper(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
+
+        boolean flag = true;
+        String qpaperid = request.getParameter("qpaperid");
+        String batchid = (String) request.getSession().getAttribute("batchid");
+        BatchesDAO batchObj = (BatchesDAO) this.superService.getObjectById(new BatchesDAO(), new Integer(batchid));
+        String startdate = batchObj.getAssessmentStartDate();
+        String enddate = batchObj.getAssessmentEndDate();
+
+//        DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyy-mm-dd HH:mm:ss.s");
+//        DateTime jodastarttime = dtf.parseDateTime(startdate);
+//        DateTime jodaendtime = dtf.parseDateTime(enddate);
+//        DateTime currentdt = new DateTime();
+        SimpleDateFormat outFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.s");
+        Date jodastarttime = outFormat.parse(startdate);
+        Date jodaendtime = outFormat.parse(enddate);
+        Date currentdt = new Date();
+
+        System.out.println("Start Time " + jodastarttime);
+        System.out.println("End Time " + jodaendtime);
+        System.out.println("Current Time " + currentdt);
+
+        if (currentdt.after(jodastarttime)) {
+            flag = false;
+
+        }
+        if (currentdt.after(jodaendtime)) {
+            flag = false;
+
+        }
+        if (flag) {
+            batchObj.setQuestionPaperId(new Integer(qpaperid));
+            this.superService.updateObject(batchObj);
+        } else {
+            model.addAttribute("error", "Assesment started cannot assign question paper.");
+        }
+        return "redirect:/admin/batches/addquestionpaper.io";
+    }
+
     @RequestMapping(value = "/checkBatchID", method = RequestMethod.GET)
     public @ResponseBody
     String checkBatchID(@RequestParam("batchid") String batchid) {
@@ -279,6 +405,22 @@ public class BatchesController {
         }
 
         return states;
+    }
+
+    public ArrayList getAllQuestionPapers(int qpid) {
+
+        ArrayList objlist = new ArrayList();
+        Map param = new HashMap();
+        param.put("qpackid", qpid);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QuestionPaperDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                QuestionPaperDAO data = (QuestionPaperDAO) itr.next();
+                objlist.add(data);
+            }
+        }
+        return objlist;
     }
 
     public String getAllAssessor(int assid, String stateid, String districtid) {
@@ -367,7 +509,7 @@ public class BatchesController {
                 jsonObj.append("assessmentEndDate", batchdo.getAssessmentEndDate());
                 jsonObj.append("tpName", batchdo.getTpName());
                 jsonObj.append("assessorId", getAssessorById(batchdo.getAssessorId()));
-                jsonObj.append("questionPaperId", batchdo.getQuestionPaperId());
+                jsonObj.append("questionPaperId", getQuestionById(batchdo.getQuestionPaperId()));
                 System.out.println(jsonObj.toString());
                 jsonarr.put(jsonObj);
             }
@@ -454,6 +596,19 @@ public class BatchesController {
         }
 
         return assoridname;
+    }
+
+    public String getQuestionById(int questionid) {
+
+        String questionname = "";
+        try {
+            QuestionPaperDAO records = (QuestionPaperDAO) this.superService.getObjectById(new QuestionPaperDAO(), questionid);
+            questionname = records.getQuestionpapername();
+        } catch (Exception e) {
+            questionname = "Question Paper";
+        }
+
+        return questionname;
     }
 
     public Map<Integer, String> getAllProjectValues() {

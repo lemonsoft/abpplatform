@@ -78,7 +78,7 @@ public class QuestionController {
         model.addAttribute("action", "search.io");
 
         request.getSession().setAttribute("body", "/admin/questions/questions.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/addQuestion", method = RequestMethod.GET)
@@ -97,7 +97,7 @@ public class QuestionController {
         model.addAttribute("action", "add.io");
 
         request.getSession().setAttribute("body", "/admin/questions/addQuestions.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/add", method = {RequestMethod.GET, RequestMethod.POST})
@@ -153,6 +153,7 @@ public class QuestionController {
         beanObj.setCans2("");
         beanObj.setCans3("");
         beanObj.setCans4("");
+        beanObj.setIsapproved("Y");
 
         this.superService.saveObject(beanObj);
         model.addAttribute("questions", new QuestionDAO());
@@ -187,7 +188,7 @@ public class QuestionController {
         model.addAttribute("mode", "update");
 
         request.getSession().setAttribute("body", "/admin/questions/addQuestions.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/update", method = {RequestMethod.GET, RequestMethod.POST})
@@ -243,7 +244,7 @@ public class QuestionController {
         beanObj.setCans2("");
         beanObj.setCans3("");
         beanObj.setCans4("");
-
+        beanObj.setIsapproved("Y");
         this.superService.updateObject(beanObj);
 
         return "redirect:/admin/questions/init.io";
@@ -257,7 +258,7 @@ public class QuestionController {
         model.addAttribute("action", "importQuestionExcel.io");
 
         request.getSession().setAttribute("body", "/admin/questions/importQuestions.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/importMultiLanguage", method = RequestMethod.GET)
@@ -268,7 +269,7 @@ public class QuestionController {
         model.addAttribute("action", "importMultiLangExcel.io");
 
         request.getSession().setAttribute("body", "/admin/questions/importmultilanguage.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/importQuestionExcel", method = RequestMethod.POST)
@@ -523,6 +524,7 @@ public class QuestionController {
                     questiondao.setImageurl3("no-image.png");
                     questiondao.setImageurl4("no-image.png");
                     questiondao.setImageurl5("no-image.png");
+                    questiondao.setIsapproved("Y");
                     data.add(questiondao);
                 }
             }
@@ -536,7 +538,7 @@ public class QuestionController {
         model.addAttribute("isError", error);
 
         request.getSession().setAttribute("body", "/admin/questions/importQuestions.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/importMultiLangExcel", method = RequestMethod.POST)
@@ -661,7 +663,7 @@ public class QuestionController {
         model.addAttribute("isError", error);
 
         request.getSession().setAttribute("body", "/admin/questions/importmultilanguage.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/insertQuestions", method = RequestMethod.GET)
@@ -680,7 +682,7 @@ public class QuestionController {
         model.addAttribute("ssc", getSectorSkillCouncil());
 
         request.getSession().setAttribute("body", "/admin/questions/questions.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/insertMultiQuestions", method = RequestMethod.GET)
@@ -700,7 +702,7 @@ public class QuestionController {
         model.addAttribute("importdata", data);
 
         request.getSession().setAttribute("body", "/admin/questions/importmultilanguage.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/openqplang", method = RequestMethod.GET)
@@ -728,7 +730,7 @@ public class QuestionController {
         model.addAttribute("mode", "add");
 
         request.getSession().setAttribute("body", "/admin/questions/showmultilanguage.jsp");
-        return "/commonmodal";
+        return "admin/commonmodal";
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
@@ -742,7 +744,7 @@ public class QuestionController {
         model.addAttribute("ssc", getSectorSkillCouncil());
 
         request.getSession().setAttribute("body", "/admin/questions/questions.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/getMultiQuestion", method = RequestMethod.GET, produces = "application/json")
@@ -911,7 +913,7 @@ public class QuestionController {
     String getQuestionsbypc(@RequestParam("qp_id") String qpid, @RequestParam("nosid") String nosid, @RequestParam("pcid") String pcid) {
 
         String questions = getAllQuestionsByPC(new Integer(qpid), new Integer(nosid), new Integer(pcid));
-
+         System.out.println("Get question by pc from Question Bank");
         return questions;
     }
 
@@ -921,6 +923,7 @@ public class QuestionController {
         JSONArray jsonarr = new JSONArray();
         Map param = new HashMap();
         param.put("qpackid", qpid);
+        param.put("isapproved", "Y");
         List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QuestionDAO(), param);
         System.out.println("Get Record Size :" + records.size());
         if (records.size() > 0) {
@@ -962,6 +965,7 @@ public class QuestionController {
         Map param = new HashMap();
         param.put("qpackid", qpid);
         param.put("nosid", nosid);
+        param.put("isapproved", "Y");
         List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QuestionDAO(), param);
         System.out.println("Get Record Size :" + records.size());
         if (records.size() > 0) {
@@ -1003,6 +1007,7 @@ public class QuestionController {
         param.put("qpackid", qpid);
         param.put("nosid", nosid);
         param.put("pcid", pcid);
+        param.put("isapproved", "Y");
         List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QuestionDAO(), param);
         System.out.println("Get Record Size :" + records.size());
         if (records.size() > 0) {

@@ -22,7 +22,7 @@ public class DashBoardController {
     @RequestMapping(value="/init", method={RequestMethod.POST,RequestMethod.GET})
     public ModelAndView init(HttpServletRequest request, HttpServletResponse response) {
 
-        ModelAndView model = new ModelAndView("/common");
+        ModelAndView model = new ModelAndView("admin/common");
         
         System.out.println("hello world controller....");
 

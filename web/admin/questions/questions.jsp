@@ -367,7 +367,7 @@
                 if (pcid) {
 
                     $.ajax({
-                        url: "getQuestionsbynos.io",
+                        url: "getQuestionsbypc.io",
                         data: {qp_id: qpackid, nosid: nosid, pcid: pcid},
                         type: 'GET',
                         success: function (data) {

@@ -60,7 +60,7 @@ public class QuestionPaperController {
         model.addAttribute("action", "search.io");
 
         request.getSession().setAttribute("body", "/admin/questionpaper/questionpaper.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/editQuestionPaper", method = RequestMethod.GET)
@@ -77,7 +77,7 @@ public class QuestionPaperController {
         model.addAttribute("mode", "update");
 
         request.getSession().setAttribute("body", "/admin/generateqp/questionpaper.jsp");
-        return "/commonmodal";
+        return "admin/commonmodal";
     }
 
     @RequestMapping(value = "/updateQuestionPaper", method = RequestMethod.GET, produces = "application/json")
@@ -166,7 +166,7 @@ public class QuestionPaperController {
         model.addAttribute("dataview", dataview);
         model.addAttribute("questionpaperdao", new QuestionPaperDAO());
         request.getSession().setAttribute("body", "/admin/questionpaper/viewQuestions.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     public String getPCID(int pcid) {

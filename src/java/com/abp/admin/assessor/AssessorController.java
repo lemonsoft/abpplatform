@@ -67,7 +67,7 @@ public class AssessorController {
         model.addAttribute("mode", "add");
 
         request.getSession().setAttribute("body", "/admin/assessor/addassessor.jsp");
-        return "/common";
+        return "adminadmin/common";
     }
     
 
@@ -122,7 +122,7 @@ public class AssessorController {
         }
         model.addAttribute("records", records);
         request.getSession().setAttribute("body", "/admin/assessor/searchassessor.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/search", method = {RequestMethod.GET, RequestMethod.POST})
@@ -145,7 +145,7 @@ public class AssessorController {
 
         model.addAttribute("records", records);
         request.getSession().setAttribute("body", "/admin/assessor/searchassessor.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/initUpdate", method = RequestMethod.GET)
@@ -173,7 +173,7 @@ public class AssessorController {
         model.addAttribute("action", "update.io");
         model.addAttribute("mode", "update");
         request.getSession().setAttribute("body", "/admin/assessor/addassessor.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
@@ -206,7 +206,7 @@ public class AssessorController {
             model.addAttribute("action", "update.io");
             model.addAttribute("mode", "update");
             request.getSession().setAttribute("body", "/admin/assessor/addassessor.jsp");
-            forward = "/common";
+            forward = "admin/common";
         }
 
         request.getSession().removeAttribute("photoname");

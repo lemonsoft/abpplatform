@@ -40,7 +40,7 @@ public class SSCController {
         model.addAttribute("mode", "add");
 
         request.getSession().setAttribute("body", "/admin/ssc/addssc.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
@@ -54,7 +54,7 @@ public class SSCController {
         model.addAttribute("ssc", new SSCDAO());
         model.addAttribute("records", this.superService.listAllObjects(new SSCDAO()));
         request.getSession().setAttribute("body", "/admin/ssc/searchssc.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/initUpdate", method = RequestMethod.GET)
@@ -65,7 +65,7 @@ public class SSCController {
         model.addAttribute("action", "update.io");
         model.addAttribute("mode", "update");
         request.getSession().setAttribute("body", "/admin/ssc/addssc.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
@@ -79,7 +79,7 @@ public class SSCController {
             model.addAttribute("action", "update.io");
             model.addAttribute("mode", "update");
             request.getSession().setAttribute("body", "/admin/ssc/addssc.jsp");
-            forward = "/common";
+            forward = "admin/common";
         }
 
         return forward;

@@ -39,7 +39,7 @@ public class LanguageController {
         model.addAttribute("mode", "add");
 
         request.getSession().setAttribute("body", "/admin/language/addlanguage.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
@@ -53,7 +53,7 @@ public class LanguageController {
         model.addAttribute("language", new LanguageDAO());
         model.addAttribute("records", this.superService.listAllObjects(new LanguageDAO()));
         request.getSession().setAttribute("body", "/admin/language/searchlanguage.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/initUpdate", method = RequestMethod.GET)
@@ -64,7 +64,7 @@ public class LanguageController {
         model.addAttribute("action", "update.io");
         model.addAttribute("mode", "update");
         request.getSession().setAttribute("body", "/admin/language/addlanguage.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
@@ -78,7 +78,7 @@ public class LanguageController {
             model.addAttribute("action", "update.io");
             model.addAttribute("mode", "update");
             request.getSession().setAttribute("body", "/admin/language/addlanguage.jsp");
-            forward = "/common";
+            forward = "admin/common";
         }
 
         return forward;

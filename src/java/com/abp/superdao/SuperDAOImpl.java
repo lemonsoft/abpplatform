@@ -124,21 +124,22 @@ public class SuperDAOImpl implements SuperDAO {
         String keyand2 = "";
         String valueand2 = "";
         for (Map.Entry<String, String> entry : param.entrySet()) {
-            // System.out.println(entry.getKey() + "/" + entry.getValue());
-            if (!entry.getKey().contains("and1")) {
+             //System.out.println(entry.getKey() + "/" + entry.getValue());
+            if (!entry.getKey().contains("and1") && !entry.getKey().contains("and2")) {
+                System.out.println("Non and parameter ::::::::::" );
                 cr.add(Restrictions.eq(entry.getKey(), entry.getValue()));
             }
             if (entry.getKey().contains("and1")) {
                 keyand1 = entry.getKey();
                 keyand1 = keyand1.substring(0, keyand1.length() - 4);
-                System.out.println("After minus and2 key value is ::::::::::" + keyand1);
-                valueand1 = entry.getValue();
+                System.out.println("After minus and1 key value is ::::::::::" + keyand1);
+                valueand1 =""+ entry.getValue();
             }
             if (entry.getKey().contains("and2")) {
                 keyand2 = entry.getKey();
                 keyand2 = keyand2.substring(0, keyand2.length() - 4);
                 System.out.println("After minus and2 key value is ::::::::::" + keyand2);
-                valueand2 = entry.getValue();
+                valueand2 =""+ entry.getValue();
             }
 
         }

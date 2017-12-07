@@ -67,7 +67,7 @@ public class GenerateQPController {
         model.addAttribute("action", "search.io");
 
         request.getSession().setAttribute("body", "/admin/generateqp/generateqp.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/pcwisequestion", method = RequestMethod.GET)
@@ -138,7 +138,7 @@ public class GenerateQPController {
         }
 
         request.getSession().setAttribute("body", "/admin/generateqp/pcwisequestion.jsp");
-        return "/commonmodal";
+        return "admin/commonmodal";
     }
 
     /*
@@ -291,7 +291,7 @@ public class GenerateQPController {
         model.addAttribute("mode", "add");
 
         request.getSession().setAttribute("body", "/admin/generateqp/questionpaper.jsp");
-        return "/commonmodal";
+        return "admin/commonmodal";
     }
 
     @RequestMapping(value = "/generateQuestionPaper", method = RequestMethod.GET, produces = "application/json")
@@ -742,6 +742,7 @@ public class GenerateQPController {
         int marks1 = 0, marks2 = 0, marks3 = 0, marks4 = 0, marks5 = 0, marks6 = 0, marks7 = 0, marks8 = 0, marks9 = 0, marks10 = 0, marks11 = 0, marks12 = 0, marks13 = 0, marks14 = 0, marks15 = 0, marks16 = 0, marks17 = 0, marks18 = 0, marks19 = 0, marks20 = 0, marks21 = 0, marks22 = 0, marks23 = 0, marks24 = 0, marks25 = 0;
         Map param = new HashMap();
         param.put("pcid", pcid);
+        param.put("isapproved", "Y");
         List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QuestionDAO(), param);
         if (records.size() > 0) {
             Iterator itr = records.iterator();

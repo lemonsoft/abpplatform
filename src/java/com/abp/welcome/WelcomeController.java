@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.abp.test;
+package com.abp.welcome;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,12 +18,12 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @Controller
 @RequestMapping("/welcome")
-public class HelloController {
+public class WelcomeController {
 
     @RequestMapping(value="/helloWorld", method={RequestMethod.POST,RequestMethod.GET})
     public ModelAndView helloWorld(HttpServletRequest request, HttpServletResponse response) {
 
-        ModelAndView model = new ModelAndView("/common");
+        ModelAndView model = new ModelAndView("admin/common");
         
         System.out.println("hello world controller....");
 
@@ -33,7 +33,7 @@ public class HelloController {
     @RequestMapping(value="/login", method={RequestMethod.POST,RequestMethod.GET})
     public ModelAndView login(HttpServletRequest request, HttpServletResponse response) {
 
-        ModelAndView model = new ModelAndView("/commonlogin");
+        ModelAndView model = new ModelAndView("admin/commonlogin");
         
         System.out.println("login controller....");
 

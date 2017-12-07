@@ -51,7 +51,7 @@ public class StateDistrictController {
         model.addAttribute("mode", "add");
 
         request.getSession().setAttribute("body", "/admin/statedistricts/districts.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/initDistrict", method = RequestMethod.GET)
@@ -62,7 +62,7 @@ public class StateDistrictController {
         model.addAttribute("mode", "add");
 
         request.getSession().setAttribute("body", "/admin/statedistricts/adddistricts.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/saveState", method = RequestMethod.GET)
@@ -121,7 +121,7 @@ public class StateDistrictController {
         model.addAttribute("action", "initSearch.io");
         model.addAttribute("allstates", getAllStatesValues());
         request.getSession().setAttribute("body", "/admin/statedistricts/districts.jsp");
-        return "/common";
+        return "admin/common";
     }
 //
 
@@ -139,7 +139,7 @@ public class StateDistrictController {
         model.addAttribute("allstates", getAllStatesValues());
         model.addAttribute("mode", "update");
         request.getSession().setAttribute("body", "/admin/statedistricts/adddistricts.jsp");
-        return "/common";
+        return "admin/common";
     }
 //
 
@@ -172,7 +172,7 @@ public class StateDistrictController {
             model.addAttribute("allstates", getAllStatesValues());
             model.addAttribute("mode", "update");
             request.getSession().setAttribute("body", "/admin/statedistricts/adddistricts.jsp");
-            forward = "/common";
+            forward = "admin/common";
         }
 
         return forward;

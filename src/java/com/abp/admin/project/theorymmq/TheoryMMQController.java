@@ -71,7 +71,7 @@ public class TheoryMMQController {
         model.addAttribute("action", "search.io");
 
         request.getSession().setAttribute("body", "/admin/theorymmq/theorymmq.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/importMMQQuestions", method = RequestMethod.GET)
@@ -84,7 +84,7 @@ public class TheoryMMQController {
         request.getSession().setAttribute("qpid", qpid);
 
         request.getSession().setAttribute("body", "/admin/theorymmq/importmmqquestions.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/importQuestionExcel", method = RequestMethod.POST)
@@ -337,7 +337,7 @@ public class TheoryMMQController {
         model.addAttribute("isError", error);
 
         request.getSession().setAttribute("body", "/admin/theorymmq/importmmqquestions.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/importMultiLangExcel", method = RequestMethod.POST)
@@ -455,7 +455,7 @@ public class TheoryMMQController {
         model.addAttribute("isError", error);
 
         request.getSession().setAttribute("body", "/admin/theorymmq/importmultilanguage.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/insertMultiQuestions", method = RequestMethod.GET)
@@ -475,7 +475,7 @@ public class TheoryMMQController {
         model.addAttribute("importdata", data);
 
         request.getSession().setAttribute("body", "/admin/theorymmq/importmultilanguage.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/openqplang", method = RequestMethod.GET)
@@ -503,7 +503,7 @@ public class TheoryMMQController {
         model.addAttribute("mode", "add");
 
         request.getSession().setAttribute("body", "/admin/theorymmq/showmultilanguage.jsp");
-        return "/commonmodal";
+        return "admin/commonmodal";
     }
 
     @RequestMapping(value = "/getMultiQuestion", method = RequestMethod.GET, produces = "application/json")
@@ -587,7 +587,7 @@ public class TheoryMMQController {
         model.addAttribute("theorymmq", new TheoryMMQDAO());
         model.addAttribute("theorydata", data);
         request.getSession().setAttribute("body", "/admin/theorymmq/importmmqquestions.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/initUpdate", method = RequestMethod.GET)
@@ -613,7 +613,7 @@ public class TheoryMMQController {
         model.addAttribute("mode", "update");
 
         request.getSession().setAttribute("body", "/admin/theorymmq/addtheorymmq.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/importMultiLanguage", method = RequestMethod.GET)
@@ -624,7 +624,7 @@ public class TheoryMMQController {
         model.addAttribute("action", "importMultiLangExcel.io");
 
         request.getSession().setAttribute("body", "/admin/theorymmq/importmultilanguage.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/update", method = {RequestMethod.GET, RequestMethod.POST})

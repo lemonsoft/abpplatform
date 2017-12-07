@@ -313,7 +313,8 @@
 
 -- ALTER TABLE questions
 -- ADD imageurl5 varchar(100) NULL;
- 
+--  ALTER TABLE questions ADD isapproved varchar(100) NULL; 
+--     ALTER TABLE questions ADD isphaseout varchar(50) NULL; 
 
 -- create table multilangquestion(
 -- id int(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -452,4 +453,110 @@
 -- ALTER TABLE questionpaper ADD practicalmmqids varchar(200) NULL;
 -- ALTER TABLE questionpaper ADD totalmarks varchar(200) NULL;
 
-select * from questionpaper;
+
+
+-- create table questionusage(
+-- id int(20) unsigned NOT NULL AUTO_INCREMENT,
+-- questionid int(50) NULL,
+-- questionappear varchar(100) NULL,
+-- questionanswered varchar(100) NULL,
+-- PRIMARY KEY (id) USING BTREE
+-- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- ALTER TABLE questionusage ADD isphaseout varchar(100) NULL;
+
+
+
+
+-- create table assesmentresult(
+-- assesmentid int(20) unsigned NOT NULL AUTO_INCREMENT,
+-- batchid int(20) NOT NULL,
+-- dateofassesment date NULL,
+-- centerimage varchar(200) NULL,
+-- assessorimage varchar(200) NULL,
+-- startdate datetime NULL,
+-- enddate datetime NULL,
+-- latonstart varchar(100) NULL,
+-- latonend varchar(100) NULL,
+-- longonstart varchar(100) NULL,
+-- longonend varchar(100) NULL,
+-- PRIMARY KEY (assesmentid) USING BTREE
+-- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+-- 
+-- create table userresultdetail(
+-- userresultdetailid int(20) unsigned NOT NULL AUTO_INCREMENT,
+-- userid int(20) NOT NULL,
+-- examstarttime datetime NOT NULL,
+-- examendtime datetime NOT NULL,
+-- totaltime varchar(100) NOT NULL,
+-- timetaken varchar(100) NOT NULL,
+-- ipaddress varchar(100) NOT NULL,
+-- browserversion varchar(100) NOT NULL,
+-- assesmentid int(20) NOT NULL,
+-- batchid int(20) NOT NULL,
+-- PRIMARY KEY (userresultdetailid) USING BTREE
+-- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+--  ALTER TABLE userresultdetail ADD examstatus varchar(100) NULL;
+--  ALTER TABLE userresultdetail ADD logincount int(50) NULL;
+--  ALTER TABLE userresultdetail ADD latitude varchar(100) NULL;
+--  ALTER TABLE userresultdetail ADD longitude varchar(100) NULL;
+
+-- create table theorywiseresult(
+-- theoryid int(20) unsigned NOT NULL AUTO_INCREMENT,
+-- questionid int(20) NOT NULL,
+-- correctanswer varchar(100) NOT NULL,
+-- timetaken varchar(50) NOT NULL,
+-- reviewlater varchar(50) NOT NULL,
+-- userresultdetailid int(20) NOT NULL,
+-- userid int(20) NOT NULL,
+-- assesmentid int(20) NOT NULL,
+-- PRIMARY KEY (theoryid) USING BTREE
+-- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+-- 
+-- create table practicalwiseresult(
+-- practicalid int(20) unsigned NOT NULL AUTO_INCREMENT,
+-- senarioid int(20) NOT NULL,
+-- questionid int(20) NOT NULL,
+-- answerstatus varchar(100) NOT NULL,
+-- userresultdetailid int(20) NOT NULL,
+-- userid int(20) NOT NULL,
+-- assesmentid int(20) NOT NULL,
+-- PRIMARY KEY (practicalid) USING BTREE
+-- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+-- 
+-- 
+-- create table assesmentlog(
+-- logid int(20) unsigned NOT NULL AUTO_INCREMENT,
+-- logactiondate datetime NOT NULL,
+-- actiontaken varchar(200) NOT NULL,
+-- userresultdetailid int(20) NOT NULL,
+-- userid int(20) NOT NULL,
+-- assesmentid int(20) NOT NULL,
+-- PRIMARY KEY (logid) USING BTREE
+-- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+-- 
+-- create table questionwiselog(
+-- questionwiselogid int(20) unsigned NOT NULL AUTO_INCREMENT,
+-- questionno int(20) NOT NULL,
+-- startdate datetime NOT NULL,
+-- enddate datetime NOT NULL,
+-- timetaken varchar(100) NOT NULL,
+-- userresultdetailid int(20) NOT NULL,
+-- userid int(20) NOT NULL,
+-- assesmentid int(20) NOT NULL,
+-- PRIMARY KEY (questionwiselogid) USING BTREE
+-- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+-- 
+-- 
+-- create table imagelog(
+-- imagelogid int(20) unsigned NOT NULL AUTO_INCREMENT,
+-- photourl varchar(200) NOT NULL,
+-- timecapture datetime NOT NULL,
+-- userresultdetailid int(20) NOT NULL,
+-- userid int(20) NOT NULL,
+-- assesmentid int(20) NOT NULL,
+-- PRIMARY KEY (imagelogid) USING BTREE
+-- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+ select * from userresultdetail;

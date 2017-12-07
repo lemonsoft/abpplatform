@@ -54,7 +54,7 @@ public class QualificationPackController {
         model.addAttribute("ssc", getSectorSkillCouncil());
         model.addAttribute("qpack", getSectorSkillCouncil());
         request.getSession().setAttribute("body", "/admin/qualificationpack/qualificationpack.jsp");
-        return "/common";
+        return "admin/common";
     }
 
     @RequestMapping(value = "/openaddqp", method = RequestMethod.GET)
@@ -71,7 +71,7 @@ public class QualificationPackController {
         model.addAttribute("mode", "add");
 
         request.getSession().setAttribute("body", "/admin/qualificationpack/addqp.jsp");
-        return "/commonmodal";
+        return "admin/commonmodal";
     }
 
     @RequestMapping(value = "/openaddnos", method = RequestMethod.GET)
@@ -88,7 +88,7 @@ public class QualificationPackController {
         model.addAttribute("mode", "add");
 
         request.getSession().setAttribute("body", "/admin/qualificationpack/addnos.jsp");
-        return "/commonmodal";
+        return "admin/commonmodal";
     }
 
     @RequestMapping(value = "/openaddpc", method = RequestMethod.GET)
@@ -119,7 +119,7 @@ public class QualificationPackController {
         model.addAttribute("mode", "add");
 
         request.getSession().setAttribute("body", "/admin/qualificationpack/addpc.jsp");
-        return "/commonmodal";
+        return "admin/commonmodal";
     }
 
     @RequestMapping(value = "/add", method = {RequestMethod.GET, RequestMethod.POST})
@@ -211,7 +211,7 @@ public class QualificationPackController {
         model.addAttribute("mode", "update");
 
         request.getSession().setAttribute("body", "/admin/qualificationpack/addqp.jsp");
-        return "/commonmodal";
+        return "admin/commonmodal";
     }
 
     @RequestMapping(value = "/updateqp", method = RequestMethod.GET)
@@ -376,7 +376,7 @@ public class QualificationPackController {
         model.addAttribute("mode", "update");
 
         request.getSession().setAttribute("body", "/admin/qualificationpack/addnos.jsp");
-        return "/commonmodal";
+        return "admin/commonmodal";
     }
 
     @RequestMapping(value = "/updatenos", method = RequestMethod.GET)
@@ -507,7 +507,7 @@ public class QualificationPackController {
         model.addAttribute("mode", "update");
 
         request.getSession().setAttribute("body", "/admin/qualificationpack/addpc.jsp");
-        return "/commonmodal";
+        return "admin/commonmodal";
     }
 
     @RequestMapping(value = "/updatepc", method = RequestMethod.GET)
