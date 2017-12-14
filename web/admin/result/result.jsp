@@ -240,7 +240,7 @@
                             for (var i = 0, lennos = data.length; i < lennos; i++) {
                               var id=data[i].ID;
                             $('#example-basic4 tr:last').after('<tr data-tt-id="1" id="qpack" style="height: 50px;font-size:12px;color: #000;background-color: #fff;"><td>Photo</td><td align="center">' + data[i].enrollmentno + '</td><td align="center">' + data[i].name + '</td><td align="center">' + data[i].maxtheory + '</td><td align="center">' + data[i].theorycuttoff + '</td><td align="center">' + data[i].scoredtheorymarks + '</td><td align="center">' + data[i].maxpractical + '</td><td align="center">' + data[i].practicalcuttoff + '</td><td align="center">' + data[i].scoredpracticalmarks + '</td><td align="center">' + data[i].overallcutoff + '</td><td align="center">' + data[i].scoredweightedavg + '</td>'
-                                    + '<td>--</td><td><button type="button" class="button btn-blue" onClick="openpcdialog(' + data[i].ID + ');">NOS</button></td><td><button type="button" class="button btn-blue" onClick="openpcdialog(' + data[i].ID + ');">PC</button></td><td><button type="button" class="button btn-blue" onClick="openpcdialog(' + data[i].ID + ');">NO VIDEO</button></td><td><button type="button" id="openeditqp" class="button btn-blue" onclick="openreportdialog('+id+');">REPORT</button></td></tr>');
+                                    + '<td>--</td><td><button type="button" class="button btn-blue" onClick="opendisplaynos(' + data[i].ID + ');">NOS</button></td><td><button type="button" class="button btn-blue" onClick="opendisplaypc(' + data[i].ID + ');">PC</button></td><td><button type="button" class="button btn-blue" onClick="openpcdialog(' + data[i].ID + ');">NO VIDEO</button></td><td><button type="button" id="openeditqp" class="button btn-blue" onclick="openreportdialog('+id+');">REPORT</button></td></tr>');
                             
                             }
                            
@@ -267,15 +267,13 @@
                 //alert("Test code" + qpid);
                 var w = window.open("<%=request.getContextPath()%>/admin/qualificationpack/openaddpc.io?nosid=" + id + "&qpid=" + qpid, "popupWindow", "width=1024, height=500, scrollbars=yes");
             }
-            function openeditqp(id) {
-                //var qpid = $('select[name=qpid]').val();
-                //alert("Test code" + id);
-                var w = window.open("<%=request.getContextPath()%>/admin/qualificationpack/initupdateqp.io?recid=" + id, "popupWindow", "width=1024, height=500, scrollbars=yes");
+            function opendisplaypc(id,id2) {
+               
+                var w = window.open("<%=request.getContextPath()%>/admin/result/pcreport.io?userresultid=" + id+"&userid="+id2, "popupWindow", "width=1024, height=500, scrollbars=yes");
             }
-            function openeditnos(id) {
-                //var qpid = $('select[name=qpid]').val();
-                //alert("Test code" + id);
-                var w = window.open("<%=request.getContextPath()%>/admin/qualificationpack/initUpdatenos.io?recid=" + id, "popupWindow", "width=1024, height=500, scrollbars=yes");
+            function opendisplaynos(id,id2) {
+                
+                var w = window.open("<%=request.getContextPath()%>/admin/result/nosreport.io?userresultid=" + id+"&userid="+id2, "popupWindow", "width=1024, height=500, scrollbars=yes");
             }
             function openreportdialog(id,id2) {
                 //var qpid = $('select[name=qpid]').val();

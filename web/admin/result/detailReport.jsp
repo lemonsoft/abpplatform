@@ -41,7 +41,7 @@
                             <div class="portlet box blue">
                                 <div class="portlet-title">
                                     <div class="caption">
-                                        <i class="fa fa-gift"></i>Styled Tabs #2 </div>
+                                        <i class="fa fa-gift"></i>Question Wise Report </div>
                                     <div class="tools">
                                         <a href="javascript:;" class="collapse"> </a>
                                         <a href="#portlet-config" data-toggle="modal" class="config"> </a>
@@ -68,44 +68,58 @@
                                         </ul>
                                         <div class="tab-content">
                                             <div class="tab-pane active" id="tab_5_1">
-                                                <display:table name="datatheorywise" class="table table-bordered" requestURI="initSearch.io"  pagesize="50">
+
+                                                <table class="table table-bordered" cellpadding="2" cellspacing="2" border="1">
+
+                                                    <tr><td>Exam Start Time : ${startdatetime}</td><td>Exam End Time :  ${enddatetime}</td></tr>
+                                                    <tr>  <td>Total Time :  ${totaltime}</td><td>Time Taken :  ${timetaken}</td></tr>
+                                                    <tr>  <td>IP Address :  ${ipaddress}</td><td>Browser Version : ${browser}</td></tr>
+
+                                                </table>
+
+                                                <display:table name="datatheorywise" class="table table-bordered" requestURI="totalreport.io"  pagesize="50">
                                                     <display:column property="sno" title="Sno" />
                                                     <display:column property="question" title="Question"/>
-                                                    <display:column property="option1" title="option1"/>
-                                                    <display:column property="option2" title="option2"/>
-                                                    <display:column property="option3" title="option3"/>
-                                                    <display:column property="option4" title="option4"/>
-                                                    <display:column property="correctanswer" title="correctanswer"/>
-                                                    <display:column property="selectedanswer" title="selectedanswer"/>
-                                                    <display:column property="marks" title="marks"/>
-                                                    <display:column property="scoredmarks" title="scoredmarks"/>
-                                                    <display:column property="timetaken" title="timetaken"/>
-                                                    <display:column property="reviewlater" title="reviewlater"/>
+                                                    <display:column property="option1" title="Option1"/>
+                                                    <display:column property="option2" title="Option2"/>
+                                                    <display:column property="option3" title="Option3"/>
+                                                    <display:column property="option4" title="Option4"/>
+                                                    <display:column property="correctanswer" title="Correctanswer"/>
+                                                    <display:column property="selectedanswer" title="Selectedanswer"/>
+                                                    <display:column property="marks" title="Marks"/>
+                                                    <display:column property="scoredmarks" title="Scoredmarks"/>
+                                                    <display:column property="timetaken" title="Timetaken"/>
+                                                    <display:column property="reviewlater" title="Reviewlater"/>
                                                 </display:table>
+                                                <table class="table table-bordered" cellpadding="2" cellspacing="2" border="1">
+                                                    <tr><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td ><b>Total :</b> ${totalmarks}</td><td ><b>Scored :</b>${totaltheorymarks}</td><td >&nbsp;</td><td >&nbsp;</td></tr>
+                                                </table>
                                             </div>
                                             <div class="tab-pane" id="tab_5_2">
-                                                <p> Howdy, I'm in Section 2. </p>
-                                                <p> Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate
-                                                    velit esse molestie consequat. Ut wisi enim ad minim veniam, quis nostrud exerci tation. </p>
+                                                <p> Howdy, I'm in Section 3. </p>
+                                                <p> Duis autem vel eum iriure dolor in hendrerit in vulputate. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+                                                    Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat </p>
                                                 <p>
-                                                    <a class="btn green" href="ui_tabs_accordions_navs.html#tab_5_2" target="_blank"> Activate this tab via URL </a>
+                                                    <a class="btn yellow" href="ui_tabs_accordions_navs.html#tab_5_3" target="_blank"> Activate this tab via URL </a>
                                                 </p>
                                             </div>
                                             <div class="tab-pane" id="tab_5_3">
-                                                <p> Howdy, I'm in Section 3. </p>
-                                                <p> Duis autem vel eum iriure dolor in hendrerit in vulputate. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
-                                                    Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat </p>
-                                                <p>
-                                                    <a class="btn yellow" href="ui_tabs_accordions_navs.html#tab_5_3" target="_blank"> Activate this tab via URL </a>
-                                                </p>
+                                                <display:table name="asseslogdao" class="table table-bordered" requestURI="totalreport.io"  pagesize="50">
+                                                    <display:column property="sno" title="Sno" />
+                                                    <display:column property="datetime" title="Datetime"/>
+                                                    <display:column property="action" title="Action"/>
+                                                    
+                                                </display:table>
                                             </div>
                                             <div class="tab-pane" id="tab_5_4">
-                                                <p> Howdy, I'm in Section 3. </p>
-                                                <p> Duis autem vel eum iriure dolor in hendrerit in vulputate. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
-                                                    Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat </p>
-                                                <p>
-                                                    <a class="btn yellow" href="ui_tabs_accordions_navs.html#tab_5_3" target="_blank"> Activate this tab via URL </a>
-                                                </p>
+                                                <display:table name="questlogdao" class="table table-bordered" requestURI="totalreport.io"  pagesize="50">
+                                                    <display:column property="sno" title="Sno" />
+                                                    <display:column property="questionno" title="Question No"/>
+                                                    <display:column property="startdate" title="Start Date"/>
+                                                    <display:column property="enddate" title="End Date"/>
+                                                    <display:column property="timetaken" title="Time Taken (Sec)"/>
+                                                    
+                                                </display:table>
                                             </div>
                                             <div class="tab-pane" id="tab_5_5">
                                                 <p> Howdy, I'm in Section 3. </p>
