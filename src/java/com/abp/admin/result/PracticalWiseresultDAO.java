@@ -20,6 +20,10 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "practicalwiseresult")
+@org.hibernate.annotations.Entity(
+        dynamicInsert = true,
+        dynamicUpdate = true
+)
 public class PracticalWiseresultDAO implements SuperBean, Serializable {
 
     @Id

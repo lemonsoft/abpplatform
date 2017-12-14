@@ -25,6 +25,10 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "District")
+@org.hibernate.annotations.Entity(
+        dynamicInsert = true,
+        dynamicUpdate = true
+)
 public class DistrictDAO implements SuperBean, Serializable{
 
     @Id

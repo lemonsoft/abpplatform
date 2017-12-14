@@ -20,6 +20,10 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "theorywiseresult")
+@org.hibernate.annotations.Entity(
+        dynamicInsert = true,
+        dynamicUpdate = true
+)
 public class TheoryWiseResultDAO implements SuperBean, Serializable {
 
     @Id
@@ -29,6 +33,8 @@ public class TheoryWiseResultDAO implements SuperBean, Serializable {
 
     @Column(name = "questionid")
     private int questionid;
+    @Column(name = "questionno")
+    private int questionno;
 
     @Column(name = "correctanswer")
     private String correctanswer;
@@ -42,6 +48,8 @@ public class TheoryWiseResultDAO implements SuperBean, Serializable {
     private int userid;
     @Column(name = "assesmentid")
     private int assesmentid;
+    @Column(name = "recorddate")
+    private String recorddate;
 
     public int getID() {
         return ID;
@@ -105,6 +113,22 @@ public class TheoryWiseResultDAO implements SuperBean, Serializable {
 
     public void setAssesmentid(int assesmentid) {
         this.assesmentid = assesmentid;
+    }
+
+    public int getQuestionno() {
+        return questionno;
+    }
+
+    public void setQuestionno(int questionno) {
+        this.questionno = questionno;
+    }
+
+    public String getRecorddate() {
+        return recorddate;
+    }
+
+    public void setRecorddate(String recorddate) {
+        this.recorddate = recorddate;
     }
 
 }

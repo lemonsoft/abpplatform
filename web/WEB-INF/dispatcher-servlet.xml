@@ -76,6 +76,11 @@
                 <value>com.abp.admin.project.theorymmq.TheoryPCIDWithMarks</value>
                 <value>com.abp.admin.generateqp.QuestionPaperDAO</value>
                 <value>com.abp.admin.result.UserResultDetailDAO</value>
+                <value>com.abp.admin.result.AssesmentLogDAO</value>
+                <value>com.abp.admin.result.TheoryWiseResultDAO</value>
+                <value>com.abp.admin.result.QuestionWiseLogDAO</value>
+                <value>com.abp.admin.result.PracticalWiseresultDAO</value>
+                <value>com.abp.admin.result.ImageLogDAO</value>
             </list>
         </property>
         <property name="hibernateProperties">

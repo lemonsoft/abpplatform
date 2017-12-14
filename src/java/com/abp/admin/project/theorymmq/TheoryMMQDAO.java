@@ -22,6 +22,10 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "theorymmq")
+@org.hibernate.annotations.Entity(
+        dynamicInsert = true,
+        dynamicUpdate = true
+)
 public class TheoryMMQDAO implements SuperBean,Serializable {
 
     @Id

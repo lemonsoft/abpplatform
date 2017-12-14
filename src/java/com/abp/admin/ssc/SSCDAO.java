@@ -20,6 +20,10 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name="ssc")
+@org.hibernate.annotations.Entity(
+        dynamicInsert = true,
+        dynamicUpdate = true
+)
 public class SSCDAO implements SuperBean{
     
     

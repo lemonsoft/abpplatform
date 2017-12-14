@@ -27,6 +27,10 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @Table(name = "State", uniqueConstraints = {
     @UniqueConstraint(columnNames = "state_name")})
+@org.hibernate.annotations.Entity(
+        dynamicInsert = true,
+        dynamicUpdate = true
+)
 public class StateDAO implements SuperBean, java.io.Serializable {
 
     private int stateID;

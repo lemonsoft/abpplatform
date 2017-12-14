@@ -20,6 +20,10 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "batches")
+@org.hibernate.annotations.Entity(
+        dynamicInsert = true,
+        dynamicUpdate = true
+)
 public class BatchesDAO implements SuperBean {
 
     @Id

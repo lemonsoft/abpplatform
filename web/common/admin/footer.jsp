@@ -90,6 +90,7 @@
 <script src="<%=request.getContextPath()%>/assets/pages/scripts/form-repeater.min.js" type="text/javascript"></script>
 <script src="<%=request.getContextPath()%>/assets/pages/scripts/components-date-time-pickers.min.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
+<script src="<%=request.getContextPath()%>/assets/global/plugins/bootstrap-tabdrop/js/bootstrap-tabdrop.js" type="text/javascript"></script>
 <script>
     $(document).ready(function ()
     {

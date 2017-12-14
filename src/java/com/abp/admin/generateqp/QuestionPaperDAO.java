@@ -20,6 +20,10 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "questionpaper")
+@org.hibernate.annotations.Entity(
+        dynamicInsert = true,
+        dynamicUpdate = true
+)
 public class QuestionPaperDAO implements SuperBean {
 
     @Id
@@ -121,6 +125,10 @@ public class QuestionPaperDAO implements SuperBean {
     public void setTotaltime(int totaltime) {
         this.totaltime = totaltime;
     }
+
+    
+
+    
 
     public String getCreateddatetime() {
         return createddatetime;

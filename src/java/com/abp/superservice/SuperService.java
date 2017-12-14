@@ -24,7 +24,7 @@ public interface SuperService {
     public List<SuperBean> listAllObjectsByAndCriteria(SuperBean obj,Map<String, String> param);
     public List<SuperBean> listAllObjectsByORCriteria(SuperBean obj,Map<String, String> param);
     public SuperBean getObjectById(SuperBean obj,int id);
-
+    public SuperBean getObjectByIdGet(SuperBean obj,int id);
     public void deleteObjectById(SuperBean obj,int id);
     public void deleteObject(SuperBean obj);
     public boolean duplicateCheck(SuperBean obj,Map<String, String> Param);

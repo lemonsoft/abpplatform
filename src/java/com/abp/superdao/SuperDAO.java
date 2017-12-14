@@ -26,6 +26,7 @@ public interface SuperDAO {
     public List<SuperBean> listAllObjectsByORCriteria(SuperBean obj,Map<String, String> param);
 
     public SuperBean getObjectById(SuperBean obj,int id);
+    public SuperBean getObjectByIdGet(SuperBean obj,int id);
 
     public void deleteObjectById(SuperBean obj,int id);
     public void deleteObject(SuperBean obj);

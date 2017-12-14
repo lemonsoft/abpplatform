@@ -155,7 +155,7 @@
                                                         <div class="col-md-4">
                                                             <ul class="mega-menu-submenu">
                                                                 <li>
-                                                                    <a href="<%=request.getContextPath()%>/admin/#"> Results </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/result/init.io"> Results </a>
                                                                 </li>
                                                                 <li>
                                                                     <a href="<%=request.getContextPath()%>/admin/questions/init.io"> Questions </a>

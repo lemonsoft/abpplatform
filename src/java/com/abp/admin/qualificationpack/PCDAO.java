@@ -21,6 +21,10 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "pc")
+@org.hibernate.annotations.Entity(
+        dynamicInsert = true,
+        dynamicUpdate = true
+)
 public class PCDAO implements SuperBean, Serializable {
     @Id
     @Column(name = "pcID")

@@ -12,8 +12,11 @@
 <%@taglib uri="/WEB-INF/struts-tiles.tld" prefix="tiles" %>
 <tiles:insert page="/common/admin/layoutmain.jsp" flush="true">
 
-
+    <tiles:put name="header" value="/common/admin/headermodal.jsp" />
 
     <tiles:put name="body" value="<%=body%>" />
+    <tiles:put name="footer" value="/common/admin/footermodal.jsp" />
+
+
 
 </tiles:insert>

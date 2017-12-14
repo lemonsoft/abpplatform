@@ -37,7 +37,11 @@ public class SuperDAOImpl implements SuperDAO {
         System.out.println("going to save..");
 
         Session session = this.sessionFactory.getCurrentSession();
-        session.persist(obj);
+        try {
+            session.persist(obj);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         logger.info("Object saved successfully,  Details=" + obj);
     }
 
@@ -45,7 +49,11 @@ public class SuperDAOImpl implements SuperDAO {
     public void updateObject(SuperBean obj) {
 
         Session session = this.sessionFactory.getCurrentSession();
-        session.update(obj);
+        try {
+            session.update(obj);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //session.merge(obj);
         logger.info("Object updated successfully, Object Details=" + obj);
     }
@@ -80,10 +88,13 @@ public class SuperDAOImpl implements SuperDAO {
             }
 
         }
+        try {
+            int result = query.executeUpdate();
+            logger.info("Object updated successfully, Object Details=" + result);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        int result = query.executeUpdate();
-
-        logger.info("Object updated successfully, Object Details=" + result);
     }
 
     @Override
@@ -109,7 +120,11 @@ public class SuperDAOImpl implements SuperDAO {
             cr.add(Restrictions.eq(entry.getKey(), entry.getValue()));
 
         }
-        results = cr.list();
+        try {
+            results = cr.list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return results;
     }
@@ -124,29 +139,32 @@ public class SuperDAOImpl implements SuperDAO {
         String keyand2 = "";
         String valueand2 = "";
         for (Map.Entry<String, String> entry : param.entrySet()) {
-             //System.out.println(entry.getKey() + "/" + entry.getValue());
+            //System.out.println(entry.getKey() + "/" + entry.getValue());
             if (!entry.getKey().contains("and1") && !entry.getKey().contains("and2")) {
-                System.out.println("Non and parameter ::::::::::" );
+                System.out.println("Non and parameter ::::::::::");
                 cr.add(Restrictions.eq(entry.getKey(), entry.getValue()));
             }
             if (entry.getKey().contains("and1")) {
                 keyand1 = entry.getKey();
                 keyand1 = keyand1.substring(0, keyand1.length() - 4);
                 System.out.println("After minus and1 key value is ::::::::::" + keyand1);
-                valueand1 =""+ entry.getValue();
+                valueand1 = "" + entry.getValue();
             }
             if (entry.getKey().contains("and2")) {
                 keyand2 = entry.getKey();
                 keyand2 = keyand2.substring(0, keyand2.length() - 4);
                 System.out.println("After minus and2 key value is ::::::::::" + keyand2);
-                valueand2 =""+ entry.getValue();
+                valueand2 = "" + entry.getValue();
             }
 
         }
         Criterion andquery = Restrictions.and(Restrictions.eq(keyand1, valueand1), Restrictions.eq(keyand2, valueand2));
         cr.add(andquery);
-
-        results = cr.list();
+        try {
+            results = cr.list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return results;
 
@@ -180,8 +198,11 @@ public class SuperDAOImpl implements SuperDAO {
         }
         Criterion andquery = Restrictions.or(Restrictions.eq(keyand1, valueand1), Restrictions.eq(keyand2, valueand2));
         cr.add(andquery);
-
-        results = cr.list();
+        try {
+            results = cr.list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return results;
     }
@@ -193,6 +214,15 @@ public class SuperDAOImpl implements SuperDAO {
         SuperBean sobj = (SuperBean) session.load(obj.getClass(), new Integer(id));
         logger.info("Object loaded successfully, Object details=" + sobj);
         return sobj;
+    }
+
+    @Override
+    public SuperBean getObjectByIdGet(SuperBean obj, int id) {
+        Session session = this.sessionFactory.getCurrentSession();
+        SuperBean sobj = (SuperBean) session.get(obj.getClass(), new Integer(id));
+        logger.info("Object loaded successfully, Object details=" + sobj);
+        return sobj;
+
     }
 
     @Override

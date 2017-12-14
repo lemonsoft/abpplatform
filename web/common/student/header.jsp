@@ -39,21 +39,22 @@
     <link href="<%=request.getContextPath()%>/assets/layouts/layout3/css/custom.min.css" rel="stylesheet" type="text/css" />
     <!-- END THEME LAYOUT STYLES -->
     <script type="text/javascript"  src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-    
-    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
-        <link href="<%=request.getContextPath()%>/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-        <link href="<%=request.getContextPath()%>/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
-        <link href="<%=request.getContextPath()%>/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-        <link href="<%=request.getContextPath()%>/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
-        <!-- END GLOBAL MANDATORY STYLES -->
-        <!-- BEGIN PAGE LEVEL PLUGINS -->
-        <link href="<%=request.getContextPath()%>/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
-        <!-- END PAGE LEVEL PLUGINS -->
-        <!-- BEGIN THEME GLOBAL STYLES -->
-        <link href="<%=request.getContextPath()%>/assets/global/css/components-rounded.min.css" rel="stylesheet" id="style_components" type="text/css" />
-        <link href="<%=request.getContextPath()%>/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
-        <!-- END THEME GLOBAL STYLES -->
 
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
+    <link href="<%=request.getContextPath()%>/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="<%=request.getContextPath()%>/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
+    <link href="<%=request.getContextPath()%>/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="<%=request.getContextPath()%>/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
+    <!-- END GLOBAL MANDATORY STYLES -->
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <link href="<%=request.getContextPath()%>/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
+    <!-- END PAGE LEVEL PLUGINS -->
+    <!-- BEGIN THEME GLOBAL STYLES -->
+    <link href="<%=request.getContextPath()%>/assets/global/css/components-rounded.min.css" rel="stylesheet" id="style_components" type="text/css" />
+    <link href="<%=request.getContextPath()%>/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
+    <!-- END THEME GLOBAL STYLES -->
+          <script type="text/javascript"
+        src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 
 </head>
 
@@ -73,21 +74,13 @@
                                     <img src="<%=request.getContextPath()%>/assets/images/IASSESS_logo.jpg" alt="logo" width="80" height="40" class="logo-default">
                                 </a>
                             </div>
+                                <div class="top-menu">  <span id="todaydate"></span></div>
                             <!-- END LOGO -->
                             <!-- BEGIN RESPONSIVE MENU TOGGLER -->
-                            <a href="javascript:;" class="menu-toggler"></a>
+                            
                             <!-- END RESPONSIVE MENU TOGGLER -->
                             <!-- BEGIN TOP NAVIGATION MENU -->
-                            <div class="top-menu">
-                                <ul class="nav navbar-nav pull-right">
 
-                                   
-                                    <form:form action="${pageContext.request.contextPath}/j_spring_security_logout" method="POST">
-
-                                     <a href="#" onclick="$(this).closest('form').submit()"><span class="arrow"></span>Logout</a>
-                                    </form:form>
-                                </ul>
-                            </div>
                             <!-- END TOP NAVIGATION MENU -->
                         </div>
                     </div>
@@ -96,16 +89,16 @@
                     <div class="page-header-menu">
                         <div class="container">
                             <!-- BEGIN HEADER SEARCH BOX -->
-                            
+
                             <!-- END HEADER SEARCH BOX -->
                             <!-- BEGIN MEGA MENU -->
                             <!-- DOC: Apply "hor-menu-light" class after the "hor-menu" class below to have a horizontal menu with white background -->
                             <!-- DOC: Remove data-hover="dropdown" and data-close-others="true" attributes below to disable the dropdown opening on mouse hover -->
                             <div class="hor-menu  ">
                                 <ul class="nav navbar-nav">
-                                                                     
 
-                                    
+                                    <li ></li>     
+
                                 </ul>
                             </div>
                             <!-- END MEGA MENU -->
@@ -128,3 +121,15 @@
                             <div class="container">
                                 <!-- BEGIN PAGE TITLE -->
 
+                                <script>
+
+                                    $(document).ready(function () {
+                                       
+                                        var fullDate = new Date();
+                                        var twoDigitMonth = ((fullDate.getMonth().length + 1) === 1) ? (fullDate.getMonth() + 1) : '0' + (fullDate.getMonth() + 1);
+                                        var currentDate = fullDate.getDate() + "/" + twoDigitMonth + "/" + fullDate.getFullYear();
+                                        
+                                        $('#todaydate').text(currentDate);
+                                        
+                                    });
+                                </script>

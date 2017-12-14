@@ -20,6 +20,10 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "multilangquestiontheorymmq")
+@org.hibernate.annotations.Entity(
+        dynamicInsert = true,
+        dynamicUpdate = true
+)
 public class MultiLangMMQQuestionDAO implements SuperBean {
 
     @Id

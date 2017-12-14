@@ -20,6 +20,10 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "pcwithmarks")
+@org.hibernate.annotations.Entity(
+        dynamicInsert = true,
+        dynamicUpdate = true
+)
 public class PCWithMarksDAO implements SuperBean, Serializable {
 
     @Id

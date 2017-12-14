@@ -22,6 +22,10 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Entity
 @Table(name = "users")
+@org.hibernate.annotations.Entity(
+        dynamicInsert = true,
+        dynamicUpdate = true
+)
 public class UserDAO implements SuperBean, Serializable {
 
     @Id

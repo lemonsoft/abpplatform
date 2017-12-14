@@ -483,27 +483,31 @@
 -- PRIMARY KEY (assesmentid) USING BTREE
 -- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 -- 
+-- drop table userresultdetail;
 -- create table userresultdetail(
 -- userresultdetailid int(20) unsigned NOT NULL AUTO_INCREMENT,
 -- userid int(20) NOT NULL,
--- examstarttime datetime NOT NULL,
--- examendtime datetime NOT NULL,
--- totaltime varchar(100) NOT NULL,
--- timetaken varchar(100) NOT NULL,
--- ipaddress varchar(100) NOT NULL,
--- browserversion varchar(100) NOT NULL,
+-- examstarttime varchar(100)  NULL,
+-- examendtime varchar(100)  NULL,
+-- totaltime varchar(100)  NULL,
+-- timetaken varchar(100)  NULL,
+-- ipaddress varchar(100)  NULL,
+-- browserversion varchar(300)  NULL,
+-- examstatus varchar(100) NULL,
+-- logincount int(50) NULL,
+-- latitude varchar(100) NULL,
+-- questionids varchar(200) NULL,
+-- longitude varchar(100) NULL,
 -- assesmentid int(20) NOT NULL,
 -- batchid int(20) NOT NULL,
 -- PRIMARY KEY (userresultdetailid) USING BTREE
 -- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
---  ALTER TABLE userresultdetail ADD examstatus varchar(100) NULL;
---  ALTER TABLE userresultdetail ADD logincount int(50) NULL;
---  ALTER TABLE userresultdetail ADD latitude varchar(100) NULL;
---  ALTER TABLE userresultdetail ADD longitude varchar(100) NULL;
-
+-- drop table theorywiseresult;
+-- 
 -- create table theorywiseresult(
 -- theoryid int(20) unsigned NOT NULL AUTO_INCREMENT,
+-- questionno int(20) NOT NULL,
 -- questionid int(20) NOT NULL,
 -- correctanswer varchar(100) NOT NULL,
 -- timetaken varchar(50) NOT NULL,
@@ -511,6 +515,7 @@
 -- userresultdetailid int(20) NOT NULL,
 -- userid int(20) NOT NULL,
 -- assesmentid int(20) NOT NULL,
+-- recorddate varchar(100) NULL,
 -- PRIMARY KEY (theoryid) USING BTREE
 -- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 -- 
@@ -525,26 +530,28 @@
 -- PRIMARY KEY (practicalid) USING BTREE
 -- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 -- 
--- 
+-- drop table assesmentlog;
 -- create table assesmentlog(
 -- logid int(20) unsigned NOT NULL AUTO_INCREMENT,
--- logactiondate datetime NOT NULL,
--- actiontaken varchar(200) NOT NULL,
--- userresultdetailid int(20) NOT NULL,
--- userid int(20) NOT NULL,
--- assesmentid int(20) NOT NULL,
+-- logactiondate varchar(200)  NULL,
+-- actiontaken varchar(200)  NULL,
+-- userresultdetailid int(20)  NULL,
+-- userid int(20)  NULL,
+-- assesmentid int(20)  NULL,
 -- PRIMARY KEY (logid) USING BTREE
 -- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- drop table questionwiselog;
 -- 
 -- create table questionwiselog(
 -- questionwiselogid int(20) unsigned NOT NULL AUTO_INCREMENT,
--- questionno int(20) NOT NULL,
--- startdate datetime NOT NULL,
--- enddate datetime NOT NULL,
--- timetaken varchar(100) NOT NULL,
--- userresultdetailid int(20) NOT NULL,
--- userid int(20) NOT NULL,
--- assesmentid int(20) NOT NULL,
+-- questionno int(20),
+-- startdate varchar(100),
+-- enddate varchar(100),
+-- timetaken varchar(100),
+-- userresultdetailid int(20),
+-- userid int(20),
+-- assesmentid int(20),
 -- PRIMARY KEY (questionwiselogid) USING BTREE
 -- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 -- 
@@ -559,4 +566,9 @@
 -- PRIMARY KEY (imagelogid) USING BTREE
 -- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+
  select * from userresultdetail;
+ select * from theorywiseresult;
+ select * from questionwiselog;
+ select * from assesmentlog;
+ select * from questions;

@@ -20,6 +20,10 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "questionwiselog")
+@org.hibernate.annotations.Entity(
+        dynamicInsert = true,
+        dynamicUpdate = true
+)
 public class ImageLogDAO implements SuperBean, Serializable {
 
     @Id

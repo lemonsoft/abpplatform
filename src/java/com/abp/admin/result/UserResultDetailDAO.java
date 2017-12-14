@@ -20,6 +20,10 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "userresultdetail")
+@org.hibernate.annotations.Entity(
+        dynamicInsert = true,
+        dynamicUpdate = true
+)
 public class UserResultDetailDAO implements SuperBean, Serializable {
 
     @Id
@@ -49,6 +53,9 @@ public class UserResultDetailDAO implements SuperBean, Serializable {
     private String latitude;
     @Column(name = "longitude")
     private String longitude;
+
+    @Column(name = "questionids")
+    private String questionids;
 
     @Column(name = "assesmentid")
     private int assesmentid;
@@ -167,6 +174,14 @@ public class UserResultDetailDAO implements SuperBean, Serializable {
 
     public void setLogincount(int logincount) {
         this.logincount = logincount;
+    }
+
+    public String getQuestionids() {
+        return questionids;
+    }
+
+    public void setQuestionids(String questionids) {
+        this.questionids = questionids;
     }
 
 }

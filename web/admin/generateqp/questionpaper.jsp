@@ -57,7 +57,7 @@
                             <div class="section colm colm6">
                                 <label for="names" class="field-label">Total Time</label>
                                 <label class="field prepend-icon">
-                                    <form:input type="number" path="totaltime" id="totaltime" class="gui-input"/>
+                                    <form:input type="text" path="totaltime"  id="totaltime" class="gui-input"/>
 
                                     <span class="field-icon"><i class="fa fa-language"></i></span>  
                                 </label>

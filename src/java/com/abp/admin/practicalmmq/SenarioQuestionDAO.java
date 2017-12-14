@@ -21,6 +21,10 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "senarioquestions")
+@org.hibernate.annotations.Entity(
+        dynamicInsert = true,
+        dynamicUpdate = true
+)
 public class SenarioQuestionDAO implements SuperBean, Serializable {
 
     @Id

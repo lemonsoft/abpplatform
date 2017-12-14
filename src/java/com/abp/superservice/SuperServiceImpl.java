@@ -77,6 +77,12 @@ public class SuperServiceImpl implements SuperService {
 
     @Override
     @Transactional
+    public SuperBean getObjectByIdGet(SuperBean obj, int id) {
+        return this.superDAO.getObjectByIdGet(obj, id);
+    }
+
+    @Override
+    @Transactional
     public void deleteObjectById(SuperBean obj, int id) {
         this.superDAO.deleteObjectById(obj, id);
     }

@@ -21,7 +21,11 @@ import org.springframework.web.multipart.MultipartFile;
  * @author ss
  */
 @Entity
-@Table(name = "assessor") 
+@Table(name = "assessor")
+@org.hibernate.annotations.Entity(
+        dynamicInsert = true,
+        dynamicUpdate = true
+)
 public class AssessorDAO implements SuperBean {
     @Id
     @Column(name = "assessor_id")
