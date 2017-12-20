@@ -571,4 +571,5 @@
  select * from theorywiseresult;
  select * from questionwiselog;
  select * from assesmentlog;
- select * from questions;
+ select * from batches;
+ select * from users;

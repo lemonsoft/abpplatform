@@ -44,7 +44,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Controller
 @RequestMapping("/admin/users")
-public class UserController {
+public class BatchUserController {
 
     private SuperService superService;
 

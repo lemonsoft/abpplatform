@@ -133,7 +133,7 @@
                                                                     <a href="<%=request.getContextPath()%>/admin/#"> Assessment Location </a>
                                                                 </li>
                                                                 <li>
-                                                                    <a href="<%=request.getContextPath()%>/admin/#">Monitor Assessment </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/monitor/init.io">Monitor Assessment </a>
                                                                 </li>
                                                                 <li>
                                                                     <a href="<%=request.getContextPath()%>/admin/ssc/initSearch.io"> Sectors </a>
@@ -164,7 +164,7 @@
                                                                     <a href="<%=request.getContextPath()%>/admin/questionusage/init.io"> Question usage </a>
                                                                 </li>
                                                                 <li>
-                                                                    <a href="<%=request.getContextPath()%>/admin/#"> Settings </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/setting/init.io"> Settings </a>
                                                                 </li>
                                                                 <li>
                                                                     <a href="<%=request.getContextPath()%>/admin/statedistricts/init.io"> State & Districts </a>

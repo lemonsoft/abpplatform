@@ -68,6 +68,13 @@ public class SuperServiceImpl implements SuperService {
 
         return this.superDAO.listAllObjectsByORCriteria(obj, param);
     }
+    
+    @Override
+    @Transactional
+    public List<Object[]> listAllObjectsByQuery(String query){
+        
+         return this.superDAO.listAllObjectsByQuery(query);
+    }
 
     @Override
     @Transactional

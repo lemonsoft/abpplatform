@@ -101,9 +101,10 @@ public class BatchesController {
         String startdate = batches.getAssessmentStartDate();
         String enddate = batches.getAssessmentEndDate();
 
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyy-mm-dd HH:mm:ss.s");
-        DateTime jodastarttime = dtf.parseDateTime(startdate);
-        DateTime jodaendtime = dtf.parseDateTime(enddate);
+        Date jodastarttime = sdf.parse(startdate);        //dtf.parseDateTime(startdate);
+        Date jodaendtime = sdf.parse(enddate);
 
         batches.setAssessmentStartDate(jodastarttime.toString().substring(0, 16));
         batches.setAssessmentEndDate(jodaendtime.toString().substring(0, 16));

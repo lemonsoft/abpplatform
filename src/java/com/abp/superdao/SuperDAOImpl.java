@@ -263,4 +263,13 @@ public class SuperDAOImpl implements SuperDAO {
         }
         return flag;
     }
+
+    @Override
+    public List<Object[]> listAllObjectsByQuery(String query) {
+
+        Session session = this.sessionFactory.getCurrentSession();
+        List<Object[]> queryresult = session.createQuery(query).list();
+
+        return queryresult;
+    }
 }
