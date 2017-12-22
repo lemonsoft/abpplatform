@@ -467,15 +467,15 @@
 
 
 
-
+-- drop table assesmentresult;
 -- create table assesmentresult(
 -- assesmentid int(20) unsigned NOT NULL AUTO_INCREMENT,
 -- batchid int(20) NOT NULL,
--- dateofassesment date NULL,
 -- centerimage varchar(200) NULL,
 -- assessorimage varchar(200) NULL,
--- startdate datetime NULL,
--- enddate datetime NULL,
+-- assessorimage1 varchar(200) NULL,
+-- startdate varchar(200) NULL,
+-- enddate varchar(200) NULL,
 -- latonstart varchar(100) NULL,
 -- latonend varchar(100) NULL,
 -- longonstart varchar(100) NULL,
@@ -567,9 +567,14 @@
 -- )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
+ select * from assesmentresult;
  select * from userresultdetail;
  select * from theorywiseresult;
  select * from questionwiselog;
  select * from assesmentlog;
- select * from batches;
- select * from users;
+ select * from practicalwiseresult;
+--  select * from questionpaper;
+  select * from senarioquestions;
+--  select * from practicalmmq;
+  select * from pcwithmarks;
+--  select * from batches;

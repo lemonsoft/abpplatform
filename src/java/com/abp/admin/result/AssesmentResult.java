@@ -34,12 +34,12 @@ public class AssesmentResult implements SuperBean, Serializable {
     @Column(name = "batchid")
     private int batchid;
 
-    @Column(name = "dateofassesment")
-    private String dateofassesment;
     @Column(name = "centerimage")
     private String centerimage;
     @Column(name = "assessorimage")
     private String assessorimage;
+    @Column(name = "assessorimage1")
+    private String assessorimage1;
     @Column(name = "startdate")
     private String startdate;
     @Column(name = "enddate")
@@ -69,12 +69,12 @@ public class AssesmentResult implements SuperBean, Serializable {
         this.batchid = batchid;
     }
 
-    public String getDateofassesment() {
-        return dateofassesment;
+    public String getAssessorimage1() {
+        return assessorimage1;
     }
 
-    public void setDateofassesment(String dateofassesment) {
-        this.dateofassesment = dateofassesment;
+    public void setAssessorimage1(String assessorimage1) {
+        this.assessorimage1 = assessorimage1;
     }
 
     public String getCenterimage() {

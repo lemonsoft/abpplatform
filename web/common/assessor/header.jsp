@@ -53,8 +53,8 @@
     <link href="<%=request.getContextPath()%>/assets/global/css/components-rounded.min.css" rel="stylesheet" id="style_components" type="text/css" />
     <link href="<%=request.getContextPath()%>/assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
     <!-- END THEME GLOBAL STYLES -->
-          <script type="text/javascript"
-        src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script type="text/javascript"
+    src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 
 </head>
 
@@ -74,10 +74,10 @@
                                     <img src="<%=request.getContextPath()%>/assets/images/IASSESS_logo.jpg" alt="logo" width="80" height="40" class="logo-default">
                                 </a>
                             </div>
-                                <div class="top-menu">  <span id="todaydate"></span></div>
+                            <div class="top-menu">Welcome : <c:out value="${sessionScope.assessor}" /> |  <span id="todaydate"></span></div>
                             <!-- END LOGO -->
                             <!-- BEGIN RESPONSIVE MENU TOGGLER -->
-                            
+
                             <!-- END RESPONSIVE MENU TOGGLER -->
                             <!-- BEGIN TOP NAVIGATION MENU -->
 
@@ -97,8 +97,22 @@
                             <div class="hor-menu  ">
                                 <ul class="nav navbar-nav">
 
-                                    <li ></li>     
+                                    <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown active">
+                                        <a href="<%=request.getContextPath()%>/assessor/auth/dashboard.io"> Dashboard
+                                            <span class="arrow"></span>
+                                        </a>
 
+                                    </li>
+                                    <li aria-haspopup="true" class="menu-dropdown mega-menu-dropdown  ">
+                                        <a href="<%=request.getContextPath()%>/assessor/practicalexam/init.io"> Practical Exam
+                                            <span class="arrow"></span>
+                                        </a>
+                                    </li>
+                                    <li aria-haspopup="true" class="menu-dropdown mega-menu-dropdown  ">
+                                        <a href="<%=request.getContextPath()%>/assessor/auth/logout.io"> Logout
+                                            <span class="arrow"></span>
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
                             <!-- END MEGA MENU -->
@@ -124,12 +138,12 @@
                                 <script>
 
                                     $(document).ready(function () {
-                                       
+
                                         var fullDate = new Date();
                                         var twoDigitMonth = ((fullDate.getMonth().length + 1) === 1) ? (fullDate.getMonth() + 1) : '0' + (fullDate.getMonth() + 1);
                                         var currentDate = fullDate.getDate() + "/" + twoDigitMonth + "/" + fullDate.getFullYear();
-                                        
+
                                         $('#todaydate').text(currentDate);
-                                        
+
                                     });
                                 </script>

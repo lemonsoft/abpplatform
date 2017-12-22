@@ -96,19 +96,31 @@
                                                 </table>
                                             </div>
                                             <div class="tab-pane" id="tab_5_2">
-                                                <p> Howdy, I'm in Section 3. </p>
-                                                <p> Duis autem vel eum iriure dolor in hendrerit in vulputate. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
-                                                    Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat </p>
-                                                <p>
-                                                    <a class="btn yellow" href="ui_tabs_accordions_navs.html#tab_5_3" target="_blank"> Activate this tab via URL </a>
-                                                </p>
+                                                <table class="table table-striped table-bordered table-hover dt-responsive"  border="1" cellpadding="2" cellspacing="2" width="100%">
+                                                    <tr><td>Senario</td><td></td></tr>
+
+                                                    <c:forEach var="senerio" items="${practicallog}">
+                                                        <tr><td>${senerio.key}</td>
+                                                            <td>
+
+                                                                <display:table name="${senerio.value}" class="table table-bordered"  requestURI="initSearch.io"  pagesize="5">
+                                                                    <display:column property="question" title="Question"  style="word-break:break-all;"/>
+                                                                    <display:column property="answerstatus" title="Answer Status" />
+                                                                    <display:column property="actualmarks" title="Actual Marks" />
+                                                                    <display:column property="scoredmarks" title="Scored Marks" />
+                                                                </display:table>
+
+                                                            </td> </tr>
+
+                                                    </c:forEach>
+                                                </table>     
                                             </div>
                                             <div class="tab-pane" id="tab_5_3">
                                                 <display:table name="asseslogdao" class="table table-bordered" requestURI="totalreport.io"  pagesize="50">
                                                     <display:column property="sno" title="Sno" />
                                                     <display:column property="datetime" title="Datetime"/>
                                                     <display:column property="action" title="Action"/>
-                                                    
+
                                                 </display:table>
                                             </div>
                                             <div class="tab-pane" id="tab_5_4">
@@ -118,7 +130,7 @@
                                                     <display:column property="startdate" title="Start Date"/>
                                                     <display:column property="enddate" title="End Date"/>
                                                     <display:column property="timetaken" title="Time Taken (Sec)"/>
-                                                    
+
                                                 </display:table>
                                             </div>
                                             <div class="tab-pane" id="tab_5_5">

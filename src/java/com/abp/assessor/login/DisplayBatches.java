@@ -11,6 +11,7 @@ package com.abp.assessor.login;
  */
 public class DisplayBatches {
     
+    private String batchID;
     private String batchid;
     private String tpname;
     private String batchsize;
@@ -73,6 +74,14 @@ public class DisplayBatches {
 
     public void setAttendance(String attendance) {
         this.attendance = attendance;
+    }
+
+    public String getBatchID() {
+        return batchID;
+    }
+
+    public void setBatchID(String batchID) {
+        this.batchID = batchID;
     }
     
     

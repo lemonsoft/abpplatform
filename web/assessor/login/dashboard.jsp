@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib uri="/WEB-INF/displaytag.tld" prefix="display" %>
 <!DOCTYPE html>
 <head>
     <link rel="stylesheet" type="text/css"  href="<%=request.getContextPath()%>/assets/css/smart-forms.css">
@@ -46,17 +47,18 @@
                 <div class="portlet box blue-hoki">
                     <div class="portlet-title">
                         <div class="caption">
-                            <i class="fa fa-gift"></i>Student Details </div>
+                            <i class="fa fa-gift"></i>Assessor Details </div>
 
                     </div>
                     <div class="portlet-body">
                         <div class="scroller" style="height:350px" data-rail-visible="1" data-rail-color="yellow" data-handle-color="#a1b2bd">
                             <div><img src="<%=request.getContextPath()%>/assets/images/NoPhotoAvailable.jpg" class="circle"></div>
                             <table class="table table-striped table-bordered table-hover dt-responsive"  border="1" cellpadding="2" cellspacing="2" width="100%">
-                                <tr><td>Father :</td><td>${father}</td></tr>
+                                <tr><td>Name :</td><td>${name}</td></tr>
+                                <tr><td>Qualification :</td><td>${qualification}</td></tr>
                                 <tr><td>State :</td><td>${state}</td></tr>
-                                <tr><td>District :</td><td>${district}</td></tr>
-                                <tr><td>Enrollment no.:</td><td>${enrollno}</td></tr>
+                                <tr><td>District:</td><td>${district}</td></tr>
+                                <tr><td>Email ID:</td><td>${emailid}</td></tr>
 
                             </table>
                         </div>
@@ -72,21 +74,21 @@
                 <div class="portlet box blue-hoki">
                     <div class="portlet-title">
                         <div class="caption">
-                            <i class="fa fa-gift"></i>Assessment Details </div>
+                            <i class="fa fa-gift"></i>My Batches</div>
 
                     </div>
                     <div class="portlet-body">
                         <div class="scroller" style="height:350px" data-rail-visible="1" data-rail-color="yellow" data-handle-color="#a1b2bd">
-                            <table class="table table-striped table-bordered table-hover dt-responsive"  border="1" cellpadding="2" cellspacing="2" width="100%">
-                                <tr><td>Quality Pack :</td><td>${qpack}</td></tr>
-                                <tr><td>Assessment Proposed Date :</td><td>${assesmentdate}</td></tr>
-                                <tr><td>Center Contact No :</td><td>${centercontactno}</td></tr>
-                                <tr><td>Center Address :</td><td>${centeraddr}</td></tr>
-                                <tr><td>Sector Skill Council :</td><td>${ssc}</td></tr>
-                                <tr><td>Training Partner :</td><td>${trainingpartner}</td></tr>
-                                <tr><td colspan="2">I here by declare that the above information is true to my knowledge. </td></tr>
-                            </table>
-                            <center><button onclick="gotoInstruction();" class="button btn-primary block pushed expand">Exam Instruction</button></center>
+                            <display:table name="records" class="table table-bordered" requestURI="initSearch.io" decorator="com.abp.assessor.login.SrcDecorator" pagesize="10">
+                                <display:column property="batchid" title="Batch ID" />
+                                <display:column property="tpname" title="T.P Name" />
+                                <display:column property="batchsize" title="Batch Size" />
+                                <display:column property="centeraddr" title="Center Address" />
+                                <display:column property="startdate" title="Exam Start Date" />
+                                <display:column property="enddate" title="Exam End Date" />
+                                <display:column property="attendance" title="Attendance" />
+
+                            </display:table>
                         </div>
                     </div>
                 </div>
@@ -96,12 +98,11 @@
         </div><!-- end section -->
     </div>
     <script>
-
-        function gotoInstruction() {
-            
-            window.location.href = "<%=request.getContextPath()%>/student/login/examinstruction.io";
-
+        function attendance(id) {
+            alert(" Take Attendance " + id);
+            var w = window.open("<%=request.getContextPath()%>/assessor/auth/captureImage.io?batchid=" + id, "popupWindow", "width=1024, height=500, scrollbars=yes");
         }
+
 
     </script>                           
 </div><!-- end .form-body section -->

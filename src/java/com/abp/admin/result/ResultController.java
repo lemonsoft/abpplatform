@@ -7,6 +7,9 @@ package com.abp.admin.result;
 
 import com.abp.admin.batches.BatchesDAO;
 import com.abp.admin.batches.UserDAO;
+import com.abp.admin.practicalmmq.PCWithMarksDAO;
+import com.abp.admin.practicalmmq.PracticalMMQDAO;
+import com.abp.admin.practicalmmq.SenarioQuestionDAO;
 import com.abp.admin.project.questions.QuestionDAO;
 import com.abp.admin.qualificationpack.NOSDAO;
 import com.abp.admin.qualificationpack.PCDAO;
@@ -94,7 +97,10 @@ public class ResultController {
 
         ArrayList asseslogdao = getAssesmentLog(new Integer(userid), new Integer(userresultdetailid));
         model.addAttribute("asseslogdao", asseslogdao);
-
+        
+        Map<String, ArrayList> practicallog=getPracticalwiseLog(new Integer(userid), new Integer(userresultdetailid));
+        model.addAttribute("practicallog", practicallog);
+        
         ArrayList questlogdao = getQuestionwiseLog(new Integer(userid), new Integer(userresultdetailid));
         model.addAttribute("questlogdao", questlogdao);
 
@@ -129,8 +135,8 @@ public class ResultController {
     @RequestMapping(value = "/pcreport", method = RequestMethod.GET)
     public String pcreport(HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        int totalpractical=0;
-        int totaltheory=0;
+        int totalpractical = 0;
+        int totaltheory = 0;
         String userresultdetailid = request.getParameter("userresultid");
         String userid = request.getParameter("userid");
         ArrayList record = new ArrayList();
@@ -142,11 +148,11 @@ public class ResultController {
         Iterator itr = record.iterator();
         while (itr.hasNext()) {
             PCWiseLogDisplay pcwiselogdao = (PCWiseLogDisplay) itr.next();
-            totaltheory=totaltheory+pcwiselogdao.getScoredtheorymarks();
-            totalpractical=totalpractical+pcwiselogdao.getScoredpracticalmarks();
-            int totalscored = pcwiselogdao.getScoredtheorymarks() +pcwiselogdao.getScoredpracticalmarks() ;
+            totaltheory = totaltheory + pcwiselogdao.getScoredtheorymarks();
+            totalpractical = totalpractical + pcwiselogdao.getScoredpracticalmarks();
+            int totalscored = pcwiselogdao.getScoredtheorymarks() + pcwiselogdao.getScoredpracticalmarks();
             pcwiselogdao.setScoredtotalmarks("" + totalscored);
-            
+
         }
         model.addAttribute("totaltheory", totaltheory);
         model.addAttribute("totalpractical", totalpractical);
@@ -390,6 +396,80 @@ public class ResultController {
             i++;
         }
         return quesrecord;
+    }
+
+    private Map<String, ArrayList> getPracticalwiseLog(int userid, int userresultdetailid) {
+
+        Map<String, ArrayList> questions = new HashMap();
+        Map param = new HashMap();
+        param.put("userresultdetailid", userresultdetailid);
+        param.put("userid", userid);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PracticalWiseresultDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                PracticalWiseresultDAO practicallog = (PracticalWiseresultDAO) itr.next();
+                DisplayPracticalResult dprdao = new DisplayPracticalResult();
+                SenarioQuestionDAO qdao = (SenarioQuestionDAO) this.superService.getObjectById(new SenarioQuestionDAO(), practicallog.getQuestionid());
+                dprdao.setQuestion(qdao.getQuestion());
+                dprdao.setAnswerstatus(practicallog.getAnswerstatus());
+                dprdao.setActualmarks("" + getTotalMarksofQuestion(practicallog.getQuestionid()));
+                if (practicallog.getAnswerstatus().equalsIgnoreCase("yes")) {
+                    dprdao.setScoredmarks(getTotalMarksofQuestion(practicallog.getQuestionid()));
+                } else {
+                    dprdao.setScoredmarks(0);
+                }
+
+                if (questions.get("" + qdao.getSenario_id()) != null) {
+
+                    ArrayList questionsall = (ArrayList) questions.get("" + qdao.getSenario_id());
+                    questionsall.add(dprdao);
+                    questions.put("" + qdao.getSenario_id(), questionsall);
+                } else {
+                    ArrayList questionsall = new ArrayList();
+                    questionsall.add(dprdao);
+                    questions.put("" + qdao.getSenario_id(), questionsall);
+                }
+
+            }
+        }
+
+        for (String key : questions.keySet()) {
+            System.out.println(key);
+            ArrayList values = (ArrayList) questions.get(key);
+            String quest = getSenarioQuestionByID(key);
+            questions.remove(key);
+            questions.put(quest, values);
+        }
+
+        return questions;
+    }
+
+    private int getTotalMarksofQuestion(int questionid) {
+
+        int totalmarks = 0;
+        Map param = new HashMap();
+        param.put("question_id", questionid);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PCWithMarksDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                PCWithMarksDAO pcwithmarks = (PCWithMarksDAO) itr.next();
+                totalmarks = totalmarks + pcwithmarks.getMarks();
+            }
+
+        }
+
+        return totalmarks;
+    }
+
+    private String getSenarioQuestionByID(String id) {
+
+        String questions = "";
+        PracticalMMQDAO pmmqdao = (PracticalMMQDAO) this.superService.getObjectById(new PracticalMMQDAO(), new Integer(id));
+        questions = pmmqdao.getSenario();
+        return questions;
+
     }
 
     private Map<Integer, NosWiseLogDisplay> getNoswiseLog(int userid, int userresultdetailid) {
