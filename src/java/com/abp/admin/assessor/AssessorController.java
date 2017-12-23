@@ -5,6 +5,7 @@
  */
 package com.abp.admin.assessor;
 
+import com.abp.admin.qualificationpack.QualificationPackDAO;
 import com.abp.admin.ssc.SSCDAO;
 import com.abp.statedistrict.DistrictDAO;
 import com.abp.statedistrict.StateDAO;
@@ -67,9 +68,8 @@ public class AssessorController {
         model.addAttribute("mode", "add");
 
         request.getSession().setAttribute("body", "/admin/assessor/addassessor.jsp");
-        return "adminadmin/common";
+        return "admin/common";
     }
-    
 
     @RequestMapping(value = "/add", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String add(@ModelAttribute("assessor") AssessorDAO beanObj, @RequestParam MultipartFile[] files, HttpServletRequest request, HttpServletResponse response, Model model) {
@@ -119,6 +119,13 @@ public class AssessorController {
             AssessorDAO assessor = (AssessorDAO) itr.next();
             assessor.setState(getStateNameByID("" + assessor.getStateid()));
             assessor.setDistrict(getDistrictNameByID("" + assessor.getDistrictid()));
+            String []jobroleid=assessor.getJobrole().split(",");
+            String jobrole="";
+            for(int i=0;i<jobroleid.length;i++){
+                jobrole=jobrole+","+getJobRoleNameByID(jobroleid[i]);
+            }
+            jobrole=jobrole.substring(1);
+            assessor.setJobrole(jobrole);
         }
         model.addAttribute("records", records);
         request.getSession().setAttribute("body", "/admin/assessor/searchassessor.jsp");
@@ -272,6 +279,16 @@ public class AssessorController {
         return "redirect:/admin/assessor/initSearch.io";
     }
 
+    @RequestMapping(value = "/getJobRole", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    String getJobRole(@RequestParam("ssc_id") String sscid) {
+
+        System.out.println("SSC ID::" + sscid);
+        String jobroles = getJobRolesByID(sscid);
+        
+        return jobroles;
+    }
+
     @RequestMapping(value = "/getDistricts", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     String getDistricts(@RequestParam("s_id") String stateid) {
@@ -377,5 +394,34 @@ public class AssessorController {
 
         DistrictDAO district = (DistrictDAO) this.superService.getObjectById(new DistrictDAO(), new Integer(districtid));
         return district.getDistrictName();
+    }
+    public String getJobRoleNameByID(String districtid) {
+
+        QualificationPackDAO role = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(districtid));
+        return role.getQpackname();
+    }
+
+    public String getJobRolesByID(String sscid) {
+
+        JSONObject jsonObj = new JSONObject();
+        JSONArray jsonarr = new JSONArray();
+        Map param = new HashMap();
+        param.put("sscid", sscid);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QualificationPackDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                QualificationPackDAO data = (QualificationPackDAO) itr.next();
+                if (data.getSscid().equals(sscid)) {
+                    jsonObj.append("ID", data.getQpid());
+                    jsonObj.append("NAME", data.getQpackname());
+                    jsonarr.put(jsonObj);
+                }
+
+                jsonObj = new JSONObject();
+            }
+        }
+
+        return jsonarr.toString();
     }
 }

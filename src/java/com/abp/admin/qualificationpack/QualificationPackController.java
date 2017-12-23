@@ -656,8 +656,7 @@ public class QualificationPackController {
 
     @RequestMapping(value = "/getQP", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    String getQP(@RequestParam("ssc_id") String sscid
-    ) {
+    String getQP(@RequestParam("ssc_id") String sscid) {
 
         System.out.println("SSC ID::" + sscid);
         String districts = getQualificationPackByID(sscid);

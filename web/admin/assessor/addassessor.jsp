@@ -265,7 +265,7 @@
         <script>
 
             $(document).ready(function () {
-                
+                $('#ssc_id').trigger("change");
 
 
             });
@@ -310,10 +310,8 @@
                                 str = "<option value=''>------- Select --------</option>";
                             }
                             $.each(data, function (index, jsonObject) {
-                                //$.each(jsonObject, function (key, val) {
-                                //alert("key : " + jsonObject.ID + " ; value : " + jsonObject.NAME);
                                 str = str + "<option value=" + jsonObject.ID + ">" + jsonObject.NAME + "</option>"
-                                // });
+                                
                             });
                             $("#districtid").html(str);
                         }
@@ -322,6 +320,32 @@
                     $("#districtid").html("<option value=''>------- Select --------</option>");
                 }
             });
+            $("#ssc_id").change(function () {
+
+                    var sscid = $(this).val();
+                    if (sscid) {
+
+                        $.ajax({
+                            url: "getJobRole.io",
+                            data: {ssc_id: sscid},
+                            type: 'GET',
+                            success: function (data) {
+                                 var str = "";
+                                if (data.length === 0) {
+                                    str = "<option value=''>------- Select --------</option>";
+                                }
+                                $.each(data, function (index, jsonObject) {
+                                    
+                                    str = str + "<option value=" + jsonObject.ID + ">" + jsonObject.NAME + "</option>";
+                                   
+                                });
+                                $("#jobrole").html(str);
+                            }
+                        });
+                    } else {
+                        $("#jobrole").html("<option value=''>------- Select --------</option>");
+                    }
+                });
 
         </script>
     </body>

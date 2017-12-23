@@ -11,19 +11,12 @@ package com.abp.admin.result;
  */
 public class DisplayPracticalResult {
     
-    private String question;
+    private String snquestion;
     private String answerstatus;
     private String actualmarks;
     private int scoredmarks;
 
-    public String getQuestion() {
-        return question;
-    }
-
-    public void setQuestion(String question) {
-        this.question = question;
-    }
-
+   
     public String getAnswerstatus() {
         return answerstatus;
     }
@@ -46,6 +39,14 @@ public class DisplayPracticalResult {
 
     public void setScoredmarks(int scoredmarks) {
         this.scoredmarks = scoredmarks;
+    }
+
+    public String getSnquestion() {
+        return snquestion;
+    }
+
+    public void setSnquestion(String snquestion) {
+        this.snquestion = snquestion;
     }
 
     

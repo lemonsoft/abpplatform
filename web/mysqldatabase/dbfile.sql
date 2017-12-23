@@ -577,4 +577,4 @@
   select * from senarioquestions;
 --  select * from practicalmmq;
   select * from pcwithmarks;
---  select * from batches;
+  select * from assessor;

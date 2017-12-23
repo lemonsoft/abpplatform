@@ -7,8 +7,15 @@ package com.abp.admin.batches;
 
 import com.abp.admin.assessor.AssessorDAO;
 import com.abp.admin.generateqp.QuestionPaperDAO;
+import com.abp.admin.practicalmmq.PCWithMarksDAO;
 import com.abp.admin.project.ProjectDAO;
+import com.abp.admin.project.questions.QuestionDAO;
+import com.abp.admin.qualificationpack.NOSDAO;
+import com.abp.admin.qualificationpack.PCDAO;
 import com.abp.admin.qualificationpack.QualificationPackDAO;
+import com.abp.admin.result.PracticalWiseresultDAO;
+import com.abp.admin.result.TheoryWiseResultDAO;
+import com.abp.admin.result.UserResultDetailDAO;
 import com.abp.admin.ssc.SSCDAO;
 import com.abp.statedistrict.DistrictDAO;
 import com.abp.statedistrict.StateDAO;
@@ -24,8 +31,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.hibernate.ObjectNotFoundException;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONArray;
@@ -228,9 +233,62 @@ public class BatchesController {
         return "redirect:/admin/batches/addassessor.io";
     }
 
+    @RequestMapping(value = "/batchResult", method = RequestMethod.GET)
+    public String batchResult(HttpServletRequest request, HttpServletResponse response, Model model) {
+
+        String batchid = request.getParameter("batchid");
+        String sscid = request.getParameter("sscid");
+        String qpid = request.getParameter("qpid");
+        String qpackid = request.getParameter("qpackid");
+        ArrayList resultdata = new ArrayList();
+        BatchesDAO batchdao = (BatchesDAO) this.superService.getObjectById(new BatchesDAO(), new Integer(batchid));
+        QualificationPackDAO qpackdao = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(qpackid));
+
+        Map param = new HashMap();
+        param.put("batchid", new Integer(batchid));
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new UserDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+
+                UserDAO userdao = (UserDAO) itr.next();
+                DisplayBatchResult dispbatchres = new DisplayBatchResult();
+                dispbatchres.setCaandidateid("" + userdao.getID());
+                dispbatchres.setCandidatename(userdao.getTraineename());
+                dispbatchres.setEnrollmentno("" + userdao.getEnrollmentno());
+                dispbatchres.setFathername(userdao.getFathername());
+                dispbatchres.setPartnername(batchdao.getTpName());
+                dispbatchres.setJobrole(qpackdao.getQpackname());
+                dispbatchres.setAssesmentdate(batchdao.getAssessmentStartDate());
+                dispbatchres.setAssesorid(getAssessorNameById(batchdao.getAssessorId()));
+                dispbatchres.setMaxtheorymarks(qpackdao.getTotaltheorymarks());
+                dispbatchres.setMaxpracticalmarks(qpackdao.getTotalpracticalmarks());
+                dispbatchres.setMarkstheory("" + getTotalTheoryMarks(userdao.getID(), new Integer(batchid)));
+                dispbatchres.setMarkspractical("" + calculatePracticalmarksQPackID(new Integer(batchid), new Integer(qpackid), userdao.getID()));
+                int overcutoff=Integer.parseInt(qpackdao.getOverallcutoffmarks());
+                int totalmarks=getTotalTheoryMarks(userdao.getID(), new Integer(batchid))+calculatePracticalmarksQPackID(new Integer(batchid), new Integer(qpackid), userdao.getID());
+                if(totalmarks>overcutoff){
+                    dispbatchres.setResult("Pass");
+                }else{
+                    dispbatchres.setResult("Fail");
+                }
+                resultdata.add(dispbatchres);
+            }
+
+        }
+        model.addAttribute("batchresult", resultdata);
+        
+        request.setAttribute("sscid", sscid);
+        request.setAttribute("qpid", qpid);
+        
+        request.getSession().setAttribute("body", "/admin/batches/finalresult.jsp");
+        return "admin/common";
+
+    }
+
     @RequestMapping(value = "/deleteQuestionPaper", method = {RequestMethod.GET}, produces = "application/json")
     @ResponseBody
-    String deleteQuestionPaper(@RequestParam("batchid") String batchid, HttpServletRequest request, HttpServletResponse response, Model model)throws Exception {
+    String deleteQuestionPaper(@RequestParam("batchid") String batchid, HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
 
         boolean flag = true;
         JSONObject jsonObj = new JSONObject();
@@ -339,10 +397,6 @@ public class BatchesController {
         String startdate = batchObj.getAssessmentStartDate();
         String enddate = batchObj.getAssessmentEndDate();
 
-//        DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyy-mm-dd HH:mm:ss.s");
-//        DateTime jodastarttime = dtf.parseDateTime(startdate);
-//        DateTime jodaendtime = dtf.parseDateTime(enddate);
-//        DateTime currentdt = new DateTime();
         SimpleDateFormat outFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.s");
         Date jodastarttime = outFormat.parse(startdate);
         Date jodaendtime = outFormat.parse(enddate);
@@ -625,5 +679,132 @@ public class BatchesController {
         }
 
         return projects;
+    }
+
+    private String getAssessorNameById(int assesid) {
+
+        String assesorname = "";
+        AssessorDAO assesdao = (AssessorDAO) this.superService.getObjectById(new AssessorDAO(), assesid);
+        if (assesdao != null) {
+            assesorname = assesdao.getFirstname();
+        }
+        return assesorname;
+
+    }
+
+    public int getTotalTheoryMarks(int userid, int batchid) {
+
+        int totaltheorymarks = 0;
+
+        Map param = new HashMap();
+        param.put("batchid", batchid);
+        param.put("userid", userid);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new UserResultDetailDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                UserResultDetailDAO usrdao = (UserResultDetailDAO) itr.next();
+
+                Map param2 = new HashMap();
+                param2.put("userresultdetailid", usrdao.getID());
+                param2.put("userid", userid);
+                List<SuperBean> records2 = this.superService.listAllObjectsByCriteria(new TheoryWiseResultDAO(), param2);
+                Iterator itr2 = records2.iterator();
+                while (itr2.hasNext()) {
+
+                    TheoryWiseResultDAO theorywisedao = (TheoryWiseResultDAO) itr2.next();
+                    totaltheorymarks = totaltheorymarks + getMarksByQuestionID(theorywisedao.getQuestionid(), theorywisedao.getCorrectanswer());
+                    System.out.println(" totaltheorymarks   " + totaltheorymarks);
+                }
+
+            }
+        }
+
+        System.out.println(" total totaltheorymarks   " + totaltheorymarks);
+
+        return totaltheorymarks;
+    }
+
+    public int getMarksByQuestionID(int questionid, String selectOption) {
+
+        int marks = 0;
+        QuestionDAO questiondao = (QuestionDAO) this.superService.getObjectById(new QuestionDAO(), questionid);
+        System.out.println(" correct Option  " + questiondao.getCorrect_option());
+        System.out.println(" select Option  " + selectOption);
+        if (questiondao.getCorrect_option().equalsIgnoreCase(selectOption)) {
+            marks = questiondao.getMarks();
+        }
+
+        return marks;
+    }
+
+    private int calculatePracticalmarksQPackID(int batchid, int qpackid, int userid) {
+
+        int totalscoredmarks = 0;
+        Map param = new HashMap();
+        param.put("batchid", batchid);
+        param.put("userid", userid);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new UserResultDetailDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                UserResultDetailDAO usrdao = (UserResultDetailDAO) itr.next();
+                Map param1 = new HashMap();
+                param1.put("userresultdetailid", usrdao.getID());
+                param1.put("userid", userid);
+                List<SuperBean> records1 = this.superService.listAllObjectsByCriteria(new PracticalWiseresultDAO(), param1);
+                if (records1.size() > 0) {
+                    Iterator itr1 = records1.iterator();
+                    while (itr1.hasNext()) {
+                        PracticalWiseresultDAO pwrdao = (PracticalWiseresultDAO) itr1.next();
+                        int questionid = pwrdao.getQuestionid();
+
+                        Map param2 = new HashMap();
+                        param2.put("qpackid", "" + qpackid);
+                        List<SuperBean> records2 = this.superService.listAllObjectsByCriteria(new NOSDAO(), param2);
+                        if (records2.size() > 0) {
+                            Iterator itr2 = records2.iterator();
+                            while (itr2.hasNext()) {
+                                NOSDAO nosdao = (NOSDAO) itr2.next();
+
+                                Map param3 = new HashMap();
+                                param3.put("nosid", "" + nosdao.getNosID());
+                                List<SuperBean> records3 = this.superService.listAllObjectsByCriteria(new PCDAO(), param3);
+                                if (records3.size() > 0) {
+                                    Iterator itr3 = records3.iterator();
+                                    while (itr3.hasNext()) {
+                                        PCDAO pcdao = (PCDAO) itr3.next();
+                                        int pcid = pcdao.getPcID();
+
+                                        System.out.println("  questionid " + questionid);
+                                        System.out.println("  pcid " + pcid);
+                                        if (pwrdao.getAnswerstatus().equalsIgnoreCase("yes")) {
+                                            Map param4 = new HashMap();
+                                            param4.put("question_id", questionid);
+                                            param4.put("pcid", pcid);
+                                            List<SuperBean> records4 = this.superService.listAllObjectsByCriteria(new PCWithMarksDAO(), param4);
+                                            if (records4.size() > 0) {
+                                                PCWithMarksDAO pcwithmarks = (PCWithMarksDAO) records4.get(0);
+                                                System.out.println("  marks " + pcwithmarks.getMarks());
+                                                totalscoredmarks = totalscoredmarks + pcwithmarks.getMarks();
+                                            }
+                                        }
+                                    }
+
+                                }
+
+                            }
+                        }
+
+                    }
+
+                }
+            }
+        }
+
+        System.out.println("  totalscoredmarks ::::: ::: " + totalscoredmarks);
+
+        return totalscoredmarks;
+
     }
 }

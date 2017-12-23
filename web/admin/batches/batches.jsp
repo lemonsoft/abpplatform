@@ -167,7 +167,7 @@
                                 var assessor = data[i].assessorId;
                                 var questionPaper = data[i].questionPaperId;
 
-                                $('#example-basic4 tr:last').after('<tr data-tt-id="1" id="qpack" style="height: 50px;font-size:12px;color: #000;background-color: #fff;"><td align="center">' + data[i].batch_id + '</td><td align="center">' + data[i].batch_size + '</td><td align="center">' + data[i].state + '</td><td align="center">' + data[i].centerAddress + '</td><td align="center">' + data[i].assessmentStartDate + '</td><td align="center">' + data[i].assessmentEndDate + '</td><td align="center">' + data[i].tpName + '</td><td align="center"><button type="button" class="button btn-blue" onclick="callEdit(' + data[i].ID + ');">Edit</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callUser(' + data[i].ID + ');">User</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callAssessor(' + data[i].ID + ');">' + assessor + '</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callQuestionPaper(' + data[i].ID + ');">'+questionPaper+'</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callResult(' + data[i].ID + ');">Result</button><button type="button" class="button btn-blue" onclick="callResultNOS(' + data[i].ID + ');">NOS Result</button></td></tr>');
+                                $('#example-basic4 tr:last').after('<tr data-tt-id="1" id="qpack" style="height: 50px;font-size:12px;color: #000;background-color: #fff;"><td align="center">' + data[i].batch_id + '</td><td align="center">' + data[i].batch_size + '</td><td align="center">' + data[i].state + '</td><td align="center">' + data[i].centerAddress + '</td><td align="center">' + data[i].assessmentStartDate + '</td><td align="center">' + data[i].assessmentEndDate + '</td><td align="center">' + data[i].tpName + '</td><td align="center"><button type="button" class="button btn-blue" onclick="callEdit(' + data[i].ID + ');">Edit</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callUser(' + data[i].ID + ');">User</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callAssessor(' + data[i].ID + ');">' + assessor + '</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callQuestionPaper(' + data[i].ID + ');">' + questionPaper + '</button></td><td align="center"><button type="button" class="button btn-blue" onclick="callResult(' + data[i].ID + ');">Result</button><button type="button" class="button btn-blue" onclick="callResultNOS(' + data[i].ID + ');">NOS Result</button></td></tr>');
 
 
                             }
@@ -252,11 +252,17 @@
                 var qid = $("#qpid option:selected").text();
                 var qpackid = $("#qpid").val();
 
-                window.location.href = "<%=request.getContextPath()%>/admin/batches/addquestionpaper.io?batchid=" + id + "&sscid=" + sscid + "&qid=" + qid+"&qpackid="+qpackid;
+                window.location.href = "<%=request.getContextPath()%>/admin/batches/addquestionpaper.io?batchid=" + id + "&sscid=" + sscid + "&qid=" + qid + "&qpackid=" + qpackid;
 
             }
             function callResult(id) {
                 alert(id);
+                var sscid = $("#ssc_id option:selected").text();
+                var qpid = $("#qpid option:selected").text();
+                var qpackid = $("#qpid").val();
+               
+
+                window.location.href = "<%=request.getContextPath()%>/admin/batches/batchResult.io?batchid=" + id + "&sscid=" + sscid + "&qpid=" + qpid + "&qpackid=" + qpackid;
 
             }
             function callResultNOS(id) {

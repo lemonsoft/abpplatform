@@ -97,10 +97,10 @@ public class ResultController {
 
         ArrayList asseslogdao = getAssesmentLog(new Integer(userid), new Integer(userresultdetailid));
         model.addAttribute("asseslogdao", asseslogdao);
-        
-        Map<String, ArrayList> practicallog=getPracticalwiseLog(new Integer(userid), new Integer(userresultdetailid));
+
+        Map<String, ArrayList> practicallog = getPracticalwiseLog(new Integer(userid), new Integer(userresultdetailid));
         model.addAttribute("practicallog", practicallog);
-        
+
         ArrayList questlogdao = getQuestionwiseLog(new Integer(userid), new Integer(userresultdetailid));
         model.addAttribute("questlogdao", questlogdao);
 
@@ -122,9 +122,15 @@ public class ResultController {
         Iterator itr = record.iterator();
         while (itr.hasNext()) {
             NosWiseLogDisplay noswiselogdao = (NosWiseLogDisplay) itr.next();
-            int totalscored = Integer.parseInt(noswiselogdao.getTheorymarks()) + Integer.parseInt(noswiselogdao.getPracticalmarks());
+            int totalscored = noswiselogdao.getScoredtheorymarks() + Integer.parseInt(noswiselogdao.getPracticalscoredmarks());
             noswiselogdao.setScoredtotalmarks("" + totalscored);
-            noswiselogdao.setResult("Fail");
+            int overallcutoff = Integer.parseInt(noswiselogdao.getOverallcutoff());
+            if (totalscored > overallcutoff) {
+                noswiselogdao.setResult("Pass");
+            } else {
+                noswiselogdao.setResult("Fail");
+            }
+
         }
         model.addAttribute("noswiselog", record);
 
@@ -273,11 +279,16 @@ public class ResultController {
             QualificationPackDAO qpackdao = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), qpackid);
             jsonObj.append("maxtheory", qpackdao.getTotaltheorymarks());
             jsonObj.append("theorycuttoff", qpackdao.getTheorycutoffmarks());
+            int totaltheorymarks = getTotalTheoryMarks(userdao.getID(), userresultdao.getID());
             jsonObj.append("scoredtheorymarks", getTotalTheoryMarks(userdao.getID(), userresultdao.getID()));
             jsonObj.append("maxpractical", qpackdao.getTotalpracticalmarks());
             jsonObj.append("practicalcuttoff", qpackdao.getPracticalcutoffmarks());
-            jsonObj.append("scoredpracticalmarks", "-");
+
+            int scorepracticalmarks = calculatePracticalmarksQPackID(qpackdao.getQpid(), userdao.getID(), userresultdao.getID());
+            jsonObj.append("scoredpracticalmarks", "" + scorepracticalmarks);
             jsonObj.append("overallcutoff", qpackdao.getOverallcutoffmarks());
+            int totalscored = totaltheorymarks + scorepracticalmarks;
+            jsonObj.append("scoredtotal", totalscored);
             jsonObj.append("scoredweightedavg", "-");
             jsonarr.put(jsonObj);
         }
@@ -409,9 +420,11 @@ public class ResultController {
             Iterator itr = records.iterator();
             while (itr.hasNext()) {
                 PracticalWiseresultDAO practicallog = (PracticalWiseresultDAO) itr.next();
+                System.out.println(" practlog ::::" + practicallog.getQuestionid());
+
                 DisplayPracticalResult dprdao = new DisplayPracticalResult();
                 SenarioQuestionDAO qdao = (SenarioQuestionDAO) this.superService.getObjectById(new SenarioQuestionDAO(), practicallog.getQuestionid());
-                dprdao.setQuestion(qdao.getQuestion());
+                dprdao.setSnquestion(qdao.getQuestion());
                 dprdao.setAnswerstatus(practicallog.getAnswerstatus());
                 dprdao.setActualmarks("" + getTotalMarksofQuestion(practicallog.getQuestionid()));
                 if (practicallog.getAnswerstatus().equalsIgnoreCase("yes")) {
@@ -497,6 +510,7 @@ public class ResultController {
                     int marks = noswiselogdao.getScoredtheorymarks();
                     marks = marks + questiondao.getMarks();
                     noswiselogdao.setScoredtheorymarks(marks);
+
                 }
                 nosparam.put(nosid, noswiselogdao);
 
@@ -515,11 +529,13 @@ public class ResultController {
 
                 noswisedao.setPracticalmarks(nosdao.getPracticalcutoffmarks());
                 noswisedao.setPracticalcutoff(nosdao.getPracticalcutoffmarks());
-                noswisedao.setPracticalscoredmarks("0");
+                int practicalscored = calculatePracticalmarksNOSID(nosdao.getNosID(), userid, userresultdetailid);
+                noswisedao.setPracticalscoredmarks("" + practicalscored);
                 int totalmarks = Integer.parseInt(nosdao.getTheorycutoffmarks()) + Integer.parseInt(nosdao.getPracticalcutoffmarks());
                 noswisedao.setTotalmarks("" + totalmarks);
+
                 noswisedao.setOverallcutoff(nosdao.getOverallcutoffmarks());
-                noswisedao.setScoredtotalmarks("--");
+                noswisedao.setScoredtotalmarks("");
                 noswisedao.setWeightedavg("0");
                 noswisedao.setScoredweightavg("--");
                 noswisedao.setResult("--");
@@ -569,7 +585,8 @@ public class ResultController {
                 }
 
                 pcwisedao.setPracticalmarks(pcdao.getPracticalcutoffmarks());
-                pcwisedao.setScoredpracticalmarks(0);
+                int totalpracticalmarks = calculatePracticalMarksByPCID(pcdao.getPcID(), userid, userresultdetailid);
+                pcwisedao.setScoredpracticalmarks(totalpracticalmarks);
                 int totalmarks = Integer.parseInt(pcdao.getTheorycutoffmarks()) + Integer.parseInt(pcdao.getPracticalcutoffmarks());
                 pcwisedao.setTotalmarks("" + totalmarks);
                 pcwisedao.setScoredtotalmarks("--");
@@ -583,4 +600,144 @@ public class ResultController {
         return pcparam;
     }
 
+    private int calculatePracticalmarksQPackID(int qpackid, int userid, int userresultdetailid) {
+
+        int totalscoredmarks = 0;
+        Map param = new HashMap();
+        param.put("userresultdetailid", userresultdetailid);
+        param.put("userid", userid);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PracticalWiseresultDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                PracticalWiseresultDAO pwrdao = (PracticalWiseresultDAO) itr.next();
+                int questionid = pwrdao.getQuestionid();
+
+                Map param1 = new HashMap();
+                param1.put("qpackid", "" + qpackid);
+                List<SuperBean> records1 = this.superService.listAllObjectsByCriteria(new NOSDAO(), param1);
+                if (records1.size() > 0) {
+                    Iterator itr1 = records1.iterator();
+                    while (itr1.hasNext()) {
+                        NOSDAO nosdao = (NOSDAO) itr1.next();
+
+                        Map param2 = new HashMap();
+                        param2.put("nosid", "" + nosdao.getNosID());
+                        List<SuperBean> records2 = this.superService.listAllObjectsByCriteria(new PCDAO(), param2);
+                        if (records2.size() > 0) {
+                            Iterator itr2 = records2.iterator();
+                            while (itr2.hasNext()) {
+                                PCDAO pcdao = (PCDAO) itr2.next();
+                                int pcid = pcdao.getPcID();
+
+                                System.out.println("  questionid " + questionid);
+                                System.out.println("  pcid " + pcid);
+                                if (pwrdao.getAnswerstatus().equalsIgnoreCase("yes")) {
+                                    Map param3 = new HashMap();
+                                    param3.put("question_id", questionid);
+                                    param3.put("pcid", pcid);
+                                    List<SuperBean> records3 = this.superService.listAllObjectsByCriteria(new PCWithMarksDAO(), param3);
+                                    if (records3.size() > 0) {
+                                        PCWithMarksDAO pcwithmarks = (PCWithMarksDAO) records3.get(0);
+                                        System.out.println("  marks " + pcwithmarks.getMarks());
+                                        totalscoredmarks = totalscoredmarks + pcwithmarks.getMarks();
+                                    }
+                                }
+                            }
+
+                        }
+
+                    }
+                }
+
+            }
+
+        }
+
+        System.out.println("  totalscoredmarks ::::: ::: " + totalscoredmarks);
+
+        return totalscoredmarks;
+
+    }
+
+    private int calculatePracticalmarksNOSID(int nosid, int userid, int userresultdetailid) {
+
+        int totalscoredmarks = 0;
+        Map param = new HashMap();
+        param.put("userresultdetailid", userresultdetailid);
+        param.put("userid", userid);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PracticalWiseresultDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                PracticalWiseresultDAO pwrdao = (PracticalWiseresultDAO) itr.next();
+                int questionid = pwrdao.getQuestionid();
+                Map param2 = new HashMap();
+                param2.put("nosid", "" + nosid);
+                List<SuperBean> records2 = this.superService.listAllObjectsByCriteria(new PCDAO(), param2);
+                if (records2.size() > 0) {
+                    Iterator itr2 = records2.iterator();
+                    while (itr2.hasNext()) {
+                        PCDAO pcdao = (PCDAO) itr2.next();
+                        int pcid = pcdao.getPcID();
+
+                        System.out.println("  questionid " + questionid);
+                        System.out.println("  pcid " + pcid);
+                        if (pwrdao.getAnswerstatus().equalsIgnoreCase("yes")) {
+                            Map param3 = new HashMap();
+                            param3.put("question_id", questionid);
+                            param3.put("pcid", pcid);
+                            List<SuperBean> records3 = this.superService.listAllObjectsByCriteria(new PCWithMarksDAO(), param3);
+                            if (records3.size() > 0) {
+                                PCWithMarksDAO pcwithmarks = (PCWithMarksDAO) records3.get(0);
+                                System.out.println("  marks " + pcwithmarks.getMarks());
+                                totalscoredmarks = totalscoredmarks + pcwithmarks.getMarks();
+                            }
+                        }
+                    }
+
+                }
+            }
+
+        }
+
+        System.out.println("  totalscoredmarks ::::: ::: " + totalscoredmarks);
+
+        return totalscoredmarks;
+
+    }
+
+    private int calculatePracticalMarksByPCID(int pcid, int userid, int userresultdetailid) {
+
+        int totalscoredmarks = 0;
+        Map param = new HashMap();
+        param.put("userresultdetailid", userresultdetailid);
+        param.put("userid", userid);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PracticalWiseresultDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                PracticalWiseresultDAO pwrdao = (PracticalWiseresultDAO) itr.next();
+                int questionid = pwrdao.getQuestionid();
+                System.out.println("  questionid " + questionid);
+                System.out.println("  pcid " + pcid);
+                if (pwrdao.getAnswerstatus().equalsIgnoreCase("yes")) {
+                    Map param3 = new HashMap();
+                    param3.put("question_id", questionid);
+                    param3.put("pcid", pcid);
+                    List<SuperBean> records3 = this.superService.listAllObjectsByCriteria(new PCWithMarksDAO(), param3);
+                    if (records3.size() > 0) {
+                        PCWithMarksDAO pcwithmarks = (PCWithMarksDAO) records3.get(0);
+                        System.out.println("  marks " + pcwithmarks.getMarks());
+                        totalscoredmarks = totalscoredmarks + pcwithmarks.getMarks();
+                    }
+                }
+
+            }
+        }
+        System.out.println("  totalscoredmarks ::::: ::: " + totalscoredmarks);
+
+        return totalscoredmarks;
+
+    }
 }

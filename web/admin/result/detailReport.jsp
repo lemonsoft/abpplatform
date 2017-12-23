@@ -67,6 +67,37 @@
                                             </li>
                                         </ul>
                                         <div class="tab-content">
+                                            <div class="tab-pane" id="tab_5_2">
+                                                <table class="table table-striped table-bordered table-hover dt-responsive"  border="1" cellpadding="2" cellspacing="2" width="100%">
+                                                    <tr><td>Senario</td><td></td></tr>
+
+                                                    <c:forEach var="senerio" items="${practicallog}">
+                                                        <tr><td>${senerio.key}</td>
+                                                            <td><table class="table table-bordered" border="1" cellpadding="2" cellspacing="2" width="100%">
+                                                                <c:forEach var="practicallogquest" items="${senerio.value}">
+                                                                    
+                                                                        <tr><td>${practicallogquest.snquestion}</td>
+                                                                            <td>${practicallogquest.answerstatus}</td>
+                                                                            <td>${practicallogquest.actualmarks}</td>
+                                                                            <td>${practicallogquest.scoredmarks}</td></tr>
+                                                                    
+                                                                    
+                                                                </c:forEach></table>
+                                                                
+                                                                
+                                                                
+                                                               <%-- <display:table name="${senerio.value}" class="table table-bordered"  requestURI="totalreport.io"  pagesize="5">
+                                                                    <display:column property="snquestion" title="Question"  style="word-break:break-all;"/>
+                                                                    <display:column property="answerstatus" title="Answer Status" />
+                                                                    <display:column property="actualmarks" title="Actual Marks" />
+                                                                    <display:column property="scoredmarks" title="Scored Marks" />
+                                                                </display:table>--%>
+
+                                                            </td> </tr>
+
+                                                    </c:forEach>
+                                                </table>     
+                                            </div>
                                             <div class="tab-pane active" id="tab_5_1">
 
                                                 <table class="table table-bordered" cellpadding="2" cellspacing="2" border="1">
@@ -95,26 +126,7 @@
                                                     <tr><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td ><b>Total :</b> ${totalmarks}</td><td ><b>Scored :</b>${totaltheorymarks}</td><td >&nbsp;</td><td >&nbsp;</td></tr>
                                                 </table>
                                             </div>
-                                            <div class="tab-pane" id="tab_5_2">
-                                                <table class="table table-striped table-bordered table-hover dt-responsive"  border="1" cellpadding="2" cellspacing="2" width="100%">
-                                                    <tr><td>Senario</td><td></td></tr>
-
-                                                    <c:forEach var="senerio" items="${practicallog}">
-                                                        <tr><td>${senerio.key}</td>
-                                                            <td>
-
-                                                                <display:table name="${senerio.value}" class="table table-bordered"  requestURI="initSearch.io"  pagesize="5">
-                                                                    <display:column property="question" title="Question"  style="word-break:break-all;"/>
-                                                                    <display:column property="answerstatus" title="Answer Status" />
-                                                                    <display:column property="actualmarks" title="Actual Marks" />
-                                                                    <display:column property="scoredmarks" title="Scored Marks" />
-                                                                </display:table>
-
-                                                            </td> </tr>
-
-                                                    </c:forEach>
-                                                </table>     
-                                            </div>
+                                            
                                             <div class="tab-pane" id="tab_5_3">
                                                 <display:table name="asseslogdao" class="table table-bordered" requestURI="totalreport.io"  pagesize="50">
                                                     <display:column property="sno" title="Sno" />

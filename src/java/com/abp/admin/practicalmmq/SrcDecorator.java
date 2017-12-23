@@ -15,9 +15,9 @@ import org.displaytag.decorator.TableDecorator;
 public class SrcDecorator extends TableDecorator {
 
     public String getActions() {
-        QuestionPaperDAO actorData = (QuestionPaperDAO) getCurrentRowObject();
+        SenarioQuestionDAO actorData = (SenarioQuestionDAO) getCurrentRowObject();
         String action;
-        action = "<button type=\"button\" class=\"button btn-blue\"  onclick=\"editMapping('" + actorData.getQuestionpaperid()+ "');\">View Questions</button>|<button type=\"button\" class=\"button btn-blue\"  onclick=\"editMapping('" + actorData.getQuestionpaperid() + "');\">Edit</button>";
+        action = "<button type=\"button\" class=\"button btn-blue\"  onclick=\"editMapping('" + actorData.getId()+ "');\">Edit Mapping</button>";
         return action;
     }
 }
