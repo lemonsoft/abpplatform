@@ -578,3 +578,4 @@
 --  select * from practicalmmq;
   select * from pcwithmarks;
   select * from assessor;
+  select * from multilangquestion;

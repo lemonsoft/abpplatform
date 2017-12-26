@@ -83,17 +83,7 @@
                                                                     
                                                                     
                                                                 </c:forEach></table>
-                                                                
-                                                                
-                                                                
-                                                               <%-- <display:table name="${senerio.value}" class="table table-bordered"  requestURI="totalreport.io"  pagesize="5">
-                                                                    <display:column property="snquestion" title="Question"  style="word-break:break-all;"/>
-                                                                    <display:column property="answerstatus" title="Answer Status" />
-                                                                    <display:column property="actualmarks" title="Actual Marks" />
-                                                                    <display:column property="scoredmarks" title="Scored Marks" />
-                                                                </display:table>--%>
-
-                                                            </td> </tr>
+                                                             </td> </tr>
 
                                                     </c:forEach>
                                                 </table>     

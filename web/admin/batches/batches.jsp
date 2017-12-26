@@ -267,6 +267,10 @@
             }
             function callResultNOS(id) {
                 alert(id);
+                var sscid = $("#ssc_id option:selected").text();
+                var qpid = $("#qpid option:selected").text();
+                var qpackid = $("#qpid").val();
+                window.location.href = "<%=request.getContextPath()%>/admin/batches/noswiseResult.io?batchid=" + id + "&sscid=" + sscid + "&qpid=" + qpid + "&qpackid=" + qpackid;
 
             }
 

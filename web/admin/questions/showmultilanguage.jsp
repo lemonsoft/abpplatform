@@ -25,8 +25,7 @@
         <script src="<%=request.getContextPath()%>/assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
         <script src="<%=request.getContextPath()%>/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
         <!-- END PAGE LEVEL PLUGINS -->
-        <script type="text/javascript"
-        src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script type="text/javascript"  src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
         <!--[if lte IE 9]>
             <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>    
             <script type="text/javascript" src="js/jquery.placeholder.min.js"></script>
@@ -45,8 +44,6 @@
 
 
             function editQuestion(id) {
-
-
                 if (id) {
 
                     $.ajax({

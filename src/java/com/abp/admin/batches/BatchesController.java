@@ -28,6 +28,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.hibernate.ObjectNotFoundException;
@@ -265,11 +267,11 @@ public class BatchesController {
                 dispbatchres.setMaxpracticalmarks(qpackdao.getTotalpracticalmarks());
                 dispbatchres.setMarkstheory("" + getTotalTheoryMarks(userdao.getID(), new Integer(batchid)));
                 dispbatchres.setMarkspractical("" + calculatePracticalmarksQPackID(new Integer(batchid), new Integer(qpackid), userdao.getID()));
-                int overcutoff=Integer.parseInt(qpackdao.getOverallcutoffmarks());
-                int totalmarks=getTotalTheoryMarks(userdao.getID(), new Integer(batchid))+calculatePracticalmarksQPackID(new Integer(batchid), new Integer(qpackid), userdao.getID());
-                if(totalmarks>overcutoff){
+                int overcutoff = Integer.parseInt(qpackdao.getOverallcutoffmarks());
+                int totalmarks = getTotalTheoryMarks(userdao.getID(), new Integer(batchid)) + calculatePracticalmarksQPackID(new Integer(batchid), new Integer(qpackid), userdao.getID());
+                if (totalmarks > overcutoff) {
                     dispbatchres.setResult("Pass");
-                }else{
+                } else {
                     dispbatchres.setResult("Fail");
                 }
                 resultdata.add(dispbatchres);
@@ -277,18 +279,111 @@ public class BatchesController {
 
         }
         model.addAttribute("batchresult", resultdata);
-        
+
         request.setAttribute("sscid", sscid);
         request.setAttribute("qpid", qpid);
-        
+
         request.getSession().setAttribute("body", "/admin/batches/finalresult.jsp");
         return "admin/common";
 
     }
 
+    @RequestMapping(value = "/noswiseResult", method = RequestMethod.GET)
+    public String noswiseResult(HttpServletRequest request, HttpServletResponse response, Model model) {
+
+        String batchid = request.getParameter("batchid");
+        String sscid = request.getParameter("sscid");
+        String qpid = request.getParameter("qpid");
+        String qpackid = request.getParameter("qpackid");
+
+        ArrayList totalrecords = new ArrayList();
+
+        Map param = new HashMap();
+        param.put("batchid", new Integer(batchid));
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new UserDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                UserDAO userdao = (UserDAO) itr.next();
+                NosWiseResultDAO noswisedao = new NosWiseResultDAO();
+                noswisedao.setEnrollmentno("" + userdao.getEnrollmentno());
+                noswisedao.setTraineename(userdao.getTraineename());
+                ArrayList nosdata = new ArrayList();
+                int alltotaltheorymarks = 0;
+                int alltotalpracticalmarks = 0;
+                int totalmarks = 0;
+                Map param2 = new HashMap();
+                param2.put("qpackid", qpackid);
+                List<SuperBean> records2 = this.superService.listAllObjectsByCriteria(new NOSDAO(), param2);
+                if (records2.size() > 0) {
+                    Iterator itr1 = records2.iterator();
+                    while (itr1.hasNext()) {
+                        NOSDAO nosdao = (NOSDAO) itr1.next();
+
+                        int totaltheorymarks = getNoswiseTheoryResult(userdao.getID(), new Integer(batchid), nosdao.getNosID());
+                        int totalpractmarks = getNoswiseTheoryResult(userdao.getID(), new Integer(batchid), nosdao.getNosID());
+
+                        alltotaltheorymarks = alltotaltheorymarks + totaltheorymarks;
+                        alltotalpracticalmarks = alltotalpracticalmarks + totalpractmarks;
+
+                        int total = totaltheorymarks + totalpractmarks;
+                        totalmarks = totalmarks + total;
+                        NosMarksInfo nosmarksinfo = new NosMarksInfo();
+                        nosmarksinfo.setNosid(nosdao.getNosid());
+                        nosmarksinfo.setNostheory("" + totaltheorymarks);
+                        nosmarksinfo.setNospractical("" + totalpractmarks);
+                        nosmarksinfo.setTotal("" + total);
+                        nosdata.add(nosmarksinfo);
+                    }
+
+                }
+                noswisedao.setNosdetails(nosdata);
+                noswisedao.setTotaltheorymarks("" + alltotaltheorymarks);
+                noswisedao.setTotalpracticalmarks("" + alltotalpracticalmarks);
+                noswisedao.setTotalmarks(""+totalmarks);
+                noswisedao.setResult("Pass");
+                totalrecords.add(noswisedao);
+
+            }
+        }
+
+        ArrayList values = new ArrayList();
+        values.add("Enrollment");
+        values.add("Trainee Name");
+        Map param2 = new HashMap();
+        param2.put("qpackid", qpackid);
+        List<SuperBean> records2 = this.superService.listAllObjectsByCriteria(new NOSDAO(), param2);
+        if (records2.size() > 0) {
+            Iterator itr1 = records2.iterator();
+            while (itr1.hasNext()) {
+                NOSDAO nosdao = (NOSDAO) itr1.next();
+                values.add(nosdao.getNosid() + " Theory");
+                values.add(nosdao.getNosid() + " Practical");
+                values.add(nosdao.getNosid() + " Total");
+            }
+        }
+
+        values.add("Total marks Theory");
+        values.add("Total marks Practical");
+        values.add("Total marks");
+        values.add("Pass/Fail");
+
+        System.out.println(totalrecords.toString());
+
+        model.addAttribute("headers", values);
+        model.addAttribute("totalrecords", totalrecords);
+        model.addAttribute("sscid", sscid);
+        model.addAttribute("qpid", qpid);
+        model.addAttribute("batchid", batchid);
+
+        request.getSession().setAttribute("body", "/admin/batches/noswiseresult.jsp");
+        return "admin/common";
+    }
+
     @RequestMapping(value = "/deleteQuestionPaper", method = {RequestMethod.GET}, produces = "application/json")
     @ResponseBody
-    String deleteQuestionPaper(@RequestParam("batchid") String batchid, HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
+    String deleteQuestionPaper(@RequestParam("batchid") String batchid, HttpServletRequest request,
+            HttpServletResponse response, Model model) throws Exception {
 
         boolean flag = true;
         JSONObject jsonObj = new JSONObject();
@@ -321,7 +416,8 @@ public class BatchesController {
 
     @RequestMapping(value = "/searchbatch", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    String searchbatch(@RequestParam("batchid") String batchid) {
+    String searchbatch(@RequestParam("batchid") String batchid
+    ) {
 
         JSONArray jsonarrbatch = new JSONArray();
         Map param = new HashMap();
@@ -355,7 +451,8 @@ public class BatchesController {
 
     @RequestMapping(value = "/getDistricts", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    String getDistricts(@RequestParam("s_id") String stateid) {
+    String getDistricts(@RequestParam("s_id") String stateid
+    ) {
 
         System.out.println("State ID::" + stateid);
         String districts = getAllDistricts(stateid);
@@ -365,7 +462,10 @@ public class BatchesController {
 
     @RequestMapping(value = "/loadassessor", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    String loadAssessor(HttpServletRequest request, @RequestParam("stateid") String stateid, @RequestParam("districtid") String districtid) {
+    String loadAssessor(HttpServletRequest request,
+            @RequestParam("stateid") String stateid,
+            @RequestParam("districtid") String districtid
+    ) {
 
         String batchid = (String) request.getSession().getAttribute("batchid");
 
@@ -377,7 +477,9 @@ public class BatchesController {
     }
 
     @RequestMapping(value = "/asignassessor", method = RequestMethod.GET)
-    public String asignassessor(HttpServletRequest request, HttpServletResponse response, Model model) {
+    public String asignassessor(HttpServletRequest request, HttpServletResponse response,
+            Model model
+    ) {
 
         String assessorid = request.getParameter("assid");
         String batchid = (String) request.getSession().getAttribute("batchid");
@@ -388,7 +490,8 @@ public class BatchesController {
     }
 
     @RequestMapping(value = "/asignQuestionPaper", method = RequestMethod.GET)
-    public String asignQuestionPaper(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
+    public String asignQuestionPaper(HttpServletRequest request, HttpServletResponse response,
+            Model model) throws Exception {
 
         boolean flag = true;
         String qpaperid = request.getParameter("qpaperid");
@@ -425,7 +528,8 @@ public class BatchesController {
 
     @RequestMapping(value = "/checkBatchID", method = RequestMethod.GET)
     public @ResponseBody
-    String checkBatchID(@RequestParam("batchid") String batchid) {
+    String checkBatchID(@RequestParam("batchid") String batchid
+    ) {
         String status = "avail";
         boolean flag = false;
         try {
@@ -807,4 +911,87 @@ public class BatchesController {
         return totalscoredmarks;
 
     }
+
+    private int getNoswiseTheoryResult(int userid, int batchid, int getnosid) {
+
+        int totaltheorymarks = 0;
+
+        Map param = new HashMap();
+        param.put("batchid", batchid);
+        param.put("userid", userid);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new UserResultDetailDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                UserResultDetailDAO usrdao = (UserResultDetailDAO) itr.next();
+                Map param1 = new HashMap();
+                param1.put("userresultdetailid", usrdao.getID());
+                param1.put("userid", userid);
+                List<SuperBean> records1 = this.superService.listAllObjectsByCriteria(new TheoryWiseResultDAO(), param1);
+                Iterator itr1 = records1.iterator();
+                while (itr1.hasNext()) {
+
+                    TheoryWiseResultDAO theorydao = (TheoryWiseResultDAO) itr1.next();
+
+                    int questid = theorydao.getQuestionid();
+                    QuestionDAO questiondao = (QuestionDAO) this.superService.getObjectById(new QuestionDAO(), questid);
+                    int nosid = questiondao.getNosid();
+                    if (getnosid == nosid) {
+                        totaltheorymarks = totaltheorymarks + questiondao.getMarks();
+                    }
+
+                }
+
+            }
+        }
+
+        return totaltheorymarks;
+    }
+
+    private int getNoswisePracticalResult(int userid, int batchid, int getnosid) {
+
+        int totalpractmarks = 0;
+        Map param = new HashMap();
+        param.put("batchid", batchid);
+        param.put("userid", userid);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new UserResultDetailDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                UserResultDetailDAO usrdao = (UserResultDetailDAO) itr.next();
+                Map param1 = new HashMap();
+                param1.put("userresultdetailid", usrdao.getID());
+                param1.put("userid", userid);
+                List<SuperBean> records1 = this.superService.listAllObjectsByCriteria(new PracticalWiseresultDAO(), param1);
+                Iterator itr1 = records1.iterator();
+                while (itr1.hasNext()) {
+
+                    PracticalWiseresultDAO practicaldao = (PracticalWiseresultDAO) itr1.next();
+
+                    int questid = practicaldao.getQuestionid();
+                    PCWithMarksDAO questiondao = (PCWithMarksDAO) this.superService.getObjectById(new PCWithMarksDAO(), questid);
+
+                    int pcid = questiondao.getPcid();
+                    int nosid = getNosIDByPCID(pcid);
+                    if (getnosid == nosid) {
+
+                        totalpractmarks = totalpractmarks + questiondao.getMarks();
+                    }
+
+                }
+
+            }
+        }
+
+        return totalpractmarks;
+    }
+
+    private int getNosIDByPCID(int pcid) {
+
+        PCDAO pcdao = (PCDAO) this.superService.getObjectById(new PCDAO(), pcid);
+        int nosid = Integer.parseInt(pcdao.getNosid());
+
+        return nosid;
+    }
+
 }

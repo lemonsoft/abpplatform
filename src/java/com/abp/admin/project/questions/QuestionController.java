@@ -5,7 +5,7 @@
  */
 package com.abp.admin.project.questions;
 
-import com.abp.admin.batches.UserDAO;
+
 import com.abp.admin.language.LanguageDAO;
 import com.abp.admin.qualificationpack.NOSDAO;
 import com.abp.admin.qualificationpack.PCDAO;
@@ -14,7 +14,6 @@ import com.abp.admin.ssc.SSCDAO;
 import com.abp.superdao.SuperBean;
 import com.abp.superservice.SuperService;
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -747,7 +746,7 @@ public class QuestionController {
         return "admin/common";
     }
 
-    @RequestMapping(value = "/getMultiQuestion", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/getMultiQuestion", method = RequestMethod.GET, produces = "application/json;charset=utf-8")
     public @ResponseBody
     String getMultiQuestion(@RequestParam("mqid") String mqid, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
