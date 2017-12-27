@@ -3,16 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.abp.security.services;
-
-import com.abp.security.model.User;
+package com.auth.parts2;
 
 /**
  *
  * @author ss
  */
-public interface UserService {
-    User findById(int id);
+public interface RoleDAO {
      
-    User findBySso(String sso);
+    public Role getRole(int id);
+ 
 }

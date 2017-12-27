@@ -113,7 +113,7 @@
                             <div class="hor-menu  ">
                                 <ul class="nav navbar-nav">
                                     <li aria-haspopup="true" class="menu-dropdown classic-menu-dropdown active">
-                                        <a href="javascript:;"> Dashboard
+                                        <a href="<%=request.getContextPath()%>/admin/dashboard/init.io"> Dashboard
                                             <span class="arrow"></span>
                                         </a>
 
@@ -130,7 +130,7 @@
                                                         <div class="col-md-4">
                                                             <ul class="mega-menu-submenu">
                                                                 <li>
-                                                                    <a href="<%=request.getContextPath()%>/admin/#"> Assessment Location </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/location/init.io"> Assessment Location </a>
                                                                 </li>
                                                                 <li>
                                                                     <a href="<%=request.getContextPath()%>/admin/monitor/init.io">Monitor Assessment </a>

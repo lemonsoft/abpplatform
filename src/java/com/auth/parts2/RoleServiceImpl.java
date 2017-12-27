@@ -3,29 +3,25 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.abp.security.services;
+package com.auth.parts2;
 
-import com.abp.security.dao.UserDao;
-import com.abp.security.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
- 
 
- 
-@Service("userService")
+/**
+ *
+ * @author ss
+ */
+@Service
 @Transactional
-public class UserServiceImpl implements UserService{
- 
+public class RoleServiceImpl implements RoleService {
+     
     @Autowired
-    private UserDao dao;
+    private RoleDAO roleDAO;
  
-    public User findById(int id) {
-        return dao.findById(id);
-    }
- 
-    public User findBySso(String sso) {
-        return dao.findBySSO(sso);
+    public Role getRole(int id) {
+        return roleDAO.getRole(id);
     }
  
 }

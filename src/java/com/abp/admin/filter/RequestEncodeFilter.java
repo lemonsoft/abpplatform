@@ -49,6 +49,9 @@ public class RequestEncodeFilter implements Filter {
 
         request.setCharacterEncoding("UTF8");
         response.setCharacterEncoding("UTF8");
+        response.setHeader("Pragma", "no-cache");
+        response.setHeader("Cache-Control", "no-cache");
+        response.setDateHeader("Expires", 0);
         //Setting the character set for the response
     }
 

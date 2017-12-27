@@ -3,12 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.auth;
+package com.auth.parts2;
 
 /**
  *
  * @author ss
  */
-public interface UserDao {
-   User findByUserName(String username);
+public interface UserService {
+     
+    public Userss getUser(String login);
+ 
 }
