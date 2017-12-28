@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/admin/qualificationpack")
 public class QualificationPackController {
 
+    private static final Logger logger = Logger.getLogger(QualificationPackController.class);
     private SuperService superService;
 
     @Autowired(required = true)
@@ -49,10 +51,15 @@ public class QualificationPackController {
 
     @RequestMapping(value = "/init", method = RequestMethod.GET)
     public String init(HttpServletRequest request, HttpServletResponse response, Model model) {
-        model.addAttribute("qualificationpack", new QualificationPackDAO());
 
-        model.addAttribute("ssc", getSectorSkillCouncil());
-        model.addAttribute("qpack", getSectorSkillCouncil());
+        try {
+            model.addAttribute("qualificationpack", new QualificationPackDAO());
+
+            model.addAttribute("ssc", getSectorSkillCouncil());
+            model.addAttribute("qpack", getSectorSkillCouncil());
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         request.getSession().setAttribute("body", "/admin/qualificationpack/qualificationpack.jsp");
         return "admin/common";
     }
@@ -61,15 +68,17 @@ public class QualificationPackController {
     public String openaddqp(HttpServletRequest request, HttpServletResponse response, Model model) {
 
         String sscid = request.getParameter("sscid");
-        QualificationPackDAO beanObj = new QualificationPackDAO();
-        beanObj.setSsc_id(sscid);
-        model.addAttribute("qualificationpack", beanObj);
+        try {
+            QualificationPackDAO beanObj = new QualificationPackDAO();
+            beanObj.setSsc_id(sscid);
+            model.addAttribute("qualificationpack", beanObj);
 
-        System.out.println("Getting ssc_id  " + sscid);
-        model.addAttribute("action", "add.io");
-
-        model.addAttribute("mode", "add");
-
+            System.out.println("Getting ssc_id  " + sscid);
+            model.addAttribute("action", "add.io");
+            model.addAttribute("mode", "add");
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         request.getSession().setAttribute("body", "/admin/qualificationpack/addqp.jsp");
         return "admin/commonmodal";
     }
@@ -78,15 +87,19 @@ public class QualificationPackController {
     public String openaddnos(HttpServletRequest request, HttpServletResponse response, Model model) {
 
         String qpid = request.getParameter("qpid");
-        NOSDAO beanObj = new NOSDAO();
-        beanObj.setQpackid(qpid);
-        model.addAttribute("nosdao", beanObj);
+        try {
+            NOSDAO beanObj = new NOSDAO();
+            beanObj.setQpackid(qpid);
+            model.addAttribute("nosdao", beanObj);
 
-        System.out.println("Getting qpid  " + qpid);
-        model.addAttribute("action", "add.io");
+            System.out.println("Getting qpid  " + qpid);
+            model.addAttribute("action", "add.io");
 
-        model.addAttribute("mode", "add");
+            model.addAttribute("mode", "add");
 
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         request.getSession().setAttribute("body", "/admin/qualificationpack/addnos.jsp");
         return "admin/commonmodal";
     }
@@ -97,27 +110,31 @@ public class QualificationPackController {
         String nosid = request.getParameter("nosid");
         String qpackid = request.getParameter("qpid");
 
-        NOSDAO nosdao = (NOSDAO) this.superService.getObjectById(new NOSDAO(), new Integer(nosid));
-        String getnosid = nosdao.getNosid();
+        try {
+            NOSDAO nosdao = (NOSDAO) this.superService.getObjectById(new NOSDAO(), new Integer(nosid));
+            String getnosid = nosdao.getNosid();
 
-        Map param = new HashMap();
-        param.put("nosid", nosid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PCDAO(), param);
+            Map param = new HashMap();
+            param.put("nosid", nosid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PCDAO(), param);
 
-        int size = records.size() + 1;
-        String makePCID = getnosid + "_PC" + size;
-        PCDAO beanObj = new PCDAO();
-        beanObj.setNosid(nosid);
-        beanObj.setPcid(makePCID);
-        beanObj.setQpackid(new Integer(qpackid));
+            int size = records.size() + 1;
+            String makePCID = getnosid + "_PC" + size;
+            PCDAO beanObj = new PCDAO();
+            beanObj.setNosid(nosid);
+            beanObj.setPcid(makePCID);
+            beanObj.setQpackid(new Integer(qpackid));
 
-        model.addAttribute("pcdao", beanObj);
+            model.addAttribute("pcdao", beanObj);
 
-        System.out.println("Getting nosid  " + nosid);
-        model.addAttribute("action", "add.io");
+            System.out.println("Getting nosid  " + nosid);
+            model.addAttribute("action", "add.io");
 
-        model.addAttribute("mode", "add");
+            model.addAttribute("mode", "add");
 
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         request.getSession().setAttribute("body", "/admin/qualificationpack/addpc.jsp");
         return "admin/commonmodal";
     }
@@ -140,19 +157,23 @@ public class QualificationPackController {
 
         String status = "Record Save Successfully";
 
-        QualificationPackDAO beanObj = new QualificationPackDAO();
-        beanObj.setQpackid(qpackid);
-        beanObj.setQpackname(qpackname);
-        beanObj.setQpacklevel(qpacklevel);
-        beanObj.setTotaltheorymarks(totaltheorymarks);
-        beanObj.setTotalpracticalmarks(totalpracticalmarks);
-        beanObj.setTotalmarks(totalmarks);
-        beanObj.setTheorycutoffmarks(theorycutoffmarks);
-        beanObj.setPracticalcutoffmarks(practicalcutoffmarks);
-        beanObj.setOverallcutoffmarks(overallcutoffmarks);
-        beanObj.setWeightedavgmarks(weightedavgmarks);
-        beanObj.setSscid(ssid);
-        this.superService.saveObject(beanObj);
+        try {
+            QualificationPackDAO beanObj = new QualificationPackDAO();
+            beanObj.setQpackid(qpackid);
+            beanObj.setQpackname(qpackname);
+            beanObj.setQpacklevel(qpacklevel);
+            beanObj.setTotaltheorymarks(totaltheorymarks);
+            beanObj.setTotalpracticalmarks(totalpracticalmarks);
+            beanObj.setTotalmarks(totalmarks);
+            beanObj.setTheorycutoffmarks(theorycutoffmarks);
+            beanObj.setPracticalcutoffmarks(practicalcutoffmarks);
+            beanObj.setOverallcutoffmarks(overallcutoffmarks);
+            beanObj.setWeightedavgmarks(weightedavgmarks);
+            beanObj.setSscid(ssid);
+            this.superService.saveObject(beanObj);
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         System.out.println("goin to save...." + ssid);
         return status;
     }
@@ -165,15 +186,19 @@ public class QualificationPackController {
 
         String status = "Record Save Successfully";
 
-        NOSDAO beanObj = new NOSDAO();
-        beanObj.setNosid(nosid);
-        beanObj.setNosname(nosname);
-        beanObj.setTheorycutoffmarks(theorycutoffmarks);
-        beanObj.setPracticalcutoffmarks(practicalcutoffmarks);
-        beanObj.setOverallcutoffmarks(overallcutoffmarks);
-        beanObj.setWeightedavgmarks(weightedavgmarks);
-        beanObj.setQpackid(qpid);
-        this.superService.saveObject(beanObj);
+        try {
+            NOSDAO beanObj = new NOSDAO();
+            beanObj.setNosid(nosid);
+            beanObj.setNosname(nosname);
+            beanObj.setTheorycutoffmarks(theorycutoffmarks);
+            beanObj.setPracticalcutoffmarks(practicalcutoffmarks);
+            beanObj.setOverallcutoffmarks(overallcutoffmarks);
+            beanObj.setWeightedavgmarks(weightedavgmarks);
+            beanObj.setQpackid(qpid);
+            this.superService.saveObject(beanObj);
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         System.out.println("goin to save...." + nosid);
         return status;
     }
@@ -185,16 +210,20 @@ public class QualificationPackController {
             @RequestParam("overallcutoffmarks") String overallcutoffmarks) {
 
         String status = "Record Save Successfully";
-        System.out.println("goin to save...." + pcname);
-        PCDAO beanObj = new PCDAO();
-        beanObj.setPcid(pcid);
-        beanObj.setPcname(pcname);
-        beanObj.setTheorycutoffmarks(theorycutoffmarks);
-        beanObj.setPracticalcutoffmarks(practicalcutoffmarks);
-        beanObj.setOverallcutoffmarks(overallcutoffmarks);
-        beanObj.setNosid(nosid);
-        beanObj.setQpackid(new Integer(qpackid));
-        this.superService.saveObject(beanObj);
+        try {
+            System.out.println("goin to save...." + pcname);
+            PCDAO beanObj = new PCDAO();
+            beanObj.setPcid(pcid);
+            beanObj.setPcname(pcname);
+            beanObj.setTheorycutoffmarks(theorycutoffmarks);
+            beanObj.setPracticalcutoffmarks(practicalcutoffmarks);
+            beanObj.setOverallcutoffmarks(overallcutoffmarks);
+            beanObj.setNosid(nosid);
+            beanObj.setQpackid(new Integer(qpackid));
+            this.superService.saveObject(beanObj);
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         System.out.println("goin to save...." + pcid);
         return status;
     }
@@ -203,13 +232,16 @@ public class QualificationPackController {
     public String initUpdateQP(HttpServletRequest request, HttpServletResponse response, Model model) {
 
         String recid = request.getParameter("recid");
-        QualificationPackDAO beanObj = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(recid));
-        beanObj.setSsc_id(beanObj.getSscid());
-        beanObj.setTheorycutoffmarks(beanObj.getTheorycutoffmarks());
-        model.addAttribute("qualificationpack", beanObj);
-        model.addAttribute("action", "updateqp.io");
-        model.addAttribute("mode", "update");
-
+        try {
+            QualificationPackDAO beanObj = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(recid));
+            beanObj.setSsc_id(beanObj.getSscid());
+            beanObj.setTheorycutoffmarks(beanObj.getTheorycutoffmarks());
+            model.addAttribute("qualificationpack", beanObj);
+            model.addAttribute("action", "updateqp.io");
+            model.addAttribute("mode", "update");
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         request.getSession().setAttribute("body", "/admin/qualificationpack/addqp.jsp");
         return "admin/commonmodal";
     }
@@ -223,19 +255,23 @@ public class QualificationPackController {
             @RequestParam("overallcutoffmarks") String overallcutoffmarks, @RequestParam("weightedavgmarks") String weightedavgmarks) {
 
         String status = "Record Update Successfully";
-        QualificationPackDAO beanObj = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(qpid));
-        beanObj.setQpackid(qpackid);
-        beanObj.setQpackname(qpackname);
-        beanObj.setQpacklevel(qpacklevel);
-        beanObj.setTotaltheorymarks(totaltheorymarks);
-        beanObj.setTotalpracticalmarks(totalpracticalmarks);
-        beanObj.setTotalmarks(totalmarks);
-        beanObj.setTheorycutoffmarks(theorycutoffmarks);
-        beanObj.setPracticalcutoffmarks(practicalcutoffmarks);
-        beanObj.setOverallcutoffmarks(overallcutoffmarks);
-        beanObj.setWeightedavgmarks(weightedavgmarks);
-        //beanObj.setSscid(ssid);
-        this.superService.updateObject(beanObj);
+        try {
+            QualificationPackDAO beanObj = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(qpid));
+            beanObj.setQpackid(qpackid);
+            beanObj.setQpackname(qpackname);
+            beanObj.setQpacklevel(qpacklevel);
+            beanObj.setTotaltheorymarks(totaltheorymarks);
+            beanObj.setTotalpracticalmarks(totalpracticalmarks);
+            beanObj.setTotalmarks(totalmarks);
+            beanObj.setTheorycutoffmarks(theorycutoffmarks);
+            beanObj.setPracticalcutoffmarks(practicalcutoffmarks);
+            beanObj.setOverallcutoffmarks(overallcutoffmarks);
+            beanObj.setWeightedavgmarks(weightedavgmarks);
+            //beanObj.setSscid(ssid);
+            this.superService.updateObject(beanObj);
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         System.out.println("goin to save...." + qpid);
         return status;
     }
@@ -244,137 +280,144 @@ public class QualificationPackController {
     public @ResponseBody
     String deleteqp(@RequestParam("qpid") String qpid, HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        QualificationPackDAO qpObj = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(qpid));
+        try {
+            QualificationPackDAO qpObj = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(qpid));
 
-        System.out.println("qpack id " + qpid);
+            System.out.println("qpack id " + qpid);
 
-        Map param = new HashMap();
-        param.put("qpackid", qpid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new NOSDAO(), param);
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                NOSDAO nosdata = (NOSDAO) itr.next();
-                System.out.println("Getting nos id" + nosdata.getNosID());
+            Map param = new HashMap();
+            param.put("qpackid", qpid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new NOSDAO(), param);
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    NOSDAO nosdata = (NOSDAO) itr.next();
+                    System.out.println("Getting nos id" + nosdata.getNosID());
 
-                /*
+                    /*
                 Delete PC By NOS ID
-                 */
-                Map paramnos = new HashMap();
-                paramnos.put("nosid", "" + nosdata.getNosID());
-                List<SuperBean> recordspc = this.superService.listAllObjectsByCriteria(new PCDAO(), paramnos);
-                if (recordspc.size() > 0) {
-                    Iterator itrpc = recordspc.iterator();
-                    while (itrpc.hasNext()) {
-                        PCDAO pcdata = (PCDAO) itrpc.next();
+                     */
+                    Map paramnos = new HashMap();
+                    paramnos.put("nosid", "" + nosdata.getNosID());
+                    List<SuperBean> recordspc = this.superService.listAllObjectsByCriteria(new PCDAO(), paramnos);
+                    if (recordspc.size() > 0) {
+                        Iterator itrpc = recordspc.iterator();
+                        while (itrpc.hasNext()) {
+                            PCDAO pcdata = (PCDAO) itrpc.next();
 
-                        /*
+                            /*
                             Delete Question By PC ID
-                         */
-                        Map paramquestion = new HashMap();
-                        paramquestion.put("pcid", pcdata.getPcID());
-                        List<SuperBean> questions = this.superService.listAllObjectsByCriteria(new QuestionDAO(), paramquestion);
-                        if (questions.size() > 0) {
-                            Iterator itrquestion = questions.iterator();
-                            while (itrquestion.hasNext()) {
-                                QuestionDAO questiondata = (QuestionDAO) itrquestion.next();
+                             */
+                            Map paramquestion = new HashMap();
+                            paramquestion.put("pcid", pcdata.getPcID());
+                            List<SuperBean> questions = this.superService.listAllObjectsByCriteria(new QuestionDAO(), paramquestion);
+                            if (questions.size() > 0) {
+                                Iterator itrquestion = questions.iterator();
+                                while (itrquestion.hasNext()) {
+                                    QuestionDAO questiondata = (QuestionDAO) itrquestion.next();
 
-                                /*
+                                    /*
                                     Delete Multilanguage Question By Question ID
-                                 */
-                                Map multilangquestion = new HashMap();
-                                multilangquestion.put("pcid", pcdata.getPcID());
-                                List<SuperBean> multilangquestions = this.superService.listAllObjectsByCriteria(new MultiLangQuestionDAO(), multilangquestion);
-                                if (multilangquestions.size() > 0) {
-                                    Iterator itrmultiquestion = multilangquestions.iterator();
-                                    while (itrmultiquestion.hasNext()) {
-                                        MultiLangQuestionDAO multilangquestiondata = (MultiLangQuestionDAO) itrquestion.next();
-                                        this.superService.deleteObject(multilangquestiondata);
+                                     */
+                                    Map multilangquestion = new HashMap();
+                                    multilangquestion.put("pcid", pcdata.getPcID());
+                                    List<SuperBean> multilangquestions = this.superService.listAllObjectsByCriteria(new MultiLangQuestionDAO(), multilangquestion);
+                                    if (multilangquestions.size() > 0) {
+                                        Iterator itrmultiquestion = multilangquestions.iterator();
+                                        while (itrmultiquestion.hasNext()) {
+                                            MultiLangQuestionDAO multilangquestiondata = (MultiLangQuestionDAO) itrquestion.next();
+                                            this.superService.deleteObject(multilangquestiondata);
 
+                                        }
                                     }
+                                    this.superService.deleteObject(questiondata);
                                 }
-                                this.superService.deleteObject(questiondata);
                             }
-                        }
 
-                        /*
+                            /*
                             Delete TheoryMMQQuestion By PC ID
-                         */
-                        Map theoryquestion = new HashMap();
-                        theoryquestion.put("pcid", pcdata.getPcID());
-                        List<SuperBean> theoryquestions = this.superService.listAllObjectsByCriteria(new TheoryPCIDWithMarks(), theoryquestion);
-                        if (theoryquestions.size() > 0) {
-                            Iterator itrtheoryquestion = theoryquestions.iterator();
-                            while (itrtheoryquestion.hasNext()) {
-                                TheoryPCIDWithMarks theoryquestiondata = (TheoryPCIDWithMarks) itrtheoryquestion.next();
+                             */
+                            Map theoryquestion = new HashMap();
+                            theoryquestion.put("pcid", pcdata.getPcID());
+                            List<SuperBean> theoryquestions = this.superService.listAllObjectsByCriteria(new TheoryPCIDWithMarks(), theoryquestion);
+                            if (theoryquestions.size() > 0) {
+                                Iterator itrtheoryquestion = theoryquestions.iterator();
+                                while (itrtheoryquestion.hasNext()) {
+                                    TheoryPCIDWithMarks theoryquestiondata = (TheoryPCIDWithMarks) itrtheoryquestion.next();
 
-                                this.superService.deleteObject(theoryquestiondata);
+                                    this.superService.deleteObject(theoryquestiondata);
+                                }
                             }
-                        }
 
-                        /*
+                            /*
                             Delete PracticalMMQQuestion By PC ID
-                         */
-                        Map practicalquestion = new HashMap();
-                        practicalquestion.put("pcid", pcdata.getPcID());
-                        List<SuperBean> practicalquestions = this.superService.listAllObjectsByCriteria(new PCWithMarksDAO(), practicalquestion);
-                        if (practicalquestions.size() > 0) {
-                            Iterator itrpracticalquestion = practicalquestions.iterator();
-                            while (itrpracticalquestion.hasNext()) {
-                                PCWithMarksDAO practicalquestiondata = (PCWithMarksDAO) itrpracticalquestion.next();
+                             */
+                            Map practicalquestion = new HashMap();
+                            practicalquestion.put("pcid", pcdata.getPcID());
+                            List<SuperBean> practicalquestions = this.superService.listAllObjectsByCriteria(new PCWithMarksDAO(), practicalquestion);
+                            if (practicalquestions.size() > 0) {
+                                Iterator itrpracticalquestion = practicalquestions.iterator();
+                                while (itrpracticalquestion.hasNext()) {
+                                    PCWithMarksDAO practicalquestiondata = (PCWithMarksDAO) itrpracticalquestion.next();
 
-                                this.superService.deleteObject(practicalquestiondata);
+                                    this.superService.deleteObject(practicalquestiondata);
+                                }
                             }
+
+                            this.superService.deleteObject(pcdata);
+                        }
+                    }
+                    this.superService.deleteObject(nosdata);
+                }
+
+            }
+            Map batchparam = new HashMap();
+            batchparam.put("qpackid", qpid);
+            List<SuperBean> batchrecords = this.superService.listAllObjectsByCriteria(new BatchesDAO(), batchparam);
+            if (batchrecords.size() > 0) {
+                Iterator batchitr = batchrecords.iterator();
+                while (batchitr.hasNext()) {
+                    BatchesDAO batchdata = (BatchesDAO) batchitr.next();
+                    Map userparam = new HashMap();
+                    userparam.put("batchid", batchdata.getBatch_id());
+                    List<SuperBean> userrecords = this.superService.listAllObjectsByCriteria(new UserDAO(), userparam);
+                    if (userrecords.size() > 0) {
+                        Iterator useritr = userrecords.iterator();
+                        while (useritr.hasNext()) {
+                            UserDAO userdata = (UserDAO) useritr.next();
+                            this.superService.deleteObject(userdata);
                         }
 
-                        this.superService.deleteObject(pcdata);
-                    }
-                }
-                this.superService.deleteObject(nosdata);
-            }
-
-        }
-        Map batchparam = new HashMap();
-        batchparam.put("qpackid", qpid);
-        List<SuperBean> batchrecords = this.superService.listAllObjectsByCriteria(new BatchesDAO(), batchparam);
-        if (batchrecords.size() > 0) {
-            Iterator batchitr = batchrecords.iterator();
-            while (batchitr.hasNext()) {
-                BatchesDAO batchdata = (BatchesDAO) batchitr.next();
-                Map userparam = new HashMap();
-                userparam.put("batchid", batchdata.getBatch_id());
-                List<SuperBean> userrecords = this.superService.listAllObjectsByCriteria(new UserDAO(), userparam);
-                if (userrecords.size() > 0) {
-                    Iterator useritr = userrecords.iterator();
-                    while (useritr.hasNext()) {
-                        UserDAO userdata = (UserDAO) useritr.next();
-                        this.superService.deleteObject(userdata);
+                        this.superService.deleteObject(batchdata);
                     }
 
-                    this.superService.deleteObject(batchdata);
                 }
-
             }
-        }
-        this.superService.deleteObject(qpObj);
+            this.superService.deleteObject(qpObj);
 
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         return "delete";
     }
 
     @RequestMapping(value = "/initUpdatenos", method = RequestMethod.GET)
-    public String initUpdatenos(HttpServletRequest request, HttpServletResponse response,
-            Model model
-    ) {
+    public String initUpdatenos(HttpServletRequest request, HttpServletResponse response, Model model) {
 
         String recid = request.getParameter("recid");
-        NOSDAO beanObj = (NOSDAO) this.superService.getObjectById(new NOSDAO(), new Integer(recid));
 
-        beanObj.setQpackid(beanObj.getQpackid());
-        model.addAttribute("nosdao", beanObj);
+        try {
+            NOSDAO beanObj = (NOSDAO) this.superService.getObjectById(new NOSDAO(), new Integer(recid));
 
-        model.addAttribute("action", "updatenos.io");
-        model.addAttribute("mode", "update");
+            beanObj.setQpackid(beanObj.getQpackid());
+            model.addAttribute("nosdao", beanObj);
 
+            model.addAttribute("action", "updatenos.io");
+            model.addAttribute("mode", "update");
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         request.getSession().setAttribute("body", "/admin/qualificationpack/addnos.jsp");
         return "admin/commonmodal";
     }
@@ -388,21 +431,26 @@ public class QualificationPackController {
             @RequestParam("theorycutoffmarks") String theorycutoffmarks,
             @RequestParam("practicalcutoffmarks") String practicalcutoffmarks,
             @RequestParam("overallcutoffmarks") String overallcutoffmarks,
-            @RequestParam("weightedavgmarks") String weightedavgmarks
-    ) {
+            @RequestParam("weightedavgmarks") String weightedavgmarks) {
 
         String status = "Record Update Successfully";
-        NOSDAO beanObj = (NOSDAO) this.superService.getObjectById(new NOSDAO(), new Integer(nosID));
-        beanObj.setQpackid(qpackid);
-        beanObj.setNosid(nosid);
-        beanObj.setNosname(nosname);
 
-        beanObj.setTheorycutoffmarks(theorycutoffmarks);
-        beanObj.setPracticalcutoffmarks(practicalcutoffmarks);
-        beanObj.setOverallcutoffmarks(overallcutoffmarks);
-        beanObj.setWeightedavgmarks(weightedavgmarks);
-        //beanObj.setSscid(ssid);
-        this.superService.updateObject(beanObj);
+        try {
+            NOSDAO beanObj = (NOSDAO) this.superService.getObjectById(new NOSDAO(), new Integer(nosID));
+            beanObj.setQpackid(qpackid);
+            beanObj.setNosid(nosid);
+            beanObj.setNosname(nosname);
+
+            beanObj.setTheorycutoffmarks(theorycutoffmarks);
+            beanObj.setPracticalcutoffmarks(practicalcutoffmarks);
+            beanObj.setOverallcutoffmarks(overallcutoffmarks);
+            beanObj.setWeightedavgmarks(weightedavgmarks);
+            //beanObj.setSscid(ssid);
+            this.superService.updateObject(beanObj);
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         System.out.println("goin to save...." + nosID);
         return status;
     }
@@ -410,102 +458,106 @@ public class QualificationPackController {
     @RequestMapping(value = "/deletenos", method = RequestMethod.GET)
     public @ResponseBody
     String deletenos(@RequestParam("nosid") String nosid, HttpServletRequest request,
-            HttpServletResponse response, Model model
-    ) {
+            HttpServletResponse response, Model model) {
 
-        NOSDAO nosObj = (NOSDAO) this.superService.getObjectById(new NOSDAO(), new Integer(nosid));
+        try {
+            NOSDAO nosObj = (NOSDAO) this.superService.getObjectById(new NOSDAO(), new Integer(nosid));
 
-        /*
+            /*
                 Delete PC By NOS ID
-         */
-        Map paramnos = new HashMap();
-        paramnos.put("nosid", "" + nosObj.getNosID());
-        List<SuperBean> recordspc = this.superService.listAllObjectsByCriteria(new PCDAO(), paramnos);
-        if (recordspc.size() > 0) {
-            Iterator itrpc = recordspc.iterator();
-            while (itrpc.hasNext()) {
-                PCDAO pcdata = (PCDAO) itrpc.next();
+             */
+            Map paramnos = new HashMap();
+            paramnos.put("nosid", "" + nosObj.getNosID());
+            List<SuperBean> recordspc = this.superService.listAllObjectsByCriteria(new PCDAO(), paramnos);
+            if (recordspc.size() > 0) {
+                Iterator itrpc = recordspc.iterator();
+                while (itrpc.hasNext()) {
+                    PCDAO pcdata = (PCDAO) itrpc.next();
 
-                /*
+                    /*
                             Delete Question By PC ID
-                 */
-                Map paramquestion = new HashMap();
-                paramquestion.put("pcid", pcdata.getPcID());
-                List<SuperBean> questions = this.superService.listAllObjectsByCriteria(new QuestionDAO(), paramquestion);
-                if (questions.size() > 0) {
-                    Iterator itrquestion = questions.iterator();
-                    while (itrquestion.hasNext()) {
-                        QuestionDAO questiondata = (QuestionDAO) itrquestion.next();
+                     */
+                    Map paramquestion = new HashMap();
+                    paramquestion.put("pcid", pcdata.getPcID());
+                    List<SuperBean> questions = this.superService.listAllObjectsByCriteria(new QuestionDAO(), paramquestion);
+                    if (questions.size() > 0) {
+                        Iterator itrquestion = questions.iterator();
+                        while (itrquestion.hasNext()) {
+                            QuestionDAO questiondata = (QuestionDAO) itrquestion.next();
 
-                        /*
+                            /*
                                     Delete Multilanguage Question By Question ID
-                         */
-                        Map multilangquestion = new HashMap();
-                        multilangquestion.put("pcid", pcdata.getPcID());
-                        List<SuperBean> multilangquestions = this.superService.listAllObjectsByCriteria(new MultiLangQuestionDAO(), multilangquestion);
-                        if (multilangquestions.size() > 0) {
-                            Iterator itrmultiquestion = multilangquestions.iterator();
-                            while (itrmultiquestion.hasNext()) {
-                                MultiLangQuestionDAO multilangquestiondata = (MultiLangQuestionDAO) itrquestion.next();
-                                this.superService.deleteObject(multilangquestiondata);
+                             */
+                            Map multilangquestion = new HashMap();
+                            multilangquestion.put("pcid", pcdata.getPcID());
+                            List<SuperBean> multilangquestions = this.superService.listAllObjectsByCriteria(new MultiLangQuestionDAO(), multilangquestion);
+                            if (multilangquestions.size() > 0) {
+                                Iterator itrmultiquestion = multilangquestions.iterator();
+                                while (itrmultiquestion.hasNext()) {
+                                    MultiLangQuestionDAO multilangquestiondata = (MultiLangQuestionDAO) itrquestion.next();
+                                    this.superService.deleteObject(multilangquestiondata);
 
+                                }
                             }
+                            this.superService.deleteObject(questiondata);
                         }
-                        this.superService.deleteObject(questiondata);
                     }
-                }
 
-                /*
+                    /*
                             Delete TheoryMMQQuestion By PC ID
-                 */
-                Map theoryquestion = new HashMap();
-                theoryquestion.put("pcid", pcdata.getPcID());
-                List<SuperBean> theoryquestions = this.superService.listAllObjectsByCriteria(new TheoryPCIDWithMarks(), theoryquestion);
-                if (theoryquestions.size() > 0) {
-                    Iterator itrtheoryquestion = theoryquestions.iterator();
-                    while (itrtheoryquestion.hasNext()) {
-                        TheoryPCIDWithMarks theoryquestiondata = (TheoryPCIDWithMarks) itrtheoryquestion.next();
+                     */
+                    Map theoryquestion = new HashMap();
+                    theoryquestion.put("pcid", pcdata.getPcID());
+                    List<SuperBean> theoryquestions = this.superService.listAllObjectsByCriteria(new TheoryPCIDWithMarks(), theoryquestion);
+                    if (theoryquestions.size() > 0) {
+                        Iterator itrtheoryquestion = theoryquestions.iterator();
+                        while (itrtheoryquestion.hasNext()) {
+                            TheoryPCIDWithMarks theoryquestiondata = (TheoryPCIDWithMarks) itrtheoryquestion.next();
 
-                        this.superService.deleteObject(theoryquestiondata);
+                            this.superService.deleteObject(theoryquestiondata);
+                        }
                     }
-                }
 
-                /*
+                    /*
                             Delete PracticalMMQQuestion By PC ID
-                 */
-                Map practicalquestion = new HashMap();
-                practicalquestion.put("pcid", pcdata.getPcID());
-                List<SuperBean> practicalquestions = this.superService.listAllObjectsByCriteria(new PCWithMarksDAO(), practicalquestion);
-                if (practicalquestions.size() > 0) {
-                    Iterator itrpracticalquestion = practicalquestions.iterator();
-                    while (itrpracticalquestion.hasNext()) {
-                        PCWithMarksDAO practicalquestiondata = (PCWithMarksDAO) itrpracticalquestion.next();
+                     */
+                    Map practicalquestion = new HashMap();
+                    practicalquestion.put("pcid", pcdata.getPcID());
+                    List<SuperBean> practicalquestions = this.superService.listAllObjectsByCriteria(new PCWithMarksDAO(), practicalquestion);
+                    if (practicalquestions.size() > 0) {
+                        Iterator itrpracticalquestion = practicalquestions.iterator();
+                        while (itrpracticalquestion.hasNext()) {
+                            PCWithMarksDAO practicalquestiondata = (PCWithMarksDAO) itrpracticalquestion.next();
 
-                        this.superService.deleteObject(practicalquestiondata);
+                            this.superService.deleteObject(practicalquestiondata);
+                        }
                     }
-                }
 
-                this.superService.deleteObject(pcdata);
+                    this.superService.deleteObject(pcdata);
+                }
             }
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
 
         return "delete";
     }
 
     @RequestMapping(value = "/initUpdatepc", method = RequestMethod.GET)
-    public String initUpdatepc(HttpServletRequest request, HttpServletResponse response,
-            Model model
-    ) {
+    public String initUpdatepc(HttpServletRequest request, HttpServletResponse response, Model model) {
 
         String recid = request.getParameter("recid");
-        PCDAO beanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), new Integer(recid));
+        try {
 
-        beanObj.setNosid(beanObj.getNosid());
-        model.addAttribute("pcdao", beanObj);
+            PCDAO beanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), new Integer(recid));
+            beanObj.setNosid(beanObj.getNosid());
+            model.addAttribute("pcdao", beanObj);
+            model.addAttribute("action", "updatepc.io");
+            model.addAttribute("mode", "update");
 
-        model.addAttribute("action", "updatepc.io");
-        model.addAttribute("mode", "update");
-
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         request.getSession().setAttribute("body", "/admin/qualificationpack/addpc.jsp");
         return "admin/commonmodal";
     }
@@ -518,93 +570,98 @@ public class QualificationPackController {
             @RequestParam("pcname") String pcname,
             @RequestParam("theorycutoffmarks") String theorycutoffmarks,
             @RequestParam("practicalcutoffmarks") String practicalcutoffmarks,
-            @RequestParam("overallcutoffmarks") String overallcutoffmarks
-    ) {
+            @RequestParam("overallcutoffmarks") String overallcutoffmarks) {
 
         String status = "Record Update Successfully";
-        PCDAO beanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), new Integer(pcID));
-        beanObj.setNosid(nosid);
-        beanObj.setPcid(pcid);
-        beanObj.setPcname(pcname);
+        try {
+            PCDAO beanObj = (PCDAO) this.superService.getObjectById(new PCDAO(), new Integer(pcID));
+            beanObj.setNosid(nosid);
+            beanObj.setPcid(pcid);
+            beanObj.setPcname(pcname);
 
-        beanObj.setTheorycutoffmarks(theorycutoffmarks);
-        beanObj.setPracticalcutoffmarks(practicalcutoffmarks);
-        beanObj.setOverallcutoffmarks(overallcutoffmarks);
+            beanObj.setTheorycutoffmarks(theorycutoffmarks);
+            beanObj.setPracticalcutoffmarks(practicalcutoffmarks);
+            beanObj.setOverallcutoffmarks(overallcutoffmarks);
 
-        //beanObj.setSscid(ssid);
-        this.superService.updateObject(beanObj);
-        System.out.println("goin to save...." + pcID);
+            //beanObj.setSscid(ssid);
+            this.superService.updateObject(beanObj);
+            System.out.println("goin to save...." + pcID);
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         return status;
     }
 
     @RequestMapping(value = "/deletepc", method = RequestMethod.GET)
     public @ResponseBody
-    String deletepc(@RequestParam("pcid") String pcid, HttpServletRequest request,
-            HttpServletResponse response, Model model
-    ) {
+    String deletepc(@RequestParam("pcid") String pcid, HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        PCDAO pcdata = (PCDAO) this.superService.getObjectById(new PCDAO(), new Integer(pcid));
-        /*
+        try {
+            PCDAO pcdata = (PCDAO) this.superService.getObjectById(new PCDAO(), new Integer(pcid));
+            /*
                             Delete Question By PC ID
-         */
-        Map paramquestion = new HashMap();
-        paramquestion.put("pcid", pcdata.getPcID());
-        List<SuperBean> questions = this.superService.listAllObjectsByCriteria(new QuestionDAO(), paramquestion);
-        if (questions.size() > 0) {
-            Iterator itrquestion = questions.iterator();
-            while (itrquestion.hasNext()) {
-                QuestionDAO questiondata = (QuestionDAO) itrquestion.next();
+             */
+            Map paramquestion = new HashMap();
+            paramquestion.put("pcid", pcdata.getPcID());
+            List<SuperBean> questions = this.superService.listAllObjectsByCriteria(new QuestionDAO(), paramquestion);
+            if (questions.size() > 0) {
+                Iterator itrquestion = questions.iterator();
+                while (itrquestion.hasNext()) {
+                    QuestionDAO questiondata = (QuestionDAO) itrquestion.next();
 
-                /*
+                    /*
                                     Delete Multilanguage Question By Question ID
-                 */
-                Map multilangquestion = new HashMap();
-                multilangquestion.put("pcid", pcdata.getPcID());
-                List<SuperBean> multilangquestions = this.superService.listAllObjectsByCriteria(new MultiLangQuestionDAO(), multilangquestion);
-                if (multilangquestions.size() > 0) {
-                    Iterator itrmultiquestion = multilangquestions.iterator();
-                    while (itrmultiquestion.hasNext()) {
-                        MultiLangQuestionDAO multilangquestiondata = (MultiLangQuestionDAO) itrquestion.next();
-                        this.superService.deleteObject(multilangquestiondata);
+                     */
+                    Map multilangquestion = new HashMap();
+                    multilangquestion.put("pcid", pcdata.getPcID());
+                    List<SuperBean> multilangquestions = this.superService.listAllObjectsByCriteria(new MultiLangQuestionDAO(), multilangquestion);
+                    if (multilangquestions.size() > 0) {
+                        Iterator itrmultiquestion = multilangquestions.iterator();
+                        while (itrmultiquestion.hasNext()) {
+                            MultiLangQuestionDAO multilangquestiondata = (MultiLangQuestionDAO) itrquestion.next();
+                            this.superService.deleteObject(multilangquestiondata);
 
+                        }
                     }
+                    this.superService.deleteObject(questiondata);
                 }
-                this.superService.deleteObject(questiondata);
             }
-        }
 
-        /*
+            /*
                             Delete TheoryMMQQuestion By PC ID
-         */
-        Map theoryquestion = new HashMap();
-        theoryquestion.put("pcid", pcdata.getPcID());
-        List<SuperBean> theoryquestions = this.superService.listAllObjectsByCriteria(new TheoryPCIDWithMarks(), theoryquestion);
-        if (theoryquestions.size() > 0) {
-            Iterator itrtheoryquestion = theoryquestions.iterator();
-            while (itrtheoryquestion.hasNext()) {
-                TheoryPCIDWithMarks theoryquestiondata = (TheoryPCIDWithMarks) itrtheoryquestion.next();
+             */
+            Map theoryquestion = new HashMap();
+            theoryquestion.put("pcid", pcdata.getPcID());
+            List<SuperBean> theoryquestions = this.superService.listAllObjectsByCriteria(new TheoryPCIDWithMarks(), theoryquestion);
+            if (theoryquestions.size() > 0) {
+                Iterator itrtheoryquestion = theoryquestions.iterator();
+                while (itrtheoryquestion.hasNext()) {
+                    TheoryPCIDWithMarks theoryquestiondata = (TheoryPCIDWithMarks) itrtheoryquestion.next();
 
-                this.superService.deleteObject(theoryquestiondata);
+                    this.superService.deleteObject(theoryquestiondata);
+                }
             }
-        }
 
-        /*
+            /*
                             Delete PracticalMMQQuestion By PC ID
-         */
-        Map practicalquestion = new HashMap();
-        practicalquestion.put("pcid", pcdata.getPcID());
-        List<SuperBean> practicalquestions = this.superService.listAllObjectsByCriteria(new PCWithMarksDAO(), practicalquestion);
-        if (practicalquestions.size() > 0) {
-            Iterator itrpracticalquestion = practicalquestions.iterator();
-            while (itrpracticalquestion.hasNext()) {
-                PCWithMarksDAO practicalquestiondata = (PCWithMarksDAO) itrpracticalquestion.next();
+             */
+            Map practicalquestion = new HashMap();
+            practicalquestion.put("pcid", pcdata.getPcID());
+            List<SuperBean> practicalquestions = this.superService.listAllObjectsByCriteria(new PCWithMarksDAO(), practicalquestion);
+            if (practicalquestions.size() > 0) {
+                Iterator itrpracticalquestion = practicalquestions.iterator();
+                while (itrpracticalquestion.hasNext()) {
+                    PCWithMarksDAO practicalquestiondata = (PCWithMarksDAO) itrpracticalquestion.next();
 
-                this.superService.deleteObject(practicalquestiondata);
+                    this.superService.deleteObject(practicalquestiondata);
+                }
             }
+
+            this.superService.deleteObject(pcdata);
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
-
-        this.superService.deleteObject(pcdata);
-
         return "delete";
     }
 
@@ -626,6 +683,7 @@ public class QualificationPackController {
             }
         } catch (Exception e) {
             status = "notavail";
+            logger.error("This is Error message", e);
         }
 
         return status;
@@ -649,6 +707,7 @@ public class QualificationPackController {
             }
         } catch (Exception e) {
             status = "notavail";
+            logger.error("This is Error message", e);
         }
 
         return status;
@@ -666,32 +725,34 @@ public class QualificationPackController {
 
     @RequestMapping(value = "/checkTheoryMarks", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    String checkTheoryMarks(@RequestParam("qpackid") String qpackid,
-            @RequestParam("nosID") String nosID,
-            @RequestParam("theorymarks") String theorymarks
-    ) {
+    String checkTheoryMarks(@RequestParam("qpackid") String qpackid, @RequestParam("nosID") String nosID, @RequestParam("theorymarks") String theorymarks) {
 
         JSONObject jsonObj = new JSONObject();
-        int totaltheroycutoffmarks = 0;
-        QualificationPackDAO qpack = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(qpackid));
-        Map param = new HashMap();
-        param.put("qpackid", qpackid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new NOSDAO(), param);
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                NOSDAO nosdao = (NOSDAO) itr.next();
-                if (new Integer(nosID) != nosdao.getNosID()) {
-                    totaltheroycutoffmarks = totaltheroycutoffmarks + new Integer(nosdao.getTheorycutoffmarks());
-                }
+        try {
+            int totaltheroycutoffmarks = 0;
+            QualificationPackDAO qpack = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(qpackid));
+            Map param = new HashMap();
+            param.put("qpackid", qpackid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new NOSDAO(), param);
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    NOSDAO nosdao = (NOSDAO) itr.next();
+                    if (new Integer(nosID) != nosdao.getNosID()) {
+                        totaltheroycutoffmarks = totaltheroycutoffmarks + new Integer(nosdao.getTheorycutoffmarks());
+                    }
 
+                }
             }
-        }
-        int sumofallmarks = totaltheroycutoffmarks + new Integer(theorymarks);
-        if (sumofallmarks > new Integer(qpack.getTotaltheorymarks())) {
-            jsonObj.append("status", "greator");
-        } else {
-            jsonObj.append("status", "smaller");
+            int sumofallmarks = totaltheroycutoffmarks + new Integer(theorymarks);
+            if (sumofallmarks > new Integer(qpack.getTotaltheorymarks())) {
+                jsonObj.append("status", "greator");
+            } else {
+                jsonObj.append("status", "smaller");
+            }
+        } catch (Exception e) {
+
+            logger.error("This is Error message", e);
         }
 
         return jsonObj.toString();
@@ -699,32 +760,34 @@ public class QualificationPackController {
 
     @RequestMapping(value = "/checkPracticalMarks", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    String checkPracticalMarks(@RequestParam("qpackid") String qpackid,
-            @RequestParam("nosID") String nosID,
-            @RequestParam("practicalmarks") String practicalmarks
-    ) {
+    String checkPracticalMarks(@RequestParam("qpackid") String qpackid, @RequestParam("nosID") String nosID, @RequestParam("practicalmarks") String practicalmarks) {
 
         JSONObject jsonObj = new JSONObject();
-        int totalpracticalcutoffmarks = 0;
-        QualificationPackDAO qpack = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(qpackid));
-        Map param = new HashMap();
-        param.put("qpackid", qpackid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new NOSDAO(), param);
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                NOSDAO nosdao = (NOSDAO) itr.next();
-                if (new Integer(nosID) != nosdao.getNosID()) {
-                    totalpracticalcutoffmarks = totalpracticalcutoffmarks + new Integer(nosdao.getPracticalcutoffmarks());
-                }
+        try {
+            int totalpracticalcutoffmarks = 0;
+            QualificationPackDAO qpack = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(qpackid));
+            Map param = new HashMap();
+            param.put("qpackid", qpackid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new NOSDAO(), param);
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    NOSDAO nosdao = (NOSDAO) itr.next();
+                    if (new Integer(nosID) != nosdao.getNosID()) {
+                        totalpracticalcutoffmarks = totalpracticalcutoffmarks + new Integer(nosdao.getPracticalcutoffmarks());
+                    }
 
+                }
             }
-        }
-        int sumofallmarks = totalpracticalcutoffmarks + new Integer(practicalmarks);
-        if (sumofallmarks > new Integer(qpack.getTotalpracticalmarks())) {
-            jsonObj.append("status", "greator");
-        } else {
-            jsonObj.append("status", "smaller");
+            int sumofallmarks = totalpracticalcutoffmarks + new Integer(practicalmarks);
+            if (sumofallmarks > new Integer(qpack.getTotalpracticalmarks())) {
+                jsonObj.append("status", "greator");
+            } else {
+                jsonObj.append("status", "smaller");
+            }
+        } catch (Exception e) {
+
+            logger.error("This is Error message", e);
         }
 
         return jsonObj.toString();
@@ -732,32 +795,34 @@ public class QualificationPackController {
 
     @RequestMapping(value = "/checkPCTheoryMarks", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    String checkPCTheoryMarks(@RequestParam("nosid") String nosid,
-            @RequestParam("pcID") String pcID,
-            @RequestParam("theorymarks") String theorymarks
-    ) {
+    String checkPCTheoryMarks(@RequestParam("nosid") String nosid, @RequestParam("pcID") String pcID, @RequestParam("theorymarks") String theorymarks) {
 
         JSONObject jsonObj = new JSONObject();
-        int totaltheroycutoffmarks = 0;
-        NOSDAO nosdao = (NOSDAO) this.superService.getObjectById(new NOSDAO(), new Integer(nosid));
-        Map param = new HashMap();
-        param.put("nosid", nosid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PCDAO(), param);
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                PCDAO pcdao = (PCDAO) itr.next();
-                if (new Integer(pcID) != pcdao.getPcID()) {
-                    totaltheroycutoffmarks = totaltheroycutoffmarks + new Integer(pcdao.getTheorycutoffmarks());
-                }
+        try {
+            int totaltheroycutoffmarks = 0;
+            NOSDAO nosdao = (NOSDAO) this.superService.getObjectById(new NOSDAO(), new Integer(nosid));
+            Map param = new HashMap();
+            param.put("nosid", nosid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PCDAO(), param);
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    PCDAO pcdao = (PCDAO) itr.next();
+                    if (new Integer(pcID) != pcdao.getPcID()) {
+                        totaltheroycutoffmarks = totaltheroycutoffmarks + new Integer(pcdao.getTheorycutoffmarks());
+                    }
 
+                }
             }
-        }
-        int sumofallmarks = totaltheroycutoffmarks + new Integer(theorymarks);
-        if (sumofallmarks > new Integer(nosdao.getTheorycutoffmarks())) {
-            jsonObj.append("status", "greator");
-        } else {
-            jsonObj.append("status", "smaller");
+            int sumofallmarks = totaltheroycutoffmarks + new Integer(theorymarks);
+            if (sumofallmarks > new Integer(nosdao.getTheorycutoffmarks())) {
+                jsonObj.append("status", "greator");
+            } else {
+                jsonObj.append("status", "smaller");
+            }
+        } catch (Exception e) {
+
+            logger.error("This is Error message", e);
         }
 
         return jsonObj.toString();
@@ -765,32 +830,35 @@ public class QualificationPackController {
 
     @RequestMapping(value = "/checkPCPracticalMarks", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    String checkPCPracticalMarks(@RequestParam("nosid") String nosid,
-            @RequestParam("pcID") String pcID,
-            @RequestParam("practicalmarks") String practicalmarks
-    ) {
+    String checkPCPracticalMarks(@RequestParam("nosid") String nosid, @RequestParam("pcID") String pcID, @RequestParam("practicalmarks") String practicalmarks) {
 
         JSONObject jsonObj = new JSONObject();
-        int totalpracticalcutoffmarks = 0;
-        NOSDAO nosdao = (NOSDAO) this.superService.getObjectById(new NOSDAO(), new Integer(nosid));
-        Map param = new HashMap();
-        param.put("nosid", nosid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PCDAO(), param);
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                PCDAO pcdao = (PCDAO) itr.next();
-                if (new Integer(pcID) != pcdao.getPcID()) {
-                    totalpracticalcutoffmarks = totalpracticalcutoffmarks + new Integer(pcdao.getPracticalcutoffmarks());
-                }
 
+        try {
+            int totalpracticalcutoffmarks = 0;
+            NOSDAO nosdao = (NOSDAO) this.superService.getObjectById(new NOSDAO(), new Integer(nosid));
+            Map param = new HashMap();
+            param.put("nosid", nosid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PCDAO(), param);
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    PCDAO pcdao = (PCDAO) itr.next();
+                    if (new Integer(pcID) != pcdao.getPcID()) {
+                        totalpracticalcutoffmarks = totalpracticalcutoffmarks + new Integer(pcdao.getPracticalcutoffmarks());
+                    }
+
+                }
             }
-        }
-        int sumofallmarks = totalpracticalcutoffmarks + new Integer(practicalmarks);
-        if (sumofallmarks > new Integer(nosdao.getPracticalcutoffmarks())) {
-            jsonObj.append("status", "greator");
-        } else {
-            jsonObj.append("status", "smaller");
+            int sumofallmarks = totalpracticalcutoffmarks + new Integer(practicalmarks);
+            if (sumofallmarks > new Integer(nosdao.getPracticalcutoffmarks())) {
+                jsonObj.append("status", "greator");
+            } else {
+                jsonObj.append("status", "smaller");
+            }
+        } catch (Exception e) {
+
+            logger.error("This is Error message", e);
         }
 
         return jsonObj.toString();
@@ -798,30 +866,33 @@ public class QualificationPackController {
 
     @RequestMapping(value = "/checkMaximumMarks", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    String checkMaximumMarks(@RequestParam("qpackid") String qpackid,
-            @RequestParam("maximummarks") String maximummarks
-    ) {
+    String checkMaximumMarks(@RequestParam("qpackid") String qpackid, @RequestParam("maximummarks") String maximummarks) {
 
         int totalpcmarks = 0;
         JSONObject jsonObj = new JSONObject();
-        QualificationPackDAO qpack = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(qpackid));
-        Map param = new HashMap();
-        param.put("qpackid", new Integer(qpackid));
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PCDAO(), param);
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                PCDAO pcdao = (PCDAO) itr.next();
-                totalpcmarks = totalpcmarks + new Integer(pcdao.getOverallcutoffmarks());
+        try {
+            QualificationPackDAO qpack = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(qpackid));
+            Map param = new HashMap();
+            param.put("qpackid", new Integer(qpackid));
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PCDAO(), param);
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    PCDAO pcdao = (PCDAO) itr.next();
+                    totalpcmarks = totalpcmarks + new Integer(pcdao.getOverallcutoffmarks());
+                }
             }
-        }
-        System.out.println("working...");
-        if ((new Integer(maximummarks) + totalpcmarks) > new Integer(qpack.getTotalmarks())) {
-            jsonObj.append("status", "yes");
-            System.out.println("Yes");
-        } else {
-            jsonObj.append("status", "no");
-            System.out.println("no");
+            System.out.println("working...");
+            if ((new Integer(maximummarks) + totalpcmarks) > new Integer(qpack.getTotalmarks())) {
+                jsonObj.append("status", "yes");
+                System.out.println("Yes");
+            } else {
+                jsonObj.append("status", "no");
+                System.out.println("no");
+            }
+        } catch (Exception e) {
+
+            logger.error("This is Error message", e);
         }
 
         return jsonObj.toString();
@@ -829,54 +900,65 @@ public class QualificationPackController {
 
     @RequestMapping(value = "/getQPcakDetails", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    String getQPcakDetails(@RequestParam("qp_id") String qpid
-    ) {
+    String getQPcakDetails(@RequestParam("qp_id") String qpid) {
 
         System.out.println("QP ID::" + qpid);
         JSONArray jsonarr = new JSONArray();
-        QualificationPackDAO qpack = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(qpid));
-        JSONObject jsonObj = new JSONObject();
-        jsonObj.append("ID", qpack.getQpid());
-        jsonObj.append("QpackID", qpack.getQpackid());
-        jsonObj.append("QpackName", qpack.getQpackname());
-        jsonObj.append("QpackLevel", qpack.getQpacklevel());
-        jsonObj.append("Totaltheorymarks", qpack.getTheorycutoffmarks());
-        jsonObj.append("Totalpracticalmarks", qpack.getTotalpracticalmarks());
-        jsonObj.append("Totalmarks", qpack.getTotalmarks());
-        jsonObj.append("Theorycutoffmarks", qpack.getTheorycutoffmarks());
-        jsonObj.append("Practicalcutoffmarks", qpack.getPracticalcutoffmarks());
-        jsonObj.append("Overallcutoffmarks", qpack.getOverallcutoffmarks());
-        jsonObj.append("Weightedavgmarks", qpack.getWeightedavgmarks());
-        System.out.println("Getting data " + qpack.getQpacklevel());
+        try {
+            QualificationPackDAO qpack = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(qpid));
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.append("ID", qpack.getQpid());
+            jsonObj.append("QpackID", qpack.getQpackid());
+            jsonObj.append("QpackName", qpack.getQpackname());
+            jsonObj.append("QpackLevel", qpack.getQpacklevel());
+            jsonObj.append("Totaltheorymarks", qpack.getTheorycutoffmarks());
+            jsonObj.append("Totalpracticalmarks", qpack.getTotalpracticalmarks());
+            jsonObj.append("Totalmarks", qpack.getTotalmarks());
+            jsonObj.append("Theorycutoffmarks", qpack.getTheorycutoffmarks());
+            jsonObj.append("Practicalcutoffmarks", qpack.getPracticalcutoffmarks());
+            jsonObj.append("Overallcutoffmarks", qpack.getOverallcutoffmarks());
+            jsonObj.append("Weightedavgmarks", qpack.getWeightedavgmarks());
+            System.out.println("Getting data " + qpack.getQpacklevel());
 
-        JSONArray nosjsonarray = getNOSByID(qpid);
-        JSONArray pcjsonarray = getAllPC();
+            JSONArray nosjsonarray = getNOSByID(qpid);
+            JSONArray pcjsonarray = getAllPC();
 
-        jsonarr.put(jsonObj);
-        jsonarr.put(nosjsonarray);
-        jsonarr.put(pcjsonarray);
+            jsonarr.put(jsonObj);
+            jsonarr.put(nosjsonarray);
+            jsonarr.put(pcjsonarray);
+        } catch (Exception e) {
+
+            logger.error("This is Error message", e);
+        }
         return jsonarr.toString();
     }
 
     public String getQualificationPackByID(String sscid) {
 
         JSONObject jsonObj = new JSONObject();
-        JSONArray jsonarr = new JSONArray();
-        Map param = new HashMap();
-        param.put("sscid", sscid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QualificationPackDAO(), param);
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                QualificationPackDAO data = (QualificationPackDAO) itr.next();
-                if (data.getSscid().equals(sscid)) {
-                    jsonObj.append("ID", data.getQpid());
-                    jsonObj.append("NAME", data.getQpackname());
-                    jsonarr.put(jsonObj);
-                }
 
-                jsonObj = new JSONObject();
+        JSONArray jsonarr = new JSONArray();
+
+        try {
+            Map param = new HashMap();
+            param.put("sscid", sscid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QualificationPackDAO(), param);
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    QualificationPackDAO data = (QualificationPackDAO) itr.next();
+                    if (data.getSscid().equals(sscid)) {
+                        jsonObj.append("ID", data.getQpid());
+                        jsonObj.append("NAME", data.getQpackname());
+                        jsonarr.put(jsonObj);
+                    }
+
+                    jsonObj = new JSONObject();
+                }
             }
+        } catch (Exception e) {
+
+            logger.error("This is Error message", e);
         }
 
         return jsonarr.toString();
@@ -886,26 +968,32 @@ public class QualificationPackController {
 
         JSONObject jsonObj = new JSONObject();
         JSONArray jsonarr = new JSONArray();
-        Map param = new HashMap();
-        param.put("qpackid", qpid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new NOSDAO(), param);
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                NOSDAO data = (NOSDAO) itr.next();
-                if (data.getQpackid().equals(qpid)) {
-                    jsonObj.append("ID", data.getNosID());
-                    jsonObj.append("NOSID", data.getNosid());
-                    jsonObj.append("NOSNAME", data.getNosname());
-                    jsonObj.append("Theorycutoffmarks", data.getTheorycutoffmarks());
-                    jsonObj.append("Practicalcutoffmarks", data.getPracticalcutoffmarks());
-                    jsonObj.append("Overallcutoffmarks", data.getOverallcutoffmarks());
-                    jsonObj.append("Weightedavgmarks", data.getWeightedavgmarks());
-                    jsonarr.put(jsonObj);
-                }
 
-                jsonObj = new JSONObject();
+        try {
+            Map param = new HashMap();
+            param.put("qpackid", qpid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new NOSDAO(), param);
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    NOSDAO data = (NOSDAO) itr.next();
+                    if (data.getQpackid().equals(qpid)) {
+                        jsonObj.append("ID", data.getNosID());
+                        jsonObj.append("NOSID", data.getNosid());
+                        jsonObj.append("NOSNAME", data.getNosname());
+                        jsonObj.append("Theorycutoffmarks", data.getTheorycutoffmarks());
+                        jsonObj.append("Practicalcutoffmarks", data.getPracticalcutoffmarks());
+                        jsonObj.append("Overallcutoffmarks", data.getOverallcutoffmarks());
+                        jsonObj.append("Weightedavgmarks", data.getWeightedavgmarks());
+                        jsonarr.put(jsonObj);
+                    }
+
+                    jsonObj = new JSONObject();
+                }
             }
+        } catch (Exception e) {
+
+            logger.error("This is Error message", e);
         }
 
         return jsonarr;
@@ -916,24 +1004,30 @@ public class QualificationPackController {
         JSONObject jsonObj = new JSONObject();
         JSONArray jsonarr = new JSONArray();
 
-        List<SuperBean> records = this.superService.listAllObjects(new PCDAO());
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                PCDAO data = (PCDAO) itr.next();
+        try {
+            List<SuperBean> records = this.superService.listAllObjects(new PCDAO());
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    PCDAO data = (PCDAO) itr.next();
 
-                jsonObj.append("ID", data.getPcID());
-                jsonObj.append("PCID", data.getPcid());
-                jsonObj.append("PCNAME", data.getPcname());
-                jsonObj.append("Theorycutoffmarks", data.getTheorycutoffmarks());
-                jsonObj.append("Practicalcutoffmarks", data.getPracticalcutoffmarks());
-                jsonObj.append("Overallcutoffmarks", data.getOverallcutoffmarks());
-                jsonObj.append("NOSID", data.getNosid());
+                    jsonObj.append("ID", data.getPcID());
+                    jsonObj.append("PCID", data.getPcid());
+                    jsonObj.append("PCNAME", data.getPcname());
+                    jsonObj.append("Theorycutoffmarks", data.getTheorycutoffmarks());
+                    jsonObj.append("Practicalcutoffmarks", data.getPracticalcutoffmarks());
+                    jsonObj.append("Overallcutoffmarks", data.getOverallcutoffmarks());
+                    jsonObj.append("NOSID", data.getNosid());
 
-                jsonarr.put(jsonObj);
+                    jsonarr.put(jsonObj);
 
-                jsonObj = new JSONObject();
+                    jsonObj = new JSONObject();
+                }
             }
+
+        } catch (Exception e) {
+
+            logger.error("This is Error message", e);
         }
 
         return jsonarr;

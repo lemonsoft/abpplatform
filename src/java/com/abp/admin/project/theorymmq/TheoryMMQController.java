@@ -6,8 +6,6 @@
 package com.abp.admin.project.theorymmq;
 
 import com.abp.admin.language.LanguageDAO;
-import com.abp.admin.project.questions.MultiLangQuestionDAO;
-import com.abp.admin.project.questions.QuestionDAO;
 import com.abp.admin.qualificationpack.PCDAO;
 import com.abp.admin.qualificationpack.QualificationPackDAO;
 import com.abp.admin.ssc.SSCDAO;
@@ -23,6 +21,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -50,6 +49,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/admin/theorymmq")
 public class TheoryMMQController {
 
+    private static final Logger logger = Logger.getLogger(TheoryMMQController.class);
     @Autowired
     private ServletContext servletContext;
 
@@ -77,11 +77,16 @@ public class TheoryMMQController {
     @RequestMapping(value = "/importMMQQuestions", method = RequestMethod.GET)
     public String importQuestions(HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        String qpid = request.getParameter("qpid");
-        model.addAttribute("theorymmq", new TheoryMMQDAO());
+        try {
+            String qpid = request.getParameter("qpid");
+            model.addAttribute("theorymmq", new TheoryMMQDAO());
 
-        model.addAttribute("action", "importQuestionExcel.io");
-        request.getSession().setAttribute("qpid", qpid);
+            model.addAttribute("action", "importQuestionExcel.io");
+            request.getSession().setAttribute("qpid", qpid);
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
 
         request.getSession().setAttribute("body", "/admin/theorymmq/importmmqquestions.jsp");
         return "admin/common";
@@ -329,7 +334,7 @@ public class TheoryMMQController {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("This is Error message", e);
         }
         request.getSession().setAttribute("theorydata", data);
         model.addAttribute("action", "importQuestionExcel.io");
@@ -447,7 +452,7 @@ public class TheoryMMQController {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("This is Error message", e);
         }
         request.getSession().setAttribute("importdata", data);
         model.addAttribute("action", "importMultiLangExcel.io");
@@ -461,19 +466,22 @@ public class TheoryMMQController {
     @RequestMapping(value = "/insertMultiQuestions", method = RequestMethod.GET)
     public String insertMultiQuestions(HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        ArrayList data = (ArrayList) request.getSession().getAttribute("importdata");
-        if (data.size() > 0) {
-            Iterator itr = data.iterator();
-            while (itr.hasNext()) {
-                MultiLangMMQQuestionDAO questiondao = (MultiLangMMQQuestionDAO) itr.next();
-                this.superService.saveObject(questiondao);
-                questiondao.setStatus("Insert Successfully");
+        try {
+            ArrayList data = (ArrayList) request.getSession().getAttribute("importdata");
+            if (data.size() > 0) {
+                Iterator itr = data.iterator();
+                while (itr.hasNext()) {
+                    MultiLangMMQQuestionDAO questiondao = (MultiLangMMQQuestionDAO) itr.next();
+                    this.superService.saveObject(questiondao);
+                    questiondao.setStatus("Insert Successfully");
+                }
             }
+            request.getSession().removeAttribute("importdata");
+            model.addAttribute("action", "importMultiLangExcel.io");
+            model.addAttribute("importdata", data);
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
-        request.getSession().removeAttribute("importdata");
-        model.addAttribute("action", "importMultiLangExcel.io");
-        model.addAttribute("importdata", data);
-
         request.getSession().setAttribute("body", "/admin/theorymmq/importmultilanguage.jsp");
         return "admin/common";
     }
@@ -481,27 +489,30 @@ public class TheoryMMQController {
     @RequestMapping(value = "/openqplang", method = RequestMethod.GET)
     public String openqplang(HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        ArrayList data = new ArrayList();
-        String questionid = request.getParameter("qid");
-        Map param = new HashMap();
-        param.put("question_id", new Integer(questionid));
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new MultiLangMMQQuestionDAO(), param);
-        System.out.println("Get Record Size :" + records.size());
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                MultiLangMMQQuestionDAO dataObj = (MultiLangMMQQuestionDAO) itr.next();
-                if (dataObj.getQuestion_id() == new Integer(questionid)) {
-                    dataObj.setActions("<a href=#  onclick=\"editQuestion('" + dataObj.getId() + "');\">Edit</a>");
-                    data.add(dataObj);
+        try {
+            ArrayList data = new ArrayList();
+            String questionid = request.getParameter("qid");
+            Map param = new HashMap();
+            param.put("question_id", new Integer(questionid));
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new MultiLangMMQQuestionDAO(), param);
+            System.out.println("Get Record Size :" + records.size());
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    MultiLangMMQQuestionDAO dataObj = (MultiLangMMQQuestionDAO) itr.next();
+                    if (dataObj.getQuestion_id() == new Integer(questionid)) {
+                        dataObj.setActions("<a href=#  onclick=\"editQuestion('" + dataObj.getId() + "');\">Edit</a>");
+                        data.add(dataObj);
+                    }
                 }
             }
+            model.addAttribute("multilangquestion", new MultiLangMMQQuestionDAO());
+            model.addAttribute("records", data);
+
+            model.addAttribute("mode", "add");
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
-        model.addAttribute("multilangquestion", new MultiLangMMQQuestionDAO());
-        model.addAttribute("records", data);
-
-        model.addAttribute("mode", "add");
-
         request.getSession().setAttribute("body", "/admin/theorymmq/showmultilanguage.jsp");
         return "admin/commonmodal";
     }
@@ -510,21 +521,26 @@ public class TheoryMMQController {
     public @ResponseBody
     String getMultiQuestion(@RequestParam("mqid") String mqid, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        MultiLangMMQQuestionDAO beanObj = (MultiLangMMQQuestionDAO) this.superService.getObjectById(new MultiLangMMQQuestionDAO(), new Integer(mqid));
         JSONObject jsonObj = new JSONObject();
-        jsonObj.append("ID", beanObj.getId());
-        System.out.println("Hindi converstion ...." + beanObj.getQuestion_title());
+        try {
+            MultiLangMMQQuestionDAO beanObj = (MultiLangMMQQuestionDAO) this.superService.getObjectById(new MultiLangMMQQuestionDAO(), new Integer(mqid));
 
-        jsonObj.append("question_title", beanObj.getQuestion_title());
+            jsonObj.append("ID", beanObj.getId());
+            System.out.println("Hindi converstion ...." + beanObj.getQuestion_title());
 
-        jsonObj.append("option1", beanObj.getOption1());
+            jsonObj.append("question_title", beanObj.getQuestion_title());
 
-        jsonObj.append("option2", beanObj.getOption2());
+            jsonObj.append("option1", beanObj.getOption1());
 
-        jsonObj.append("option3", beanObj.getOption3());
+            jsonObj.append("option2", beanObj.getOption2());
 
-        jsonObj.append("option4", beanObj.getOption4());
+            jsonObj.append("option3", beanObj.getOption3());
 
+            jsonObj.append("option4", beanObj.getOption4());
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         return jsonObj.toString();
     }
 
@@ -542,7 +558,7 @@ public class TheoryMMQController {
         try {
             this.superService.updateObject(beanObj);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("This is Error message", e);
         }
         JSONObject jsonObj = new JSONObject();
         jsonObj.append("status", "update successfully");
@@ -552,40 +568,44 @@ public class TheoryMMQController {
     @RequestMapping(value = "/inserttheorymmq", method = RequestMethod.GET)
     public String insertTheoryMMQ(HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        String qpid = (String) request.getSession().getAttribute("qpid");
-        ArrayList data = (ArrayList) request.getSession().getAttribute("theorydata");
-        if (data.size() > 0) {
-            Iterator itr = data.iterator();
-            while (itr.hasNext()) {
-                TheoryMMQDAO questiondao = (TheoryMMQDAO) itr.next();
-                questiondao.setQpackid(new Integer(qpid));
-                this.superService.saveObject(questiondao);
-                System.out.println("ID after save ::::: " + questiondao.getId());
-                int questionid = questiondao.getId();
-                String pcidwithmark = questiondao.getPcidwithmarks();
-                String pcidandmarks[] = pcidwithmark.split(",");
-                for (int i = 0; i < pcidandmarks.length; i++) {
-                    String pcidmarks = pcidandmarks[i];
-                    int indexopen = pcidmarks.indexOf("(");
-                    int indexlast = pcidmarks.indexOf(")");
-                    String pcid = pcidmarks.substring(0, indexopen);
-                    String marks = pcidmarks.substring(indexopen + 1, indexlast);
+        try {
+            String qpid = (String) request.getSession().getAttribute("qpid");
+            ArrayList data = (ArrayList) request.getSession().getAttribute("theorydata");
+            if (data.size() > 0) {
+                Iterator itr = data.iterator();
+                while (itr.hasNext()) {
+                    TheoryMMQDAO questiondao = (TheoryMMQDAO) itr.next();
+                    questiondao.setQpackid(new Integer(qpid));
+                    this.superService.saveObject(questiondao);
+                    System.out.println("ID after save ::::: " + questiondao.getId());
+                    int questionid = questiondao.getId();
+                    String pcidwithmark = questiondao.getPcidwithmarks();
+                    String pcidandmarks[] = pcidwithmark.split(",");
+                    for (int i = 0; i < pcidandmarks.length; i++) {
+                        String pcidmarks = pcidandmarks[i];
+                        int indexopen = pcidmarks.indexOf("(");
+                        int indexlast = pcidmarks.indexOf(")");
+                        String pcid = pcidmarks.substring(0, indexopen);
+                        String marks = pcidmarks.substring(indexopen + 1, indexlast);
 
-                    System.out.println("pcid :" + pcid + "marks:::" + marks);
-                    TheoryPCIDWithMarks pcidwithmarks = new TheoryPCIDWithMarks();
+                        System.out.println("pcid :" + pcid + "marks:::" + marks);
+                        TheoryPCIDWithMarks pcidwithmarks = new TheoryPCIDWithMarks();
 
-                    pcidwithmarks.setQuestion_id(questionid);
-                    pcidwithmarks.setPcid(getPCIDByName(pcid));
-                    pcidwithmarks.setMarks(new Integer(marks));
-                    this.superService.saveObject(pcidwithmarks);
+                        pcidwithmarks.setQuestion_id(questionid);
+                        pcidwithmarks.setPcid(getPCIDByName(pcid));
+                        pcidwithmarks.setMarks(new Integer(marks));
+                        this.superService.saveObject(pcidwithmarks);
+                    }
+
+                    questiondao.setStatus("Insert Successfully");
                 }
-
-                questiondao.setStatus("Insert Successfully");
             }
+            model.addAttribute("action", "importQuestionExcel.io");
+            model.addAttribute("theorymmq", new TheoryMMQDAO());
+            model.addAttribute("theorydata", data);
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
-        model.addAttribute("action", "importQuestionExcel.io");
-        model.addAttribute("theorymmq", new TheoryMMQDAO());
-        model.addAttribute("theorydata", data);
         request.getSession().setAttribute("body", "/admin/theorymmq/importmmqquestions.jsp");
         return "admin/common";
     }
@@ -594,24 +614,28 @@ public class TheoryMMQController {
     public String initUpdate(HttpServletRequest request, HttpServletResponse response, Model model) {
 
         String recid = request.getParameter("recid");
-        TheoryMMQDAO beanObj = (TheoryMMQDAO) this.superService.getObjectById(new TheoryMMQDAO(), new Integer(recid));
-        String imgurl0 = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/uploaded/questions/" + beanObj.getQuestionimgurl();
-        String imgurl1 = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/uploaded/questions/" + beanObj.getImageurl1();
-        String imgurl2 = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/uploaded/questions/" + beanObj.getImageurl2();
-        String imgurl3 = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/uploaded/questions/" + beanObj.getImageurl3();
-        String imgurl4 = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/uploaded/questions/" + beanObj.getImageurl4();
+        try {
+            TheoryMMQDAO beanObj = (TheoryMMQDAO) this.superService.getObjectById(new TheoryMMQDAO(), new Integer(recid));
+            String imgurl0 = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/uploaded/questions/" + beanObj.getQuestionimgurl();
+            String imgurl1 = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/uploaded/questions/" + beanObj.getImageurl1();
+            String imgurl2 = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/uploaded/questions/" + beanObj.getImageurl2();
+            String imgurl3 = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/uploaded/questions/" + beanObj.getImageurl3();
+            String imgurl4 = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/uploaded/questions/" + beanObj.getImageurl4();
 
-        //beanObj.setImageurl1(imgurl1);
-        model.addAttribute("imgurl0", imgurl0);
-        model.addAttribute("imgurl1", imgurl1);
-        model.addAttribute("imgurl2", imgurl2);
-        model.addAttribute("imgurl3", imgurl3);
-        model.addAttribute("imgurl4", imgurl4);
+            //beanObj.setImageurl1(imgurl1);
+            model.addAttribute("imgurl0", imgurl0);
+            model.addAttribute("imgurl1", imgurl1);
+            model.addAttribute("imgurl2", imgurl2);
+            model.addAttribute("imgurl3", imgurl3);
+            model.addAttribute("imgurl4", imgurl4);
 
-        model.addAttribute("theorymmq", beanObj);
-        model.addAttribute("action", "update.io");
-        model.addAttribute("mode", "update");
+            model.addAttribute("theorymmq", beanObj);
+            model.addAttribute("action", "update.io");
+            model.addAttribute("mode", "update");
 
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         request.getSession().setAttribute("body", "/admin/theorymmq/addtheorymmq.jsp");
         return "admin/common";
     }
@@ -642,7 +666,7 @@ public class TheoryMMQController {
                 }
                 file.transferTo(destinationFile);
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("This is Error message", e);
             }
         }
         String questionimgurl = beanObj.getQuestionimgurl();
@@ -696,6 +720,7 @@ public class TheoryMMQController {
             this.superService.updateObject(theorydao);
             jsonObj.append("status", "update" + active);
         } catch (Exception e) {
+            logger.error("This is Error message", e);
             jsonObj.append("status", "notupdate" + active);
         }
 
@@ -715,6 +740,7 @@ public class TheoryMMQController {
             jsonObj.append("status", "delete");
         } catch (Exception e) {
             jsonObj.append("status", "notdelete");
+            logger.error("This is Error message", e);
         }
 
         return jsonObj.toString();
@@ -744,21 +770,26 @@ public class TheoryMMQController {
 
         JSONObject jsonObj = new JSONObject();
         JSONArray jsonarr = new JSONArray();
-        Map param = new HashMap();
-        param.put("sscid", sscid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QualificationPackDAO(), param);
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                QualificationPackDAO data = (QualificationPackDAO) itr.next();
-                if (data.getSscid().equals(sscid)) {
-                    jsonObj.append("ID", data.getQpid());
-                    jsonObj.append("NAME", data.getQpackname());
-                    jsonarr.put(jsonObj);
-                }
+        try {
+            Map param = new HashMap();
+            param.put("sscid", sscid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QualificationPackDAO(), param);
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    QualificationPackDAO data = (QualificationPackDAO) itr.next();
+                    if (data.getSscid().equals(sscid)) {
+                        jsonObj.append("ID", data.getQpid());
+                        jsonObj.append("NAME", data.getQpackname());
+                        jsonarr.put(jsonObj);
+                    }
 
-                jsonObj = new JSONObject();
+                    jsonObj = new JSONObject();
+                }
             }
+        } catch (Exception e) {
+            jsonObj.append("status", "notdelete");
+            logger.error("This is Error message", e);
         }
 
         return jsonarr.toString();

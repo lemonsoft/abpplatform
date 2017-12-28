@@ -19,6 +19,7 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -39,6 +40,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/admin/practicalmmq")
 public class PracticalMMQController {
+
+    private static final Logger logger = Logger.getLogger(PracticalMMQController.class);
 
     @Autowired
     private ServletContext servletContext;
@@ -67,19 +70,23 @@ public class PracticalMMQController {
     @RequestMapping(value = "/initadd", method = RequestMethod.GET)
     public String initadd(HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        String qpackid = (String) request.getParameter("qpid");
-        String sscname = (String) request.getParameter("sscname");
-        String qpname = (String) request.getParameter("qpname");
+        try {
+            String qpackid = (String) request.getParameter("qpid");
+            String sscname = (String) request.getParameter("sscname");
+            String qpname = (String) request.getParameter("qpname");
 
-        PracticalMMQDAO pmmqObj = new PracticalMMQDAO();
-        pmmqObj.setQpackid(new Integer(qpackid));
-        model.addAttribute("practicalmmq", pmmqObj);
-        model.addAttribute("action", "add.io");
-        model.addAttribute("mode", "add");
-        request.getSession().setAttribute("sscname", sscname);
-        request.getSession().setAttribute("qpname", qpname);
+            PracticalMMQDAO pmmqObj = new PracticalMMQDAO();
+            pmmqObj.setQpackid(new Integer(qpackid));
+            model.addAttribute("practicalmmq", pmmqObj);
+            model.addAttribute("action", "add.io");
+            model.addAttribute("mode", "add");
+            request.getSession().setAttribute("sscname", sscname);
+            request.getSession().setAttribute("qpname", qpname);
 
-        //request.getSession().setAttribute("body", "/admin/practicalmmq/addsenario.jsp");
+            //request.getSession().setAttribute("body", "/admin/practicalmmq/addsenario.jsp");
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         request.getSession().setAttribute("body", "/admin/testpage/tetspage.jsp");
         return "admin/common";
     }
@@ -87,8 +94,11 @@ public class PracticalMMQController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public String add(@ModelAttribute("practicalmmq") PracticalMMQDAO beanObj, HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        this.superService.saveObject(beanObj);
-
+        try {
+            this.superService.saveObject(beanObj);
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         model.addAttribute("practicalmmq", beanObj);
         model.addAttribute("action", "update.io");
         model.addAttribute("mode", "update");
@@ -104,24 +114,26 @@ public class PracticalMMQController {
         String sscname = (String) request.getParameter("sscname");
         String qpname = (String) request.getParameter("qpname");
         String qpid = (String) request.getParameter("qid");
+        try {
+            PracticalMMQDAO pmmqObj = (PracticalMMQDAO) this.superService.getObjectById(new PracticalMMQDAO(), new Integer(recid));
 
-        PracticalMMQDAO pmmqObj = (PracticalMMQDAO) this.superService.getObjectById(new PracticalMMQDAO(), new Integer(recid));
+            Map param = new HashMap();
+            param.put("senario_id", pmmqObj.getId());
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new SenarioQuestionDAO(), param);
 
-        Map param = new HashMap();
-        param.put("senario_id", pmmqObj.getId());
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new SenarioQuestionDAO(), param);
+            model.addAttribute("records", records);
+            model.addAttribute("practicalmmq", pmmqObj);
+            model.addAttribute("action", "update.io");
+            model.addAttribute("mode", "update");
+            request.getSession().setAttribute("sscname", sscname);
+            request.getSession().setAttribute("qpname", qpname);
 
-        model.addAttribute("records", records);
-        model.addAttribute("practicalmmq", pmmqObj);
-        model.addAttribute("action", "update.io");
-        model.addAttribute("mode", "update");
-        request.getSession().setAttribute("sscname", sscname);
-        request.getSession().setAttribute("qpname", qpname);
+            System.out.println("Stored in session : " + qpid);
 
-        System.out.println("Stored in session : " + qpid);
-
-        request.getSession().setAttribute("qpid", qpid);
-
+            request.getSession().setAttribute("qpid", qpid);
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         request.getSession().setAttribute("body", "/admin/practicalmmq/addsenario.jsp");
         return "admin/common";
     }
@@ -132,16 +144,21 @@ public class PracticalMMQController {
         String recid = request.getParameter("recid");
         String qpid = (String) request.getSession().getAttribute("qpid");
 
-        SenarioQuestionDAO scenarioObj = (SenarioQuestionDAO) this.superService.getObjectById(new SenarioQuestionDAO(), new Integer(recid));
+        try {
+            SenarioQuestionDAO scenarioObj = (SenarioQuestionDAO) this.superService.getObjectById(new SenarioQuestionDAO(), new Integer(recid));
 
-        System.out.println("Getting ID : " + qpid);
-        ArrayList noslist = getNOSByID(qpid, scenarioObj.getId());
-        System.out.println("Size ::::: of List :::" + noslist.size());
-        //JSONArray pcjsonarray = getAllPC();
+            System.out.println("Getting ID : " + qpid);
+            ArrayList noslist = getNOSByID(qpid, scenarioObj.getId());
+            System.out.println("Size ::::: of List :::" + noslist.size());
+            //JSONArray pcjsonarray = getAllPC();
 
-        model.addAttribute("noslist", noslist);
-        model.addAttribute("scenariommq", scenarioObj);
-        model.addAttribute("mode", "update");
+            model.addAttribute("noslist", noslist);
+            model.addAttribute("scenariommq", scenarioObj);
+            model.addAttribute("mode", "update");
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         request.getSession().setAttribute("body", "/admin/practicalmmq/editmapping.jsp");
         return "admin/commonmodal";
     }
@@ -151,35 +168,39 @@ public class PracticalMMQController {
 
         String recid = request.getParameter("recid");
         ArrayList alldata = new ArrayList();
-        Map param = new HashMap();
-        param.put("senario_id", new Integer(recid));
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new SenarioQuestionDAO(), param);
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
+        try {
+            Map param = new HashMap();
+            param.put("senario_id", new Integer(recid));
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new SenarioQuestionDAO(), param);
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
 
-                SenarioQuestionDAO data = (SenarioQuestionDAO) itr.next();
-                Map param2 = new HashMap();
-                param2.put("question_id", data.getId());
-                List<SuperBean> records2 = this.superService.listAllObjectsByCriteria(new PCWithMarksDAO(), param2);
-                if (records2.size() > 0) {
-                    String pcidwithmarks = "";
-                    int totalmarks = 0;
-                    Iterator itr2 = records2.iterator();
-                    while (itr2.hasNext()) {
-                        PCWithMarksDAO data2 = (PCWithMarksDAO) itr2.next();
-                        pcidwithmarks = pcidwithmarks + getPCNameById(data2.getPcid()) + ":(" + data2.getMarks() + "),";
-                        totalmarks = totalmarks + data2.getMarks();
+                    SenarioQuestionDAO data = (SenarioQuestionDAO) itr.next();
+                    Map param2 = new HashMap();
+                    param2.put("question_id", data.getId());
+                    List<SuperBean> records2 = this.superService.listAllObjectsByCriteria(new PCWithMarksDAO(), param2);
+                    if (records2.size() > 0) {
+                        String pcidwithmarks = "";
+                        int totalmarks = 0;
+                        Iterator itr2 = records2.iterator();
+                        while (itr2.hasNext()) {
+                            PCWithMarksDAO data2 = (PCWithMarksDAO) itr2.next();
+                            pcidwithmarks = pcidwithmarks + getPCNameById(data2.getPcid()) + ":(" + data2.getMarks() + "),";
+                            totalmarks = totalmarks + data2.getMarks();
+                        }
+                        data.setPcsselectedmarks(pcidwithmarks);
+                        data.setTotalmarks(totalmarks);
+                        alldata.add(data);
+
                     }
-                    data.setPcsselectedmarks(pcidwithmarks);
-                    data.setTotalmarks(totalmarks);
-                    alldata.add(data);
 
                 }
-
             }
+            model.addAttribute("alldata", alldata);
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
-        model.addAttribute("alldata", alldata);
         request.getSession().setAttribute("body", "/admin/practicalmmq/viewQuestion.jsp");
         return "admin/commonmodal";
     }
@@ -215,7 +236,7 @@ public class PracticalMMQController {
             }
             jsonObjreturn.append("status", "ok");
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("This is Error message", e);
             jsonObjreturn.append("status", "fail");
         }
         return jsonObjreturn.toString();
@@ -282,7 +303,7 @@ public class PracticalMMQController {
 
         } catch (Exception e) {
             status = "notupdate";
-            e.printStackTrace();
+           logger.error("This is Error message", e);
 
         }
         jsonObj.append("status", status);
@@ -303,10 +324,9 @@ public class PracticalMMQController {
             while (itr.hasNext()) {
 
                 PCWithMarksDAO data = (PCWithMarksDAO) itr.next();
-                if(data.getQuestion_id()!=qid){
+                if (data.getQuestion_id() != qid) {
                     sum = sum + data.getMarks();
                 }
-                
 
             }
         }

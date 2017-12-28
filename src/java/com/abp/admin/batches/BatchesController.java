@@ -28,10 +28,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.log4j.Logger;
 import org.hibernate.ObjectNotFoundException;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -55,6 +54,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/admin/batches")
 public class BatchesController {
 
+    private static final Logger logger = Logger.getLogger(BatchesController.class);
     private SuperService superService;
 
     @Autowired(required = true)
@@ -66,11 +66,14 @@ public class BatchesController {
     @RequestMapping(value = "/init", method = RequestMethod.GET)
     public String init(HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        model.addAttribute("batches", new BatchesDAO());
-        model.addAttribute("ssc", getSectorSkillCouncil());
+        try {
+            model.addAttribute("batches", new BatchesDAO());
+            model.addAttribute("ssc", getSectorSkillCouncil());
 
-        model.addAttribute("action", "search.io");
-
+            model.addAttribute("action", "search.io");
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         request.getSession().setAttribute("body", "/admin/batches/batches.jsp");
         return "admin/common";
     }
@@ -78,15 +81,18 @@ public class BatchesController {
     @RequestMapping(value = "/initadd", method = RequestMethod.GET)
     public String initadd(HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        BatchesDAO batches = new BatchesDAO();
-        String recid = request.getParameter("recid");
-        batches.setQpackId(new Integer(recid));
-        model.addAttribute("batches", batches);
-        model.addAttribute("allstates", getAllStatesValues());
-        model.addAttribute("projects", getAllProjectValues());
-        model.addAttribute("action", "add.io");
-        model.addAttribute("mode", "add");
-
+        try {
+            BatchesDAO batches = new BatchesDAO();
+            String recid = request.getParameter("recid");
+            batches.setQpackId(new Integer(recid));
+            model.addAttribute("batches", batches);
+            model.addAttribute("allstates", getAllStatesValues());
+            model.addAttribute("projects", getAllProjectValues());
+            model.addAttribute("action", "add.io");
+            model.addAttribute("mode", "add");
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         request.getSession().setAttribute("body", "/admin/batches/addbatches.jsp");
         return "admin/common";
     }
@@ -94,33 +100,41 @@ public class BatchesController {
     @RequestMapping(value = "/add", method = {RequestMethod.GET, RequestMethod.POST})
     public String add(@ModelAttribute("batches") BatchesDAO beanObj, HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        System.out.println("data ::" + beanObj.getQpackId());
-        this.superService.saveObject(beanObj);
-
+        try {
+            System.out.println("data ::" + beanObj.getQpackId());
+            this.superService.saveObject(beanObj);
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         return "redirect:/admin/batches/init.io";
     }
 
     @RequestMapping(value = "/initupdate", method = RequestMethod.GET)
     public String initupdate(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
 
-        String recid = request.getParameter("recid");
-        BatchesDAO batches = (BatchesDAO) this.superService.getObjectById(new BatchesDAO(), new Integer(recid));
-        String startdate = batches.getAssessmentStartDate();
-        String enddate = batches.getAssessmentEndDate();
+        try {
+            String recid = request.getParameter("recid");
+            BatchesDAO batches = (BatchesDAO) this.superService.getObjectById(new BatchesDAO(), new Integer(recid));
+            String startdate = batches.getAssessmentStartDate();
+            String enddate = batches.getAssessmentEndDate();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyy-mm-dd HH:mm:ss.s");
-        Date jodastarttime = sdf.parse(startdate);        //dtf.parseDateTime(startdate);
-        Date jodaendtime = sdf.parse(enddate);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyy-mm-dd HH:mm:ss.s");
+            Date jodastarttime = sdf.parse(startdate);        //dtf.parseDateTime(startdate);
+            Date jodaendtime = sdf.parse(enddate);
 
-        batches.setAssessmentStartDate(jodastarttime.toString().substring(0, 16));
-        batches.setAssessmentEndDate(jodaendtime.toString().substring(0, 16));
-        model.addAttribute("batches", batches);
-        model.addAttribute("allstates", getAllStatesValues());
-        model.addAttribute("projects", getAllProjectValues());
-        model.addAttribute("district", getDistrictById(batches.getDistrict_id()));
-        model.addAttribute("action", "update.io");
-        model.addAttribute("mode", "update");
+            batches.setAssessmentStartDate(jodastarttime.toString().substring(0, 16));
+            batches.setAssessmentEndDate(jodaendtime.toString().substring(0, 16));
+            model.addAttribute("batches", batches);
+            model.addAttribute("allstates", getAllStatesValues());
+            model.addAttribute("projects", getAllProjectValues());
+            model.addAttribute("district", getDistrictById(batches.getDistrict_id()));
+            model.addAttribute("action", "update.io");
+            model.addAttribute("mode", "update");
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
 
         request.getSession().setAttribute("body", "/admin/batches/addbatches.jsp");
         return "admin/common";
@@ -158,6 +172,7 @@ public class BatchesController {
             model.addAttribute("record", assessor);
         } catch (ObjectNotFoundException e) {
             model.addAttribute("record", null);
+            logger.error("This is Error message", e);
         }
         request.getSession().setAttribute("batchid", batchid);
         request.getSession().setAttribute("sscid", sscid);
@@ -202,6 +217,7 @@ public class BatchesController {
 
         } catch (ObjectNotFoundException e) {
             model.addAttribute("record", null);
+            logger.error("This is Error message", e);
         }
         request.getSession().setAttribute("batchid", batchid);
         request.getSession().setAttribute("sscid", sscid);
@@ -220,69 +236,82 @@ public class BatchesController {
     @RequestMapping(value = "/update", method = {RequestMethod.GET, RequestMethod.POST})
     public String update(@ModelAttribute("batches") BatchesDAO beanObj, HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        this.superService.updateObject(beanObj);
+        try {
+            this.superService.updateObject(beanObj);
+        } catch (Exception e) {
 
+            logger.error("This is Error message", e);
+        }
         return "redirect:/admin/batches/init.io";
     }
 
     @RequestMapping(value = "/deleteAssessor", method = {RequestMethod.GET, RequestMethod.POST})
     public String deleteAssessor(@ModelAttribute("batches") BatchesDAO beanObj, HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        String batchid = request.getParameter("recid");
-        BatchesDAO batch = (BatchesDAO) this.superService.getObjectById(new BatchesDAO(), new Integer(batchid));
-        batch.setAssessorId(0);
-        this.superService.updateObject(batch);
+        try {
+            String batchid = request.getParameter("recid");
+            BatchesDAO batch = (BatchesDAO) this.superService.getObjectById(new BatchesDAO(), new Integer(batchid));
+            batch.setAssessorId(0);
+            this.superService.updateObject(batch);
+        } catch (Exception e) {
+
+            logger.error("This is Error message", e);
+        }
         return "redirect:/admin/batches/addassessor.io";
     }
 
     @RequestMapping(value = "/batchResult", method = RequestMethod.GET)
     public String batchResult(HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        String batchid = request.getParameter("batchid");
-        String sscid = request.getParameter("sscid");
-        String qpid = request.getParameter("qpid");
-        String qpackid = request.getParameter("qpackid");
-        ArrayList resultdata = new ArrayList();
-        BatchesDAO batchdao = (BatchesDAO) this.superService.getObjectById(new BatchesDAO(), new Integer(batchid));
-        QualificationPackDAO qpackdao = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(qpackid));
+        try {
+            String batchid = request.getParameter("batchid");
+            String sscid = request.getParameter("sscid");
+            String qpid = request.getParameter("qpid");
+            String qpackid = request.getParameter("qpackid");
+            ArrayList resultdata = new ArrayList();
+            BatchesDAO batchdao = (BatchesDAO) this.superService.getObjectById(new BatchesDAO(), new Integer(batchid));
+            QualificationPackDAO qpackdao = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(qpackid));
 
-        Map param = new HashMap();
-        param.put("batchid", new Integer(batchid));
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new UserDAO(), param);
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
+            Map param = new HashMap();
+            param.put("batchid", new Integer(batchid));
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new UserDAO(), param);
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
 
-                UserDAO userdao = (UserDAO) itr.next();
-                DisplayBatchResult dispbatchres = new DisplayBatchResult();
-                dispbatchres.setCaandidateid("" + userdao.getID());
-                dispbatchres.setCandidatename(userdao.getTraineename());
-                dispbatchres.setEnrollmentno("" + userdao.getEnrollmentno());
-                dispbatchres.setFathername(userdao.getFathername());
-                dispbatchres.setPartnername(batchdao.getTpName());
-                dispbatchres.setJobrole(qpackdao.getQpackname());
-                dispbatchres.setAssesmentdate(batchdao.getAssessmentStartDate());
-                dispbatchres.setAssesorid(getAssessorNameById(batchdao.getAssessorId()));
-                dispbatchres.setMaxtheorymarks(qpackdao.getTotaltheorymarks());
-                dispbatchres.setMaxpracticalmarks(qpackdao.getTotalpracticalmarks());
-                dispbatchres.setMarkstheory("" + getTotalTheoryMarks(userdao.getID(), new Integer(batchid)));
-                dispbatchres.setMarkspractical("" + calculatePracticalmarksQPackID(new Integer(batchid), new Integer(qpackid), userdao.getID()));
-                int overcutoff = Integer.parseInt(qpackdao.getOverallcutoffmarks());
-                int totalmarks = getTotalTheoryMarks(userdao.getID(), new Integer(batchid)) + calculatePracticalmarksQPackID(new Integer(batchid), new Integer(qpackid), userdao.getID());
-                if (totalmarks > overcutoff) {
-                    dispbatchres.setResult("Pass");
-                } else {
-                    dispbatchres.setResult("Fail");
+                    UserDAO userdao = (UserDAO) itr.next();
+                    DisplayBatchResult dispbatchres = new DisplayBatchResult();
+                    dispbatchres.setCaandidateid("" + userdao.getID());
+                    dispbatchres.setCandidatename(userdao.getTraineename());
+                    dispbatchres.setEnrollmentno("" + userdao.getEnrollmentno());
+                    dispbatchres.setFathername(userdao.getFathername());
+                    dispbatchres.setPartnername(batchdao.getTpName());
+                    dispbatchres.setJobrole(qpackdao.getQpackname());
+                    dispbatchres.setAssesmentdate(batchdao.getAssessmentStartDate());
+                    dispbatchres.setAssesorid(getAssessorNameById(batchdao.getAssessorId()));
+                    dispbatchres.setMaxtheorymarks(qpackdao.getTotaltheorymarks());
+                    dispbatchres.setMaxpracticalmarks(qpackdao.getTotalpracticalmarks());
+                    dispbatchres.setMarkstheory("" + getTotalTheoryMarks(userdao.getID(), new Integer(batchid)));
+                    dispbatchres.setMarkspractical("" + calculatePracticalmarksQPackID(new Integer(batchid), new Integer(qpackid), userdao.getID()));
+                    int overcutoff = Integer.parseInt(qpackdao.getOverallcutoffmarks());
+                    int totalmarks = getTotalTheoryMarks(userdao.getID(), new Integer(batchid)) + calculatePracticalmarksQPackID(new Integer(batchid), new Integer(qpackid), userdao.getID());
+                    if (totalmarks > overcutoff) {
+                        dispbatchres.setResult("Pass");
+                    } else {
+                        dispbatchres.setResult("Fail");
+                    }
+                    resultdata.add(dispbatchres);
                 }
-                resultdata.add(dispbatchres);
+
             }
+            model.addAttribute("batchresult", resultdata);
 
+            request.setAttribute("sscid", sscid);
+            request.setAttribute("qpid", qpid);
+        } catch (Exception e) {
+
+            logger.error("This is Error message", e);
         }
-        model.addAttribute("batchresult", resultdata);
-
-        request.setAttribute("sscid", sscid);
-        request.setAttribute("qpid", qpid);
-
         request.getSession().setAttribute("body", "/admin/batches/finalresult.jsp");
         return "admin/common";
 
@@ -291,91 +320,95 @@ public class BatchesController {
     @RequestMapping(value = "/noswiseResult", method = RequestMethod.GET)
     public String noswiseResult(HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        String batchid = request.getParameter("batchid");
-        String sscid = request.getParameter("sscid");
-        String qpid = request.getParameter("qpid");
-        String qpackid = request.getParameter("qpackid");
+        try {
+            String batchid = request.getParameter("batchid");
+            String sscid = request.getParameter("sscid");
+            String qpid = request.getParameter("qpid");
+            String qpackid = request.getParameter("qpackid");
 
-        ArrayList totalrecords = new ArrayList();
+            ArrayList totalrecords = new ArrayList();
 
-        Map param = new HashMap();
-        param.put("batchid", new Integer(batchid));
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new UserDAO(), param);
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                UserDAO userdao = (UserDAO) itr.next();
-                NosWiseResultDAO noswisedao = new NosWiseResultDAO();
-                noswisedao.setEnrollmentno("" + userdao.getEnrollmentno());
-                noswisedao.setTraineename(userdao.getTraineename());
-                ArrayList nosdata = new ArrayList();
-                int alltotaltheorymarks = 0;
-                int alltotalpracticalmarks = 0;
-                int totalmarks = 0;
-                Map param2 = new HashMap();
-                param2.put("qpackid", qpackid);
-                List<SuperBean> records2 = this.superService.listAllObjectsByCriteria(new NOSDAO(), param2);
-                if (records2.size() > 0) {
-                    Iterator itr1 = records2.iterator();
-                    while (itr1.hasNext()) {
-                        NOSDAO nosdao = (NOSDAO) itr1.next();
+            Map param = new HashMap();
+            param.put("batchid", new Integer(batchid));
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new UserDAO(), param);
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    UserDAO userdao = (UserDAO) itr.next();
+                    NosWiseResultDAO noswisedao = new NosWiseResultDAO();
+                    noswisedao.setEnrollmentno("" + userdao.getEnrollmentno());
+                    noswisedao.setTraineename(userdao.getTraineename());
+                    ArrayList nosdata = new ArrayList();
+                    int alltotaltheorymarks = 0;
+                    int alltotalpracticalmarks = 0;
+                    int totalmarks = 0;
+                    Map param2 = new HashMap();
+                    param2.put("qpackid", qpackid);
+                    List<SuperBean> records2 = this.superService.listAllObjectsByCriteria(new NOSDAO(), param2);
+                    if (records2.size() > 0) {
+                        Iterator itr1 = records2.iterator();
+                        while (itr1.hasNext()) {
+                            NOSDAO nosdao = (NOSDAO) itr1.next();
 
-                        int totaltheorymarks = getNoswiseTheoryResult(userdao.getID(), new Integer(batchid), nosdao.getNosID());
-                        int totalpractmarks = getNoswiseTheoryResult(userdao.getID(), new Integer(batchid), nosdao.getNosID());
+                            int totaltheorymarks = getNoswiseTheoryResult(userdao.getID(), new Integer(batchid), nosdao.getNosID());
+                            int totalpractmarks = getNoswiseTheoryResult(userdao.getID(), new Integer(batchid), nosdao.getNosID());
 
-                        alltotaltheorymarks = alltotaltheorymarks + totaltheorymarks;
-                        alltotalpracticalmarks = alltotalpracticalmarks + totalpractmarks;
+                            alltotaltheorymarks = alltotaltheorymarks + totaltheorymarks;
+                            alltotalpracticalmarks = alltotalpracticalmarks + totalpractmarks;
 
-                        int total = totaltheorymarks + totalpractmarks;
-                        totalmarks = totalmarks + total;
-                        NosMarksInfo nosmarksinfo = new NosMarksInfo();
-                        nosmarksinfo.setNosid(nosdao.getNosid());
-                        nosmarksinfo.setNostheory("" + totaltheorymarks);
-                        nosmarksinfo.setNospractical("" + totalpractmarks);
-                        nosmarksinfo.setTotal("" + total);
-                        nosdata.add(nosmarksinfo);
+                            int total = totaltheorymarks + totalpractmarks;
+                            totalmarks = totalmarks + total;
+                            NosMarksInfo nosmarksinfo = new NosMarksInfo();
+                            nosmarksinfo.setNosid(nosdao.getNosid());
+                            nosmarksinfo.setNostheory("" + totaltheorymarks);
+                            nosmarksinfo.setNospractical("" + totalpractmarks);
+                            nosmarksinfo.setTotal("" + total);
+                            nosdata.add(nosmarksinfo);
+                        }
+
                     }
+                    noswisedao.setNosdetails(nosdata);
+                    noswisedao.setTotaltheorymarks("" + alltotaltheorymarks);
+                    noswisedao.setTotalpracticalmarks("" + alltotalpracticalmarks);
+                    noswisedao.setTotalmarks("" + totalmarks);
+                    noswisedao.setResult("Pass");
+                    totalrecords.add(noswisedao);
 
                 }
-                noswisedao.setNosdetails(nosdata);
-                noswisedao.setTotaltheorymarks("" + alltotaltheorymarks);
-                noswisedao.setTotalpracticalmarks("" + alltotalpracticalmarks);
-                noswisedao.setTotalmarks(""+totalmarks);
-                noswisedao.setResult("Pass");
-                totalrecords.add(noswisedao);
-
             }
-        }
 
-        ArrayList values = new ArrayList();
-        values.add("Enrollment");
-        values.add("Trainee Name");
-        Map param2 = new HashMap();
-        param2.put("qpackid", qpackid);
-        List<SuperBean> records2 = this.superService.listAllObjectsByCriteria(new NOSDAO(), param2);
-        if (records2.size() > 0) {
-            Iterator itr1 = records2.iterator();
-            while (itr1.hasNext()) {
-                NOSDAO nosdao = (NOSDAO) itr1.next();
-                values.add(nosdao.getNosid() + " Theory");
-                values.add(nosdao.getNosid() + " Practical");
-                values.add(nosdao.getNosid() + " Total");
+            ArrayList values = new ArrayList();
+            values.add("Enrollment");
+            values.add("Trainee Name");
+            Map param2 = new HashMap();
+            param2.put("qpackid", qpackid);
+            List<SuperBean> records2 = this.superService.listAllObjectsByCriteria(new NOSDAO(), param2);
+            if (records2.size() > 0) {
+                Iterator itr1 = records2.iterator();
+                while (itr1.hasNext()) {
+                    NOSDAO nosdao = (NOSDAO) itr1.next();
+                    values.add(nosdao.getNosid() + " Theory");
+                    values.add(nosdao.getNosid() + " Practical");
+                    values.add(nosdao.getNosid() + " Total");
+                }
             }
+
+            values.add("Total marks Theory");
+            values.add("Total marks Practical");
+            values.add("Total marks");
+            values.add("Pass/Fail");
+
+            System.out.println(totalrecords.toString());
+
+            model.addAttribute("headers", values);
+            model.addAttribute("totalrecords", totalrecords);
+            model.addAttribute("sscid", sscid);
+            model.addAttribute("qpid", qpid);
+            model.addAttribute("batchid", batchid);
+        } catch (Exception e) {
+
+            logger.error("This is Error message", e);
         }
-
-        values.add("Total marks Theory");
-        values.add("Total marks Practical");
-        values.add("Total marks");
-        values.add("Pass/Fail");
-
-        System.out.println(totalrecords.toString());
-
-        model.addAttribute("headers", values);
-        model.addAttribute("totalrecords", totalrecords);
-        model.addAttribute("sscid", sscid);
-        model.addAttribute("qpid", qpid);
-        model.addAttribute("batchid", batchid);
-
         request.getSession().setAttribute("body", "/admin/batches/noswiseresult.jsp");
         return "admin/common";
     }
@@ -384,75 +417,82 @@ public class BatchesController {
     @ResponseBody
     String deleteQuestionPaper(@RequestParam("batchid") String batchid, HttpServletRequest request,
             HttpServletResponse response, Model model) throws Exception {
-
-        boolean flag = true;
         JSONObject jsonObj = new JSONObject();
-        BatchesDAO batch = (BatchesDAO) this.superService.getObjectById(new BatchesDAO(), new Integer(batchid));
+        try {
+            boolean flag = true;
 
-        String startdate = batch.getAssessmentStartDate();
-        String enddate = batch.getAssessmentEndDate();
+            BatchesDAO batch = (BatchesDAO) this.superService.getObjectById(new BatchesDAO(), new Integer(batchid));
 
-        SimpleDateFormat outFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.s");
-        Date jodastarttime = outFormat.parse(startdate);
-        Date jodaendtime = outFormat.parse(enddate);
-        Date currentdt = new Date();
+            String startdate = batch.getAssessmentStartDate();
+            String enddate = batch.getAssessmentEndDate();
 
-        if (currentdt.after(jodastarttime)) {
-            flag = false;
+            SimpleDateFormat outFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.s");
+            Date jodastarttime = outFormat.parse(startdate);
+            Date jodaendtime = outFormat.parse(enddate);
+            Date currentdt = new Date();
+
+            if (currentdt.after(jodastarttime)) {
+                flag = false;
+            }
+            if (currentdt.after(jodaendtime)) {
+                flag = false;
+            }
+            if (flag) {
+                batch.setQuestionPaperId(0);
+                this.superService.updateObject(batch);
+                jsonObj.append("status", "Question Paper Deleted");
+            } else {
+                jsonObj.append("status", "Assesment Started Cannot Delete Question Paper.");
+            }
+        } catch (Exception e) {
+
+            logger.error("This is Error message", e);
         }
-        if (currentdt.after(jodaendtime)) {
-            flag = false;
-        }
-        if (flag) {
-            batch.setQuestionPaperId(0);
-            this.superService.updateObject(batch);
-            jsonObj.append("status", "Question Paper Deleted");
-        } else {
-            jsonObj.append("status", "Assesment Started Cannot Delete Question Paper.");
-        }
-
         return jsonObj.toString();
     }
 
     @RequestMapping(value = "/searchbatch", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    String searchbatch(@RequestParam("batchid") String batchid
-    ) {
+    String searchbatch(@RequestParam("batchid") String batchid) {
 
         JSONArray jsonarrbatch = new JSONArray();
-        Map param = new HashMap();
-        param.put("batch_id", new Integer(batchid));
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new BatchesDAO(), param);
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                BatchesDAO batchdo = (BatchesDAO) itr.next();
-                JSONObject jsonObj = new JSONObject();
-                jsonObj.append("ID", batchdo.getID());
-                jsonObj.append("batch_id", batchdo.getBatch_id());
-                jsonObj.append("batch_size", batchdo.getBatch_size());
-                jsonObj.append("state", getStateById(batchdo.getState_id()));
-                jsonObj.append("centerAddress", batchdo.getCenterAddress());
-                jsonObj.append("assessmentStartDate", batchdo.getAssessmentStartDate());
-                jsonObj.append("assessmentEndDate", batchdo.getAssessmentEndDate());
-                jsonObj.append("tpName", batchdo.getTpName());
-                jsonObj.append("assessorId", getAssessorById(batchdo.getAssessorId()));
-                jsonObj.append("questionPaperId", batchdo.getQuestionPaperId());
-                System.out.println(jsonObj.toString());
-                jsonarrbatch.put(jsonObj);
 
-                System.out.println("  batch record count :::::::::::::::::::::::::::::::");
+        try {
+            Map param = new HashMap();
+            param.put("batch_id", new Integer(batchid));
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new BatchesDAO(), param);
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    BatchesDAO batchdo = (BatchesDAO) itr.next();
+                    JSONObject jsonObj = new JSONObject();
+                    jsonObj.append("ID", batchdo.getID());
+                    jsonObj.append("batch_id", batchdo.getBatch_id());
+                    jsonObj.append("batch_size", batchdo.getBatch_size());
+                    jsonObj.append("state", getStateById(batchdo.getState_id()));
+                    jsonObj.append("centerAddress", batchdo.getCenterAddress());
+                    jsonObj.append("assessmentStartDate", batchdo.getAssessmentStartDate());
+                    jsonObj.append("assessmentEndDate", batchdo.getAssessmentEndDate());
+                    jsonObj.append("tpName", batchdo.getTpName());
+                    jsonObj.append("assessorId", getAssessorById(batchdo.getAssessorId()));
+                    jsonObj.append("questionPaperId", batchdo.getQuestionPaperId());
+                    System.out.println(jsonObj.toString());
+                    jsonarrbatch.put(jsonObj);
+
+                    System.out.println("  batch record count :::::::::::::::::::::::::::::::");
+                }
             }
-        }
+        } catch (Exception e) {
 
+            logger.error("This is Error message", e);
+        }
         return jsonarrbatch.toString();
 
     }
 
     @RequestMapping(value = "/getDistricts", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    String getDistricts(@RequestParam("s_id") String stateid
-    ) {
+    String getDistricts(@RequestParam("s_id") String stateid) {
 
         System.out.println("State ID::" + stateid);
         String districts = getAllDistricts(stateid);
@@ -462,10 +502,7 @@ public class BatchesController {
 
     @RequestMapping(value = "/loadassessor", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    String loadAssessor(HttpServletRequest request,
-            @RequestParam("stateid") String stateid,
-            @RequestParam("districtid") String districtid
-    ) {
+    String loadAssessor(HttpServletRequest request, @RequestParam("stateid") String stateid, @RequestParam("districtid") String districtid) {
 
         String batchid = (String) request.getSession().getAttribute("batchid");
 
@@ -477,15 +514,18 @@ public class BatchesController {
     }
 
     @RequestMapping(value = "/asignassessor", method = RequestMethod.GET)
-    public String asignassessor(HttpServletRequest request, HttpServletResponse response,
-            Model model
-    ) {
+    public String asignassessor(HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        String assessorid = request.getParameter("assid");
-        String batchid = (String) request.getSession().getAttribute("batchid");
-        BatchesDAO batchObj = (BatchesDAO) this.superService.getObjectById(new BatchesDAO(), new Integer(batchid));
-        batchObj.setAssessorId(new Integer(assessorid));
-        this.superService.updateObject(batchObj);
+        try {
+            String assessorid = request.getParameter("assid");
+            String batchid = (String) request.getSession().getAttribute("batchid");
+            BatchesDAO batchObj = (BatchesDAO) this.superService.getObjectById(new BatchesDAO(), new Integer(batchid));
+            batchObj.setAssessorId(new Integer(assessorid));
+            this.superService.updateObject(batchObj);
+        } catch (Exception e) {
+
+            logger.error("This is Error message", e);
+        }
         return "redirect:/admin/batches/addassessor.io";
     }
 
@@ -494,34 +534,39 @@ public class BatchesController {
             Model model) throws Exception {
 
         boolean flag = true;
-        String qpaperid = request.getParameter("qpaperid");
-        String batchid = (String) request.getSession().getAttribute("batchid");
-        BatchesDAO batchObj = (BatchesDAO) this.superService.getObjectById(new BatchesDAO(), new Integer(batchid));
-        String startdate = batchObj.getAssessmentStartDate();
-        String enddate = batchObj.getAssessmentEndDate();
+        try {
+            String qpaperid = request.getParameter("qpaperid");
+            String batchid = (String) request.getSession().getAttribute("batchid");
+            BatchesDAO batchObj = (BatchesDAO) this.superService.getObjectById(new BatchesDAO(), new Integer(batchid));
+            String startdate = batchObj.getAssessmentStartDate();
+            String enddate = batchObj.getAssessmentEndDate();
 
-        SimpleDateFormat outFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.s");
-        Date jodastarttime = outFormat.parse(startdate);
-        Date jodaendtime = outFormat.parse(enddate);
-        Date currentdt = new Date();
+            SimpleDateFormat outFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.s");
+            Date jodastarttime = outFormat.parse(startdate);
+            Date jodaendtime = outFormat.parse(enddate);
+            Date currentdt = new Date();
 
-        System.out.println("Start Time " + jodastarttime);
-        System.out.println("End Time " + jodaendtime);
-        System.out.println("Current Time " + currentdt);
+            System.out.println("Start Time " + jodastarttime);
+            System.out.println("End Time " + jodaendtime);
+            System.out.println("Current Time " + currentdt);
 
-        if (currentdt.after(jodastarttime)) {
-            flag = false;
+            if (currentdt.after(jodastarttime)) {
+                flag = false;
 
-        }
-        if (currentdt.after(jodaendtime)) {
-            flag = false;
+            }
+            if (currentdt.after(jodaendtime)) {
+                flag = false;
 
-        }
-        if (flag) {
-            batchObj.setQuestionPaperId(new Integer(qpaperid));
-            this.superService.updateObject(batchObj);
-        } else {
-            model.addAttribute("error", "Assesment started cannot assign question paper.");
+            }
+            if (flag) {
+                batchObj.setQuestionPaperId(new Integer(qpaperid));
+                this.superService.updateObject(batchObj);
+            } else {
+                model.addAttribute("error", "Assesment started cannot assign question paper.");
+            }
+        } catch (Exception e) {
+
+            logger.error("This is Error message", e);
         }
         return "redirect:/admin/batches/addquestionpaper.io";
     }
@@ -544,7 +589,7 @@ public class BatchesController {
 
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("This is Error message", e);
             status = "notavail";
         }
 

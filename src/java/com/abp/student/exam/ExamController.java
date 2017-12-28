@@ -16,15 +16,14 @@ import com.abp.superservice.SuperService;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -43,6 +42,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/student/exam")
 public class ExamController {
 
+    private static final Logger logger = Logger.getLogger(ExamController.class);
     private SuperService superService;
 
     @Autowired(required = true)
@@ -80,7 +80,7 @@ public class ExamController {
                 request.getSession().setAttribute("body", "/student/exam/examfinish.jsp");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("This is Error message", e);
             return "redirect:/student/login/finishexam.io";
         }
         return "student/common";
@@ -91,25 +91,31 @@ public class ExamController {
     String loadQuestionAnswered(HttpServletRequest request) {
 
         JSONObject ansquestion = new JSONObject();
-        Integer userresultdetailid = (Integer) request.getSession().getAttribute("userresultdetailid");
-        Integer userid = (Integer) request.getSession().getAttribute("userid");
-        Map param = new HashMap();
-        param.put("userresultdetailid", userresultdetailid);
-        param.put("userid", userid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new TheoryWiseResultDAO(), param);
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                TheoryWiseResultDAO objdao = (TheoryWiseResultDAO) itr.next();
-                if (objdao.getReviewlater().equalsIgnoreCase("yes")) {
-                    ansquestion.append("Qno", objdao.getQuestionno());
-                    ansquestion.append("color", "yellow");
-                } else {
-                    ansquestion.append("Qno", objdao.getQuestionno());
-                    ansquestion.append("color", "green");
-                }
 
+        try {
+            Integer userresultdetailid = (Integer) request.getSession().getAttribute("userresultdetailid");
+            Integer userid = (Integer) request.getSession().getAttribute("userid");
+            Map param = new HashMap();
+            param.put("userresultdetailid", userresultdetailid);
+            param.put("userid", userid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new TheoryWiseResultDAO(), param);
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    TheoryWiseResultDAO objdao = (TheoryWiseResultDAO) itr.next();
+                    if (objdao.getReviewlater().equalsIgnoreCase("yes")) {
+                        ansquestion.append("Qno", objdao.getQuestionno());
+                        ansquestion.append("color", "yellow");
+                    } else {
+                        ansquestion.append("Qno", objdao.getQuestionno());
+                        ansquestion.append("color", "green");
+                    }
+
+                }
             }
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+
         }
         System.out.println(ansquestion);
         return ansquestion.toString();
@@ -141,16 +147,22 @@ public class ExamController {
 
         Integer userresultdetailid = (Integer) request.getSession().getAttribute("userresultdetailid");
         Integer userid = (Integer) request.getSession().getAttribute("userid");
-
         JSONObject loadquestion = new JSONObject();
-        ArrayList questionids = (ArrayList) request.getSession().getAttribute("questions");
+        try {
 
-        String qnoget = questionids.get(0).toString();
-        loadquestion = loadQuestionByID(request, new Integer(qnoget));
-        loadquestion.append("selected", selectOption(1, userresultdetailid, userid));
-        System.out.println(loadquestion);
-        assesmentlogdao("Display Question " + (1), userresultdetailid, userid);
-        questionwisedaostart(1, userresultdetailid, userid);
+            ArrayList questionids = (ArrayList) request.getSession().getAttribute("questions");
+
+            String qnoget = questionids.get(0).toString();
+            loadquestion = loadQuestionByID(request, new Integer(qnoget));
+            loadquestion.append("selected", selectOption(1, userresultdetailid, userid));
+            System.out.println(loadquestion);
+            assesmentlogdao("Display Question " + (1), userresultdetailid, userid);
+            questionwisedaostart(1, userresultdetailid, userid);
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+
+        }
         return loadquestion.toString();
     }
 
@@ -160,10 +172,15 @@ public class ExamController {
 
         Integer userresultdetailid = (Integer) request.getSession().getAttribute("userresultdetailid");
         Integer userid = (Integer) request.getSession().getAttribute("userid");
-        UserResultDetailDAO userresultdetail = (UserResultDetailDAO) this.superService.getObjectById(new UserResultDetailDAO(), userresultdetailid);
-        userresultdetail.setTimetaken(timetaken);
+        try {
+            UserResultDetailDAO userresultdetail = (UserResultDetailDAO) this.superService.getObjectById(new UserResultDetailDAO(), userresultdetailid);
+            userresultdetail.setTimetaken(timetaken);
 
-        this.superService.updateObject(userresultdetail);
+            this.superService.updateObject(userresultdetail);
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+
+        }
     }
 
     @RequestMapping(value = "/loadQuestion", method = RequestMethod.GET, produces = "application/json")
@@ -174,79 +191,85 @@ public class ExamController {
         Integer userid = (Integer) request.getSession().getAttribute("userid");
         boolean flag = true;
         JSONObject loadquestion = new JSONObject();
-        ArrayList questionids = (ArrayList) request.getSession().getAttribute("questions");
-        int qno = new Integer(questionno);
-        System.out.println("Question No " + qno);
-        System.out.println("ArrayList Size " + questionids.size());
-        if (qno > 0) {
+        try {
+            ArrayList questionids = (ArrayList) request.getSession().getAttribute("questions");
+            int qno = new Integer(questionno);
+            System.out.println("Question No " + qno);
+            System.out.println("ArrayList Size " + questionids.size());
+            if (qno > 0) {
 
-            if (questionids.size() > qno) {
+                if (questionids.size() > qno) {
 
-                String qnoget = questionids.get(qno - 1).toString();
-                boolean flagopt = checkQuestionReviewed(new Integer(questionno), userresultdetailid, userid);
-                if (flagopt) {
-                    updateCorrectAnswer(qno, new Integer(qnoget), answer, timetaken, userresultdetailid, userid);
-                } else {
-                    boolean flagans = checkQuestionAnswered(new Integer(questionno), userresultdetailid, userid);
-                    if (flagans) {
-                        saveCorrectAnswer(qno, new Integer(qnoget), answer, timetaken, userresultdetailid, userid, "No");
+                    String qnoget = questionids.get(qno - 1).toString();
+                    boolean flagopt = checkQuestionReviewed(new Integer(questionno), userresultdetailid, userid);
+                    if (flagopt) {
+                        updateCorrectAnswer(qno, new Integer(qnoget), answer, timetaken, userresultdetailid, userid);
+                    } else {
+                        boolean flagans = checkQuestionAnswered(new Integer(questionno), userresultdetailid, userid);
+                        if (flagans) {
+                            saveCorrectAnswer(qno, new Integer(qnoget), answer, timetaken, userresultdetailid, userid, "No");
+                        }
+
                     }
 
-                }
+                    questionwisedaoend(qno, timetaken);
+                    assesmentlogdao("Question " + questionno + " Answered", userresultdetailid, userid);
+                    String qnonext = questionids.get(qno).toString();
+                    loadquestion = loadQuestionByID(request, new Integer(qnonext));
+                } else if (questionids.size() == qno) {
 
-                questionwisedaoend(qno, timetaken);
-                assesmentlogdao("Question " + questionno + " Answered", userresultdetailid, userid);
-                String qnonext = questionids.get(qno).toString();
-                loadquestion = loadQuestionByID(request, new Integer(qnonext));
-            } else if (questionids.size() == qno) {
-
-                String qnoget = questionids.get(qno - 1).toString();
-                boolean flagopt = checkQuestionReviewed(new Integer(questionno), userresultdetailid, userid);
-                if (flagopt) {
-                    updateCorrectAnswer(qno, new Integer(qnoget), answer, timetaken, userresultdetailid, userid);
-                } else {
-                    boolean flagans = checkQuestionAnswered(new Integer(questionno), userresultdetailid, userid);
-                    if (flagans) {
-                        saveCorrectAnswer(qno, new Integer(qnoget), answer, timetaken, userresultdetailid, userid, "No");
+                    String qnoget = questionids.get(qno - 1).toString();
+                    boolean flagopt = checkQuestionReviewed(new Integer(questionno), userresultdetailid, userid);
+                    if (flagopt) {
+                        updateCorrectAnswer(qno, new Integer(qnoget), answer, timetaken, userresultdetailid, userid);
+                    } else {
+                        boolean flagans = checkQuestionAnswered(new Integer(questionno), userresultdetailid, userid);
+                        if (flagans) {
+                            saveCorrectAnswer(qno, new Integer(qnoget), answer, timetaken, userresultdetailid, userid, "No");
+                        }
                     }
-                }
-                questionwisedaoend(qno, timetaken);
-                assesmentlogdao("Question " + questionno + " Answered", userresultdetailid, userid);
-                boolean flagremain = checkQuestionRemainsUnAnswer(userresultdetailid, userid, questionids.size());
-                if (flagremain) {
-                    loadquestion.append("status", "remains");
+                    questionwisedaoend(qno, timetaken);
+                    assesmentlogdao("Question " + questionno + " Answered", userresultdetailid, userid);
+                    boolean flagremain = checkQuestionRemainsUnAnswer(userresultdetailid, userid, questionids.size());
+                    if (flagremain) {
+                        loadquestion.append("status", "remains");
+                    } else {
+                        loadquestion.append("status", "finish");
+                    }
+
+                    flag = false;
+
                 } else {
                     loadquestion.append("status", "finish");
+                    flag = false;
                 }
 
-                flag = false;
-
             } else {
-                loadquestion.append("status", "finish");
-                flag = false;
+
+                String qnoget = questionids.get(0).toString();
+                saveCorrectAnswer(qno, new Integer(qnoget), answer, timetaken, userresultdetailid, userid, "No");
+                questionwisedaoend(qno, timetaken);
+                assesmentlogdao("Question " + questionno + " Answered", userresultdetailid, userid);
+
+                loadquestion = loadQuestionByID(request, new Integer(qnoget));
+            }
+            loadquestion.append("selected", selectOption(qno + 1, userresultdetailid, userid));
+            System.out.println(loadquestion);
+
+            if (flag) {
+                assesmentlogdao("Display Question " + (qno + 1), userresultdetailid, userid);
+                questionwisedaostart(qno + 1, userresultdetailid, userid);
+            }
+            if (qno != questionids.size()) {
+                boolean flagremain = checkQuestionRemainsUnAnswer(userresultdetailid, userid, questionids.size());
+                if (!flagremain) {
+                    loadquestion.append("status", "finish");
+                }
             }
 
-        } else {
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
 
-            String qnoget = questionids.get(0).toString();
-            saveCorrectAnswer(qno, new Integer(qnoget), answer, timetaken, userresultdetailid, userid, "No");
-            questionwisedaoend(qno, timetaken);
-            assesmentlogdao("Question " + questionno + " Answered", userresultdetailid, userid);
-
-            loadquestion = loadQuestionByID(request, new Integer(qnoget));
-        }
-        loadquestion.append("selected", selectOption(qno+1, userresultdetailid, userid));
-        System.out.println(loadquestion);
-
-        if (flag) {
-            assesmentlogdao("Display Question " + (qno + 1), userresultdetailid, userid);
-            questionwisedaostart(qno + 1, userresultdetailid, userid);
-        }
-        if (qno != questionids.size()) {
-            boolean flagremain = checkQuestionRemainsUnAnswer(userresultdetailid, userid, questionids.size());
-            if (!flagremain) {
-                loadquestion.append("status", "finish");
-            }
         }
 
         return loadquestion.toString();
@@ -254,61 +277,71 @@ public class ExamController {
 
     @RequestMapping(value = "/reviewQuestion", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    String reviewQuestion(@RequestParam("questionno") String questionno, @RequestParam("timetaken") String timetaken, @RequestParam("answer") String answer, HttpServletRequest request) {
+    String reviewQuestion(@RequestParam("questionno") String questionno,
+            @RequestParam("timetaken") String timetaken,
+            @RequestParam("answer") String answer, HttpServletRequest request
+    ) {
 
         Integer userresultdetailid = (Integer) request.getSession().getAttribute("userresultdetailid");
         Integer userid = (Integer) request.getSession().getAttribute("userid");
         boolean flag = true;
         JSONObject loadquestion = new JSONObject();
-        ArrayList questionids = (ArrayList) request.getSession().getAttribute("questions");
-        int qno = new Integer(questionno);
-        System.out.println("Question No " + qno);
-        System.out.println("ArrayList Size " + questionids.size());
-        if (qno > 0) {
-            if (questionids.size() > qno) {
-                String qnoget = questionids.get(qno - 1).toString();
+
+        try {
+            ArrayList questionids = (ArrayList) request.getSession().getAttribute("questions");
+            int qno = new Integer(questionno);
+            System.out.println("Question No " + qno);
+            System.out.println("ArrayList Size " + questionids.size());
+            if (qno > 0) {
+                if (questionids.size() > qno) {
+                    String qnoget = questionids.get(qno - 1).toString();
+                    saveCorrectAnswer(qno, new Integer(qnoget), answer, timetaken, userresultdetailid, userid, "Yes");
+                    questionwisedaoend(qno, timetaken);
+                    assesmentlogdao("Question " + questionno + " Review Later", userresultdetailid, userid);
+                    String qnonext = questionids.get(qno).toString();
+                    loadquestion = loadQuestionByID(request, new Integer(qnonext));
+                } else if (questionids.size() == qno) {
+
+                    String qnoget = questionids.get(qno - 1).toString();
+                    saveCorrectAnswer(qno, new Integer(qnoget), answer, timetaken, userresultdetailid, userid, "No");
+                    questionwisedaoend(qno, timetaken);
+                    assesmentlogdao("Question " + questionno + " Answered", userresultdetailid, userid);
+                    boolean flagremain = checkQuestionRemainsUnAnswer(userresultdetailid, userid, questionids.size());
+                    if (flagremain) {
+                        loadquestion.append("status", "remains");
+                    } else {
+                        loadquestion.append("status", "finish");
+                    }
+                    flag = false;
+
+                } else {
+                    loadquestion.append("status", "finish");
+                    flag = false;
+                }
+
+            } else {
+                //int getquestionno = (int) questionids.get(0);
+                String qnoget = questionids.get(0).toString();
                 saveCorrectAnswer(qno, new Integer(qnoget), answer, timetaken, userresultdetailid, userid, "Yes");
                 questionwisedaoend(qno, timetaken);
                 assesmentlogdao("Question " + questionno + " Review Later", userresultdetailid, userid);
-                String qnonext = questionids.get(qno).toString();
-                loadquestion = loadQuestionByID(request, new Integer(qnonext));
-            } else if (questionids.size() == qno) {
-
-                String qnoget = questionids.get(qno - 1).toString();
-                saveCorrectAnswer(qno, new Integer(qnoget), answer, timetaken, userresultdetailid, userid, "No");
-                questionwisedaoend(qno, timetaken);
-                assesmentlogdao("Question " + questionno + " Answered", userresultdetailid, userid);
+                loadquestion = loadQuestionByID(request, new Integer(qnoget));
+            }
+            System.out.println(loadquestion);
+            if (flag) {
+                assesmentlogdao("Display Question " + (qno + 1), userresultdetailid, userid);
+                questionwisedaostart(qno + 1, userresultdetailid, userid);
+            }
+            if (qno != questionids.size()) {
                 boolean flagremain = checkQuestionRemainsUnAnswer(userresultdetailid, userid, questionids.size());
-                if (flagremain) {
-                    loadquestion.append("status", "remains");
-                } else {
+                if (!flagremain) {
                     loadquestion.append("status", "finish");
                 }
-                flag = false;
-
-            } else {
-                loadquestion.append("status", "finish");
-                flag = false;
             }
 
-        } else {
-            //int getquestionno = (int) questionids.get(0);
-            String qnoget = questionids.get(0).toString();
-            saveCorrectAnswer(qno, new Integer(qnoget), answer, timetaken, userresultdetailid, userid, "Yes");
-            questionwisedaoend(qno, timetaken);
-            assesmentlogdao("Question " + questionno + " Review Later", userresultdetailid, userid);
-            loadquestion = loadQuestionByID(request, new Integer(qnoget));
-        }
-        System.out.println(loadquestion);
-        if (flag) {
-            assesmentlogdao("Display Question " + (qno + 1), userresultdetailid, userid);
-            questionwisedaostart(qno + 1, userresultdetailid, userid);
-        }
-        if (qno != questionids.size()) {
-            boolean flagremain = checkQuestionRemainsUnAnswer(userresultdetailid, userid, questionids.size());
-            if (!flagremain) {
-                loadquestion.append("status", "finish");
-            }
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+
         }
 
         return loadquestion.toString();
@@ -322,33 +355,40 @@ public class ExamController {
         Integer userid = (Integer) request.getSession().getAttribute("userid");
         boolean flag = true;
         JSONObject loadquestion = new JSONObject();
-        ArrayList questionids = (ArrayList) request.getSession().getAttribute("questions");
-        int qno = new Integer(questionno);
-        System.out.println("Question No " + qno);
-        System.out.println("ArrayList Size " + questionids.size());
-        if (qno > 0) {
-            if (questionids.size() >= qno) {
-                String qnoget = questionids.get(qno - 1).toString();
-                loadquestion = loadQuestionByID(request, new Integer(qnoget));
+
+        try {
+            ArrayList questionids = (ArrayList) request.getSession().getAttribute("questions");
+            int qno = new Integer(questionno);
+            System.out.println("Question No " + qno);
+            System.out.println("ArrayList Size " + questionids.size());
+            if (qno > 0) {
+                if (questionids.size() >= qno) {
+                    String qnoget = questionids.get(qno - 1).toString();
+                    loadquestion = loadQuestionByID(request, new Integer(qnoget));
+                } else {
+                    loadquestion.append("status", "finish");
+                    flag = false;
+                }
+
             } else {
+                //int getquestionno = (int) questionids.get(0);
+                String qnoget = questionids.get(0).toString();
+                loadquestion = loadQuestionByID(request, new Integer(qnoget));
+            }
+            System.out.println(loadquestion);
+
+            if (flag) {
+                assesmentlogdao("Display Question " + (qno), userresultdetailid, userid);
+                questionwisedaostart(qno, userresultdetailid, userid);
+            }
+            boolean flagremain = checkQuestionRemainsUnAnswer(userresultdetailid, userid, questionids.size());
+            if (!flagremain) {
                 loadquestion.append("status", "finish");
-                flag = false;
             }
 
-        } else {
-            //int getquestionno = (int) questionids.get(0);
-            String qnoget = questionids.get(0).toString();
-            loadquestion = loadQuestionByID(request, new Integer(qnoget));
-        }
-        System.out.println(loadquestion);
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
 
-        if (flag) {
-            assesmentlogdao("Display Question " + (qno), userresultdetailid, userid);
-            questionwisedaostart(qno, userresultdetailid, userid);
-        }
-        boolean flagremain = checkQuestionRemainsUnAnswer(userresultdetailid, userid, questionids.size());
-        if (!flagremain) {
-            loadquestion.append("status", "finish");
         }
         return loadquestion.toString();
     }
@@ -361,34 +401,40 @@ public class ExamController {
         Integer userid = (Integer) request.getSession().getAttribute("userid");
         boolean flag = true;
         JSONObject loadquestion = new JSONObject();
-        ArrayList questionids = (ArrayList) request.getSession().getAttribute("questions");
-        int qno = new Integer(questionno);
-        System.out.println("Question No " + qno);
-        System.out.println("ArrayList Size " + questionids.size());
-        if (qno > 0) {
-            if (questionids.size() >= qno) {
-                String qnoget = questionids.get(qno - 1).toString();
-                loadquestion = loadQuestionByID(request, new Integer(qnoget));
+        try {
+            ArrayList questionids = (ArrayList) request.getSession().getAttribute("questions");
+            int qno = new Integer(questionno);
+            System.out.println("Question No " + qno);
+            System.out.println("ArrayList Size " + questionids.size());
+            if (qno > 0) {
+                if (questionids.size() >= qno) {
+                    String qnoget = questionids.get(qno - 1).toString();
+                    loadquestion = loadQuestionByID(request, new Integer(qnoget));
+                } else {
+                    loadquestion.append("status", "finish");
+                    flag = false;
+                }
+
             } else {
+                //int getquestionno = (int) questionids.get(0);
+                String qnoget = questionids.get(0).toString();
+                loadquestion = loadQuestionByID(request, new Integer(qnoget));
+            }
+            System.out.println(loadquestion);
+            loadquestion.append("selected", selectOption(qno, userresultdetailid, userid));
+            if (flag) {
+                assesmentlogdao("Display Question " + (qno), userresultdetailid, userid);
+                questionwisedaostart(qno, userresultdetailid, userid);
+            }
+            boolean flagremain = checkQuestionRemainsUnAnswer(userresultdetailid, userid, questionids.size());
+            System.out.println("flagremain " + flagremain);
+            if (!flagremain) {
                 loadquestion.append("status", "finish");
-                flag = false;
             }
 
-        } else {
-            //int getquestionno = (int) questionids.get(0);
-            String qnoget = questionids.get(0).toString();
-            loadquestion = loadQuestionByID(request, new Integer(qnoget));
-        }
-        System.out.println(loadquestion);
-        loadquestion.append("selected", selectOption(qno, userresultdetailid, userid));
-        if (flag) {
-            assesmentlogdao("Display Question " + (qno), userresultdetailid, userid);
-            questionwisedaostart(qno, userresultdetailid, userid);
-        }
-        boolean flagremain = checkQuestionRemainsUnAnswer(userresultdetailid, userid, questionids.size());
-        System.out.println("flagremain " + flagremain);
-        if (!flagremain) {
-            loadquestion.append("status", "finish");
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+
         }
 
         return loadquestion.toString();
@@ -619,7 +665,7 @@ public class ExamController {
         if (userresultdaolist.size() > 0) {
             UserResultDetailDAO userdao = (UserResultDetailDAO) userresultdaolist.get(0);
             String timeremain[] = userdao.getTimetaken().split(":");
-            if (timeremain[0].equals("00")&&timeremain[1].equals("00")) {
+            if (timeremain[0].equals("00") && timeremain[1].equals("00")) {
                 flag = false;
             }
         }
@@ -655,23 +701,29 @@ public class ExamController {
     private boolean checkAllQuestionAnswered(ArrayList questionids, int userresultdetailid, int userid) {
 
         boolean flag = true;
-        Map param = new HashMap();
-        param.put("userresultdetailid", userresultdetailid);
-        param.put("userid", userid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new TheoryWiseResultDAO(), param);
-        System.out.println(questionids.size() + "  -  -" + records.size());
-        if (questionids.size() == records.size()) {
-            flag = true;
-            System.out.println(" Exam finish  flag 3" + flag);
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                TheoryWiseResultDAO theorywise = (TheoryWiseResultDAO) itr.next();
-                if (theorywise.getReviewlater().equalsIgnoreCase("yes")) {
-                    flag = false;
-                    break;
+
+        try {
+            Map param = new HashMap();
+            param.put("userresultdetailid", userresultdetailid);
+            param.put("userid", userid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new TheoryWiseResultDAO(), param);
+            System.out.println(questionids.size() + "  -  -" + records.size());
+            if (questionids.size() == records.size()) {
+                flag = true;
+                System.out.println(" Exam finish  flag 3" + flag);
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    TheoryWiseResultDAO theorywise = (TheoryWiseResultDAO) itr.next();
+                    if (theorywise.getReviewlater().equalsIgnoreCase("yes")) {
+                        flag = false;
+                        break;
+                    }
                 }
+                System.out.println(" Exam finish  flag 4" + flag);
+
             }
-            System.out.println(" Exam finish  flag 4" + flag);
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
 
         }
 

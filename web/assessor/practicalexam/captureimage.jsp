@@ -15,7 +15,22 @@
         <link rel="stylesheet" type="text/css"  href="<%=request.getContextPath()%>/assets/css/smart-forms.css">
         <link rel="stylesheet" type="text/css"  href="<%=request.getContextPath()%>/assets/css/smart-themes/blue.css">
         <link rel="stylesheet" type="text/css"  href="<%=request.getContextPath()%>/assets/css/font-awesome.min.css">
-
+        <style>
+        .circle {
+            display: block;
+            width: 250px;
+            height: 250px;
+            margin: 1em auto;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+            -webkit-border-radius: 99em;
+            -moz-border-radius: 99em;
+            border-radius: 99em;
+            border: 5px solid #eee;
+            box-shadow: 0 3px 2px rgba(0, 0, 0, 0.3);  
+        }
+    </style> 
 
         <!--[if lte IE 9]>
             <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>    
@@ -49,16 +64,17 @@
 
         <div class="smart-wrap">
             <div class="smart-forms smart-container wrap-full">
-
+                <input type="hidden" name="userid" id="userid" value="${userid}"/>
+                <input type="hidden" name="batchid" id="batchid" value="${batchid}"/>
                 <div class="form-header header-blue">
                     <h4><i class="fa fa-pencil-square"></i>Capture Image</h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
                 <div class="form-body theme-blue">
-                    <div id="my_camera"></div>
-                    <button type="button" class="button btn-blue" onclick="saveImage('${batchid}');">Capture Image</button>
-                    <button type="button" class="button btn-blue" onclick="continueExam('${batchid}');">Continue Exam</button>
+                    <div class="section colm colm6"><img src="<%=request.getContextPath()%>/assets/images/NoPhotoAvailable.jpg" width="250px;" height="250px;" class="circle"/></div>
+                    <div class="section colm colm6"><button type="button" class="button btn-blue" onclick="saveImage('${batchid}');">Capture Image</button>
+                    <button type="button" class="button btn-blue" onclick="continueExam('${userid}');">Continue Exam</button></div>
                 </div>
 
 
@@ -80,6 +96,11 @@
             });
         }
         function continueExam(id) {
+
+            alert(" display id " + id);
+            var batchid = $('#batchid').val();
+            var w = window.open("<%=request.getContextPath()%>/assessor/practicalexam/continueExam.io?userid=" + id + "&batchid=" + batchid, "popupWindow", "width=1200, height=500, scrollbars=yes");
+
 
         }
     </script> 

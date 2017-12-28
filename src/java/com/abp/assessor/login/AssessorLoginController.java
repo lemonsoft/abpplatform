@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -39,6 +40,8 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping("/assessor/auth")
 public class AssessorLoginController {
+
+    private static final Logger logger = Logger.getLogger(AssessorLoginController.class);
 
     private SuperService superService;
 
@@ -79,20 +82,24 @@ public class AssessorLoginController {
 
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        Map param = new HashMap();
-        param.put("loginid", username);
-        param.put("password", password);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new AssessorDAO(), param);
-        if (records.size() > 0) {
-            AssessorDAO assessordo = (AssessorDAO) records.get(0);
-            request.getSession().setAttribute("assessorId", assessordo.getAssessorid());
-            request.getSession().setAttribute("assessor", assessordo.getFirstname());
-            request.getSession().setAttribute("body", "/assessor/login/dashboard.jsp");
+        try {
+            Map param = new HashMap();
+            param.put("loginid", username);
+            param.put("password", password);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new AssessorDAO(), param);
+            if (records.size() > 0) {
+                AssessorDAO assessordo = (AssessorDAO) records.get(0);
+                request.getSession().setAttribute("assessorId", assessordo.getAssessorid());
+                request.getSession().setAttribute("assessor", assessordo.getFirstname());
+                request.getSession().setAttribute("body", "/assessor/login/dashboard.jsp");
 
-        } else {
-            System.out.println("No Active Assessor");
-            forward = "assessor/commonlogin";
-            request.getSession().setAttribute("body", "/assessor/login/login.jsp");
+            } else {
+                System.out.println("No Active Assessor");
+                forward = "assessor/commonlogin";
+                request.getSession().setAttribute("body", "/assessor/login/login.jsp");
+            }
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
 
         return forward;
@@ -103,48 +110,52 @@ public class AssessorLoginController {
 
         String forward = "assessor/common";
 
-        ArrayList datalist = new ArrayList();
-        Integer assessorid = (Integer) request.getSession().getAttribute("assessorId");
-        AssessorDAO assessordo = (AssessorDAO) this.superService.getObjectById(new AssessorDAO(), assessorid);
-        Map param2 = new HashMap();
-        param2.put("assessorId", assessorid);
-        List<SuperBean> batches = this.superService.listAllObjectsByCriteria(new BatchesDAO(), param2);
-        if (batches.size() > 0) {
-            Iterator itr = batches.iterator();
-            while (itr.hasNext()) {
-                BatchesDAO batchdao = (BatchesDAO) itr.next();
+        try {
+            ArrayList datalist = new ArrayList();
+            Integer assessorid = (Integer) request.getSession().getAttribute("assessorId");
+            AssessorDAO assessordo = (AssessorDAO) this.superService.getObjectById(new AssessorDAO(), assessorid);
+            Map param2 = new HashMap();
+            param2.put("assessorId", assessorid);
+            List<SuperBean> batches = this.superService.listAllObjectsByCriteria(new BatchesDAO(), param2);
+            if (batches.size() > 0) {
+                Iterator itr = batches.iterator();
+                while (itr.hasNext()) {
+                    BatchesDAO batchdao = (BatchesDAO) itr.next();
 
-                String startdate = batchdao.getAssessmentStartDate();
-                String enddate = batchdao.getAssessmentEndDate();
+                    String startdate = batchdao.getAssessmentStartDate();
+                    String enddate = batchdao.getAssessmentEndDate();
 
-                SimpleDateFormat outFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.s");
-                Date jodastarttime = outFormat.parse(startdate);
-                Date jodaendtime = outFormat.parse(enddate);
-                Date currentdt = new Date();
-                if (currentdt.after(jodastarttime) && currentdt.before(jodaendtime)) {
-                    DisplayBatches disp = new DisplayBatches();
-                    disp.setBatchID("" + batchdao.getID());
-                    disp.setBatchid("" + batchdao.getBatch_id());
-                    disp.setBatchsize("" + batchdao.getBatch_size());
-                    disp.setTpname(batchdao.getTpName());
-                    disp.setCenteraddr(batchdao.getCenterAddress());
-                    disp.setStartdate(batchdao.getAssessmentStartDate());
-                    disp.setEnddate(batchdao.getAssessmentEndDate());
-                    disp.setAttendance("");
-                    datalist.add(disp);
+                    SimpleDateFormat outFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.s");
+                    Date jodastarttime = outFormat.parse(startdate);
+                    Date jodaendtime = outFormat.parse(enddate);
+                    Date currentdt = new Date();
+                    if (currentdt.after(jodastarttime) && currentdt.before(jodaendtime)) {
+                        DisplayBatches disp = new DisplayBatches();
+                        disp.setBatchID("" + batchdao.getID());
+                        disp.setBatchid("" + batchdao.getBatch_id());
+                        disp.setBatchsize("" + batchdao.getBatch_size());
+                        disp.setTpname(batchdao.getTpName());
+                        disp.setCenteraddr(batchdao.getCenterAddress());
+                        disp.setStartdate(batchdao.getAssessmentStartDate());
+                        disp.setEnddate(batchdao.getAssessmentEndDate());
+                        disp.setAttendance("");
+                        datalist.add(disp);
 
-                    model.addAttribute("name", assessordo.getFirstname());
-                    model.addAttribute("qualification", assessordo.getQualification());
-                    model.addAttribute("state", getStateNameByID("" + assessordo.getStateid()));
-                    model.addAttribute("district", getDistrictNameByID("" + assessordo.getDistrictid()));
-                    model.addAttribute("emailid", assessordo.getEmailid());
-                    model.addAttribute("records", datalist);
+                        model.addAttribute("name", assessordo.getFirstname());
+                        model.addAttribute("qualification", assessordo.getQualification());
+                        model.addAttribute("state", getStateNameByID("" + assessordo.getStateid()));
+                        model.addAttribute("district", getDistrictNameByID("" + assessordo.getDistrictid()));
+                        model.addAttribute("emailid", assessordo.getEmailid());
+                        model.addAttribute("records", datalist);
+                    }
+
                 }
 
+            } else {
+                System.out.println("No Active Batches");
             }
-
-        } else {
-            System.out.println("No Active Batches");
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
         request.getSession().setAttribute("body", "/assessor/login/dashboard.jsp");
 
@@ -177,6 +188,7 @@ public class AssessorLoginController {
             this.superService.saveObject(assessmentdao);
             jsonObj.append("status", "save");
         } catch (Exception e) {
+            logger.error("This is Error message", e);
             jsonObj.append("status", "fail");
         }
 

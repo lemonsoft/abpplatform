@@ -12,10 +12,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -46,6 +46,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/admin/users")
 public class BatchUserController {
 
+    private static final Logger logger = Logger.getLogger(BatchUserController.class);
     private SuperService superService;
 
     @Autowired(required = true)
@@ -57,14 +58,17 @@ public class BatchUserController {
     @RequestMapping(value = "/initimport", method = RequestMethod.GET)
     public String initImport(HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        model.addAttribute("user", new UserDAO());
+        try {
+            model.addAttribute("user", new UserDAO());
 
-        request.getSession().setAttribute("sscname", request.getParameter("sscid"));
-        request.getSession().setAttribute("qpname", request.getParameter("qid"));
+            request.getSession().setAttribute("sscname", request.getParameter("sscid"));
+            request.getSession().setAttribute("qpname", request.getParameter("qid"));
 
-        model.addAttribute("action", "importshow.io");
-        model.addAttribute("mode", "add");
-
+            model.addAttribute("action", "importshow.io");
+            model.addAttribute("mode", "add");
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         request.getSession().setAttribute("body", "/admin/user/import.jsp");
         return "admin/common";
     }
@@ -422,7 +426,7 @@ public class BatchUserController {
             model.addAttribute("displaybtn", "yes");
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("This is Error message", e);
         }
         request.getSession().setAttribute("body", "/admin/user/import.jsp");
         return "admin/common";
@@ -432,7 +436,7 @@ public class BatchUserController {
     public String importusers(HttpServletRequest request, HttpServletResponse response, Model model) {
 
         model.addAttribute("user", new UserDAO());
-        int idno=getMaxRecordID()+1;
+        int idno = getMaxRecordID() + 1;
         ArrayList record = (ArrayList) request.getSession().getAttribute("saveimportdata");
         Iterator itr = record.iterator();
         while (itr.hasNext()) {
@@ -447,7 +451,7 @@ public class BatchUserController {
                         if (!checkEnrollmentNo(userdao.getEnrollmentno())) {
                             String username = userdao.getTraineename().toLowerCase();
                             username = username.replaceAll("\\s+", "");
-                            userdao.setUsername(username+idno);
+                            userdao.setUsername(username + idno);
                             userdao.setWebcam("y");
                             this.superService.saveObject(userdao);
                             userdao.setStatus("Insert Successfully");
@@ -464,7 +468,7 @@ public class BatchUserController {
 
             } catch (ObjectNotFoundException e) {
                 userdao.setStatus("Invalid Batch ID");
-                //e.printStackTrace();
+                logger.error("This is Error message", e);
 
             }
             idno++;
@@ -481,15 +485,21 @@ public class BatchUserController {
     @RequestMapping(value = "/showuser", method = {RequestMethod.GET, RequestMethod.POST})
     public String showUser(HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        request.getSession().setAttribute("sscname", request.getParameter("sscid"));
-        request.getSession().setAttribute("qpname", request.getParameter("qid"));
-        String batchid = request.getParameter("batchid");
-        Map param = new HashMap();
-        param.put("batchid", new Integer(batchid));
+        try {
+            request.getSession().setAttribute("sscname", request.getParameter("sscid"));
+            request.getSession().setAttribute("qpname", request.getParameter("qid"));
+            String batchid = request.getParameter("batchid");
+            Map param = new HashMap();
+            param.put("batchid", new Integer(batchid));
 
-        List<SuperBean> users = this.superService.listAllObjectsByCriteria(new UserDAO(), param);
-        model.addAttribute("importdata", users);
-        model.addAttribute("batchid", batchid);
+            List<SuperBean> users = this.superService.listAllObjectsByCriteria(new UserDAO(), param);
+            model.addAttribute("importdata", users);
+            model.addAttribute("batchid", batchid);
+        } catch (Exception e) {
+
+            logger.error("This is Error message", e);
+
+        }
         request.getSession().setAttribute("body", "/admin/user/showusers.jsp");
         return "admin/common";
     }
@@ -684,7 +694,7 @@ public class BatchUserController {
             response.getOutputStream().flush();
             response.getOutputStream().close();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("This is Error message", e);
         }
         model.addAttribute("importdata", users);
         request.getSession().setAttribute("body", "/admin/user/showusers.jsp");
@@ -694,21 +704,26 @@ public class BatchUserController {
     @RequestMapping(value = "/initChange", method = {RequestMethod.GET, RequestMethod.POST})
     public String initChange(HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        String batchid = request.getParameter("batchid");
-        String recid = request.getParameter("recid");
-        UserDAO userdao = (UserDAO) this.superService.getObjectById(new UserDAO(), new Integer(recid));
-        String webcam = request.getParameter("webcam");
-        if (webcam.equalsIgnoreCase("Y")) {
-            userdao.setWebcam("N");
-        } else {
-            userdao.setWebcam("Y");
-        }
-        this.superService.updateObject(userdao);
+        try {
+            String batchid = request.getParameter("batchid");
+            String recid = request.getParameter("recid");
+            UserDAO userdao = (UserDAO) this.superService.getObjectById(new UserDAO(), new Integer(recid));
+            String webcam = request.getParameter("webcam");
+            if (webcam.equalsIgnoreCase("Y")) {
+                userdao.setWebcam("N");
+            } else {
+                userdao.setWebcam("Y");
+            }
+            this.superService.updateObject(userdao);
 
-        Map param = new HashMap();
-        param.put("batchid", new Integer(batchid));
-        List<SuperBean> users = this.superService.listAllObjectsByCriteria(new UserDAO(), param);
-        model.addAttribute("importdata", users);
+            Map param = new HashMap();
+            param.put("batchid", new Integer(batchid));
+            List<SuperBean> users = this.superService.listAllObjectsByCriteria(new UserDAO(), param);
+            model.addAttribute("importdata", users);
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         request.getSession().setAttribute("body", "/admin/user/showusers.jsp");
         return "admin/common";
     }

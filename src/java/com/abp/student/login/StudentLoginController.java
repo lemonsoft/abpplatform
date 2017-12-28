@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Random;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -43,6 +43,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/student/login")
 public class StudentLoginController {
 
+    private static final Logger logger = Logger.getLogger(StudentLoginController.class);
     private SuperService superService;
 
     @Autowired(required = true)
@@ -199,7 +200,7 @@ public class StudentLoginController {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("This is Error message", e);
                 flag = false;
                 model.addAttribute("error", "Exception");
 
@@ -222,11 +223,17 @@ public class StudentLoginController {
 
     @RequestMapping(value = "/closeexam", method = {RequestMethod.POST, RequestMethod.GET})
     public String closeexam(HttpServletRequest request, HttpServletResponse response, Model model) {
-        request.getSession().removeAttribute("batchid");
-        request.getSession().removeAttribute("qpaperid");
-        request.getSession().removeAttribute("userresultdetailid");
-        request.getSession().removeAttribute("userid");
-        request.getSession().removeAttribute("questionids");
+        try {
+            request.getSession().removeAttribute("batchid");
+            request.getSession().removeAttribute("qpaperid");
+            request.getSession().removeAttribute("userresultdetailid");
+            request.getSession().removeAttribute("userid");
+            request.getSession().removeAttribute("questionids");
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+
+        }
 
         request.getSession().setAttribute("body", "/student/login/login.jsp");
         return "student/commonlogin";
@@ -239,24 +246,31 @@ public class StudentLoginController {
         Date datenow = new Date();
         Integer userresultdetailid = (Integer) request.getSession().getAttribute("userresultdetailid");
         Integer userid = (Integer) request.getSession().getAttribute("userid");
-        Map param2 = new HashMap();
-        param2.put("ID", userresultdetailid);
-        param2.put("userid", userid);
-        List<SuperBean> userresultdaolist = this.superService.listAllObjectsByCriteria(new UserResultDetailDAO(), param2);
-        if (userresultdaolist.size() > 0) {
-            UserResultDetailDAO userdao = (UserResultDetailDAO) userresultdaolist.get(0);
-            userdao.setExamendtime(sdf.format(datenow));
-            userdao.setExamstatus("completed");
-            this.superService.updateObject(userdao);
+
+        try {
+            Map param2 = new HashMap();
+            param2.put("ID", userresultdetailid);
+            param2.put("userid", userid);
+            List<SuperBean> userresultdaolist = this.superService.listAllObjectsByCriteria(new UserResultDetailDAO(), param2);
+            if (userresultdaolist.size() > 0) {
+                UserResultDetailDAO userdao = (UserResultDetailDAO) userresultdaolist.get(0);
+                userdao.setExamendtime(sdf.format(datenow));
+                userdao.setExamstatus("completed");
+                this.superService.updateObject(userdao);
+            }
+
+            addAssesmentLog(userresultdetailid, userid, "Exam Finished");
+
+            request.getSession().removeAttribute("batchid");
+            request.getSession().removeAttribute("qpaperid");
+            request.getSession().removeAttribute("userresultdetailid");
+            request.getSession().removeAttribute("userid");
+            request.getSession().removeAttribute("questionids");
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+
         }
-
-        addAssesmentLog(userresultdetailid, userid, "Exam Finished");
-
-        request.getSession().removeAttribute("batchid");
-        request.getSession().removeAttribute("qpaperid");
-        request.getSession().removeAttribute("userresultdetailid");
-        request.getSession().removeAttribute("userid");
-        request.getSession().removeAttribute("questionids");
 
         request.getSession().setAttribute("body", "/student/login/login.jsp");
         return "student/commonlogin";
@@ -267,7 +281,13 @@ public class StudentLoginController {
 
         int userresultdetailid = (int) request.getSession().getAttribute("userresultdetailid");
         int userid = (int) request.getSession().getAttribute("userid");
-        addAssesmentLog(userresultdetailid, userid, "Reached Exam Insructions");
+        try {
+            addAssesmentLog(userresultdetailid, userid, "Reached Exam Insructions");
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+
+        }
 
         request.getSession().setAttribute("body", "/student/instruction/examinstruction.jsp");
         return "student/common";
@@ -286,7 +306,7 @@ public class StudentLoginController {
             this.superService.saveObject(asseslog);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("This is Error message", e);
         }
     }
 
@@ -297,7 +317,7 @@ public class StudentLoginController {
             QualificationPackDAO qpObj = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), qpackid);
             qpackname = qpObj.getQpackname();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("This is Error message", e);
         }
 
         return qpackname;
@@ -310,7 +330,7 @@ public class StudentLoginController {
             SSCDAO sscObj = (SSCDAO) this.superService.getObjectById(new SSCDAO(), sscid);
             sscname = sscObj.getSscName();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("This is Error message", e);
         }
 
         return sscname;

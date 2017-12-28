@@ -67,21 +67,21 @@
                                     
                                     <div class="tile double bg-purple-studio">
                                         <div class="tile-body">
-                                            <i class="fa fa-shopping-cart"></i>
+                                            <i class="fa fa-bitbucket"></i>
                                         </div>
                                         <div class="tile-object">
                                             <div class="name"> Batches </div>
-                                            <div class="number"> 121 </div>
+                                            <div class="number"> ${totalbatches}</div>
                                         </div>
                                     </div>
                                     
                                     <div class="tile double bg-green-meadow">
                                         <div class="tile-body">
-                                            <i class="fa fa-comments"></i>
+                                            <i class="fa fa-users"></i>
                                         </div>
                                         <div class="tile-object">
-                                            <div class="name"> Assessments </div>
-                                            <div class="number"> 12 </div>
+                                            <div class="name"> Users </div>
+                                            <div class="number"> ${totalusers} </div>
                                         </div>
                                     </div>
                                     

@@ -24,6 +24,7 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/admin/assessor")
 public class AssessorController {
 
+    private static final Logger logger = Logger.getLogger(AssessorController.class);
     private SuperService superService;
     @Autowired
     private ServletContext servletContext;
@@ -59,13 +61,20 @@ public class AssessorController {
 
     @RequestMapping(value = "/init", method = RequestMethod.GET)
     public String init(HttpServletRequest request, HttpServletResponse response, Model model) {
-        model.addAttribute("assessor", new AssessorDAO());
-        model.addAttribute("action", "add.io");
-        model.addAttribute("allstates", getAllStatesValues());
-        model.addAttribute("jobroles", getSkillsList());
-        model.addAttribute("ssc", getSectorSkillCouncil());
-        model.addAttribute("alldistrict", getAllDistrictValues());
-        model.addAttribute("mode", "add");
+
+        try {
+
+            model.addAttribute("assessor", new AssessorDAO());
+            model.addAttribute("action", "add.io");
+            model.addAttribute("allstates", getAllStatesValues());
+            model.addAttribute("jobroles", getSkillsList());
+            model.addAttribute("ssc", getSectorSkillCouncil());
+            model.addAttribute("alldistrict", getAllDistrictValues());
+            model.addAttribute("mode", "add");
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
 
         request.getSession().setAttribute("body", "/admin/assessor/addassessor.jsp");
         return "admin/common";
@@ -74,83 +83,98 @@ public class AssessorController {
     @RequestMapping(value = "/add", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String add(@ModelAttribute("assessor") AssessorDAO beanObj, @RequestParam MultipartFile[] files, HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        for (int i = 0; i < files.length; i++) {
-            MultipartFile file = files[i];
+        try {
 
-            System.out.println("file ::::: " + file.getOriginalFilename());
-            String path = servletContext.getRealPath("/uploaded/assessor/") + File.separator + file.getOriginalFilename();
-            File destinationFile = new File(path);
-            try {
-                if (!destinationFile.exists()) {
-                    destinationFile.createNewFile();
+            for (int i = 0; i < files.length; i++) {
+                MultipartFile file = files[i];
+
+                System.out.println("file ::::: " + file.getOriginalFilename());
+                String path = servletContext.getRealPath("/uploaded/assessor/") + File.separator + file.getOriginalFilename();
+                File destinationFile = new File(path);
+                try {
+                    if (!destinationFile.exists()) {
+                        destinationFile.createNewFile();
+                    }
+                    file.transferTo(destinationFile);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                file.transferTo(destinationFile);
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+            String photname = files[0].getOriginalFilename();
+            String aadharname = files[1].getOriginalFilename();
+            String resumename = files[2].getOriginalFilename();
+            List<String> options = beanObj.getOptions();
+            Iterator itr = options.iterator();
+            String jobroles = "";
+            while (itr.hasNext()) {
+                String data = (String) itr.next();
+                jobroles = jobroles + "," + data;
+            }
+            jobroles = jobroles.substring(1);
+            beanObj.setPhotoname(photname);
+            beanObj.setAadharimage(aadharname);
+            beanObj.setResumename(resumename);
+            beanObj.setJobrole(jobroles);
+            this.superService.saveObject(beanObj);
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
-        String photname = files[0].getOriginalFilename();
-        String aadharname = files[1].getOriginalFilename();
-        String resumename = files[2].getOriginalFilename();
-        List<String> options = beanObj.getOptions();
-        Iterator itr = options.iterator();
-        String jobroles = "";
-        while (itr.hasNext()) {
-            String data = (String) itr.next();
-            jobroles = jobroles + "," + data;
-        }
-        jobroles = jobroles.substring(1);
-        beanObj.setPhotoname(photname);
-        beanObj.setAadharimage(aadharname);
-        beanObj.setResumename(resumename);
-        beanObj.setJobrole(jobroles);
-        this.superService.saveObject(beanObj);
-
         return "redirect:/admin/assessor/init.io";
     }
 
     @RequestMapping(value = "/initSearch", method = {RequestMethod.GET, RequestMethod.POST})
     public String initSearch(HttpServletRequest request, HttpServletResponse response, Model model) {
-        model.addAttribute("assessor", new AssessorDAO());
-        model.addAttribute("ssc", getSectorSkillCouncil());
-        List<SuperBean> records = this.superService.listAllObjects(new AssessorDAO());
-        Iterator itr = records.iterator();
-        while (itr.hasNext()) {
-            AssessorDAO assessor = (AssessorDAO) itr.next();
-            assessor.setState(getStateNameByID("" + assessor.getStateid()));
-            assessor.setDistrict(getDistrictNameByID("" + assessor.getDistrictid()));
-            String []jobroleid=assessor.getJobrole().split(",");
-            String jobrole="";
-            for(int i=0;i<jobroleid.length;i++){
-                jobrole=jobrole+","+getJobRoleNameByID(jobroleid[i]);
+
+        try {
+
+            model.addAttribute("assessor", new AssessorDAO());
+            model.addAttribute("ssc", getSectorSkillCouncil());
+            List<SuperBean> records = this.superService.listAllObjects(new AssessorDAO());
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                AssessorDAO assessor = (AssessorDAO) itr.next();
+                assessor.setState(getStateNameByID("" + assessor.getStateid()));
+                assessor.setDistrict(getDistrictNameByID("" + assessor.getDistrictid()));
+                String[] jobroleid = assessor.getJobrole().split(",");
+                String jobrole = "";
+                for (int i = 0; i < jobroleid.length; i++) {
+                    jobrole = jobrole + "," + getJobRoleNameByID(jobroleid[i]);
+                }
+                jobrole = jobrole.substring(1);
+                assessor.setJobrole(jobrole);
             }
-            jobrole=jobrole.substring(1);
-            assessor.setJobrole(jobrole);
+            model.addAttribute("records", records);
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
-        model.addAttribute("records", records);
         request.getSession().setAttribute("body", "/admin/assessor/searchassessor.jsp");
         return "admin/common";
     }
 
     @RequestMapping(value = "/search", method = {RequestMethod.GET, RequestMethod.POST})
     public String search(AssessorDAO beanObj, HttpServletRequest request, HttpServletResponse response, Model model) {
-        model.addAttribute("assessor", beanObj);
-        model.addAttribute("ssc", getSectorSkillCouncil());
-        Map param = new HashMap();
-        param.put("ssc_id", new Integer(beanObj.getSsc()));
-        System.out.println("SSC ID :::::::::::::::" + beanObj.getSsc());
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new AssessorDAO(), param);
-        System.out.println("records found ::" + records.size());
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                AssessorDAO assessor = (AssessorDAO) itr.next();
-                assessor.setState(getStateNameByID("" + assessor.getStateid()));
-                assessor.setDistrict(getDistrictNameByID("" + assessor.getDistrictid()));
+
+        try {
+            model.addAttribute("assessor", beanObj);
+            model.addAttribute("ssc", getSectorSkillCouncil());
+            Map param = new HashMap();
+            param.put("ssc_id", new Integer(beanObj.getSsc()));
+            System.out.println("SSC ID :::::::::::::::" + beanObj.getSsc());
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new AssessorDAO(), param);
+            System.out.println("records found ::" + records.size());
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    AssessorDAO assessor = (AssessorDAO) itr.next();
+                    assessor.setState(getStateNameByID("" + assessor.getStateid()));
+                    assessor.setDistrict(getDistrictNameByID("" + assessor.getDistrictid()));
+                }
             }
+            model.addAttribute("records", records);
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
 
-        model.addAttribute("records", records);
         request.getSession().setAttribute("body", "/admin/assessor/searchassessor.jsp");
         return "admin/common";
     }
@@ -158,27 +182,31 @@ public class AssessorController {
     @RequestMapping(value = "/initUpdate", method = RequestMethod.GET)
     public String initUpdate(HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        String recid = (String) request.getParameter("recid");
-        AssessorDAO record = (AssessorDAO) this.superService.getObjectById(new AssessorDAO(), new Integer(recid));
-        String[] jobroles = record.getJobrole().split(",");
-        System.out.println("job role " + jobroles[0]);
-        List<String> options = new ArrayList();
-        for (int i = 0; i < jobroles.length; i++) {
-            options.add(jobroles[i]);
-        }
-        System.out.println("File name send to page " + record.getPhotoname());
+        try {
+            String recid = (String) request.getParameter("recid");
+            AssessorDAO record = (AssessorDAO) this.superService.getObjectById(new AssessorDAO(), new Integer(recid));
+            String[] jobroles = record.getJobrole().split(",");
+            System.out.println("job role " + jobroles[0]);
+            List<String> options = new ArrayList();
+            for (int i = 0; i < jobroles.length; i++) {
+                options.add(jobroles[i]);
+            }
+            System.out.println("File name send to page " + record.getPhotoname());
 
-        request.getSession().setAttribute("photoname", record.getPhotoname());
-        request.getSession().setAttribute("aadharimage", record.getAadharimage());
-        request.getSession().setAttribute("resumename", record.getResumename());
-        record.setOptions(options);
-        model.addAttribute("assessor", record);
-        model.addAttribute("allstates", getAllStatesValues());
-        model.addAttribute("jobroles", getSkillsList());
-        model.addAttribute("ssc", getSectorSkillCouncil());
-        model.addAttribute("district", getDistrictById(record.getDistrictid()));
-        model.addAttribute("action", "update.io");
-        model.addAttribute("mode", "update");
+            request.getSession().setAttribute("photoname", record.getPhotoname());
+            request.getSession().setAttribute("aadharimage", record.getAadharimage());
+            request.getSession().setAttribute("resumename", record.getResumename());
+            record.setOptions(options);
+            model.addAttribute("assessor", record);
+            model.addAttribute("allstates", getAllStatesValues());
+            model.addAttribute("jobroles", getSkillsList());
+            model.addAttribute("ssc", getSectorSkillCouncil());
+            model.addAttribute("district", getDistrictById(record.getDistrictid()));
+            model.addAttribute("action", "update.io");
+            model.addAttribute("mode", "update");
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         request.getSession().setAttribute("body", "/admin/assessor/addassessor.jsp");
         return "admin/common";
     }
@@ -204,7 +232,7 @@ public class AssessorController {
             this.superService.updateObject(beanObj);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("This is Error message", e);
             model.addAttribute("assessor", beanObj);
             model.addAttribute("allstates", getAllStatesValues());
             model.addAttribute("jobroles", getSkillsList());
@@ -214,6 +242,7 @@ public class AssessorController {
             model.addAttribute("mode", "update");
             request.getSession().setAttribute("body", "/admin/assessor/addassessor.jsp");
             forward = "admin/common";
+
         }
 
         request.getSession().removeAttribute("photoname");
@@ -241,7 +270,7 @@ public class AssessorController {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("This is Error message", e);
             }
         }
 
@@ -274,7 +303,7 @@ public class AssessorController {
             //Copy bytes from source to destination(outputstream in this example), closes both streams.
             FileCopyUtils.copy(inputStream, response.getOutputStream());
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("This is Error message", e);
         }
         return "redirect:/admin/assessor/initSearch.io";
     }
@@ -285,7 +314,7 @@ public class AssessorController {
 
         System.out.println("SSC ID::" + sscid);
         String jobroles = getJobRolesByID(sscid);
-        
+
         return jobroles;
     }
 
@@ -395,6 +424,7 @@ public class AssessorController {
         DistrictDAO district = (DistrictDAO) this.superService.getObjectById(new DistrictDAO(), new Integer(districtid));
         return district.getDistrictName();
     }
+
     public String getJobRoleNameByID(String districtid) {
 
         QualificationPackDAO role = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(districtid));

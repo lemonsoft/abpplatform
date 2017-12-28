@@ -23,10 +23,8 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import static org.joda.time.format.ISODateTimeFormat.dateTime;
+import org.apache.log4j.Logger;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +44,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/admin/generateqp")
 public class GenerateQPController {
 
+    private static final Logger logger = Logger.getLogger(GenerateQPController.class);
     @Autowired
     private ServletContext servletContext;
 
@@ -127,14 +126,7 @@ public class GenerateQPController {
             }
 
         } catch (Exception e) {
-//            PCWiseQuestionDAO pcwisedao = new PCWiseQuestionDAO();
-//            PCDAO PCDAO = (PCDAO) this.superService.getObjectById(new PCDAO(), new Integer(recid));
-//            pcwisedao.setPcid(new Integer(recid));
-//            pcwisedao.setPcids(PCDAO.getPcid());
-//            pcwisedao.setPcname(PCDAO.getPcname());
-//            pcwisedao.setTheorymarks(PCDAO.getTheorycutoffmarks());
-//            model.addAttribute("pcwisequestion", pcwisedao);
-//            model.addAttribute("mode", "add");
+            logger.error("This is Error message", e);
         }
 
         request.getSession().setAttribute("body", "/admin/generateqp/pcwisequestion.jsp");
@@ -158,21 +150,25 @@ public class GenerateQPController {
     public @ResponseBody
     String getAllPCByQPID(@RequestParam("qpackid") String qpackid) {
 
-        QualificationPackDAO beanObj = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(qpackid));
-
         JSONArray jsonarrsend = new JSONArray();
-        JSONArray jsonarr = getAllPCByQPackID(new Integer(qpackid));
-        JSONArray questions = getAllQuestions(new Integer(qpackid));
+        try {
+            QualificationPackDAO beanObj = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(qpackid));
 
-        jsonarrsend.put(questions);
-        jsonarrsend.put(jsonarr);
+            JSONArray jsonarr = getAllPCByQPackID(new Integer(qpackid));
+            JSONArray questions = getAllQuestions(new Integer(qpackid));
 
-        JSONObject jsonObj = new JSONObject();
-        jsonObj.append("totaltheorymarksqp", beanObj.getTotaltheorymarks());
+            jsonarrsend.put(questions);
+            jsonarrsend.put(jsonarr);
 
-        boolean flag = checkAllMarksEqualtoQp(new Integer(qpackid));
-        jsonObj.append("generate", flag);
-        jsonarrsend.put(jsonObj);
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.append("totaltheorymarksqp", beanObj.getTotaltheorymarks());
+
+            boolean flag = checkAllMarksEqualtoQp(new Integer(qpackid));
+            jsonObj.append("generate", flag);
+            jsonarrsend.put(jsonObj);
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         return jsonarrsend.toString();
     }
 
@@ -221,6 +217,7 @@ public class GenerateQPController {
             jsonObj.append("status", "save");
         } catch (Exception e) {
             jsonObj.append("status", "fail");
+            logger.error("This is Error message", e);
 
         }
         return jsonObj.toString();
@@ -272,6 +269,7 @@ public class GenerateQPController {
             jsonObj.append("status", "save");
         } catch (Exception e) {
             jsonObj.append("status", "fail");
+            logger.error("This is Error message", e);
 
         }
         return jsonObj.toString();
@@ -618,7 +616,7 @@ public class GenerateQPController {
                     this.superService.saveObject(questionpaper);
                     jsonObj.append("status", "Question Paper created.");
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error("This is Error message", e);
                     jsonObj.append("status", "Error in creating Question Paper.");
                 }
 
@@ -690,6 +688,7 @@ public class GenerateQPController {
                 TheoryPCIDWithMarks pcwithmarkdao = (TheoryPCIDWithMarks) itr.next();
                 theorymmqids = theorymmqids + pcwithmarkdao.getQuestion_id() + ",";
             }
+            //theorymmqids=theorymmqids.substring(0, theorymmqids.length()-1);
 
         }
 
@@ -990,6 +989,7 @@ public class GenerateQPController {
                 PCDAO pcdao = (PCDAO) this.superService.getObjectById(new PCDAO(), obj.getPcid());
                 pcidwithmarks = pcidwithmarks + pcdao.getPcid() + "(" + obj.getMarks() + "),";
             }
+            pcidwithmarks = pcidwithmarks.substring(0, pcidwithmarks.length() - 1);
         }
         return pcidwithmarks;
     }

@@ -5,7 +5,6 @@
  */
 package com.abp.admin.project.questions;
 
-
 import com.abp.admin.language.LanguageDAO;
 import com.abp.admin.qualificationpack.NOSDAO;
 import com.abp.admin.qualificationpack.PCDAO;
@@ -23,6 +22,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -56,6 +56,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/admin/questions")
 public class QuestionController {
 
+    private static final Logger logger = Logger.getLogger(QuestionController.class);
     @Autowired
     private ServletContext servletContext;
 
@@ -86,15 +87,19 @@ public class QuestionController {
         String qpackid = request.getParameter("qpackid");
         String nosid = request.getParameter("nosid");
         String pcid = request.getParameter("pcid");
-        QuestionDAO questObj = new QuestionDAO();
-        questObj.setQpackid(new Integer(qpackid));
-        questObj.setNosid(new Integer(nosid));
-        questObj.setPcid(new Integer(pcid));
-        model.addAttribute("questions", questObj);
 
-        model.addAttribute("mode", "add");
-        model.addAttribute("action", "add.io");
+        try {
+            QuestionDAO questObj = new QuestionDAO();
+            questObj.setQpackid(new Integer(qpackid));
+            questObj.setNosid(new Integer(nosid));
+            questObj.setPcid(new Integer(pcid));
+            model.addAttribute("questions", questObj);
 
+            model.addAttribute("mode", "add");
+            model.addAttribute("action", "add.io");
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         request.getSession().setAttribute("body", "/admin/questions/addQuestions.jsp");
         return "admin/common";
     }
@@ -102,64 +107,67 @@ public class QuestionController {
     @RequestMapping(value = "/add", method = {RequestMethod.GET, RequestMethod.POST})
     public String add(@ModelAttribute("questions") QuestionDAO beanObj, @RequestParam MultipartFile[] files, HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        for (int i = 0; i < files.length; i++) {
-            MultipartFile file = files[i];
+        try {
+            for (int i = 0; i < files.length; i++) {
+                MultipartFile file = files[i];
 
-            System.out.println("file ::::: " + file.getOriginalFilename());
-            String path = servletContext.getRealPath("/uploaded/questions/") + File.separator + file.getOriginalFilename();
-            File destinationFile = new File(path);
-            try {
-                if (!destinationFile.exists()) {
-                    destinationFile.createNewFile();
+                System.out.println("file ::::: " + file.getOriginalFilename());
+                String path = servletContext.getRealPath("/uploaded/questions/") + File.separator + file.getOriginalFilename();
+                File destinationFile = new File(path);
+                try {
+                    if (!destinationFile.exists()) {
+                        destinationFile.createNewFile();
+                    }
+                    file.transferTo(destinationFile);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                file.transferTo(destinationFile);
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-        }
-        String questionimgurl = "no-image.png";
-        if (!files[0].getOriginalFilename().isEmpty()) {
-            questionimgurl = files[0].getOriginalFilename();
-        }
-        String imageurl1 = "no-image.png";
-        if (!files[1].getOriginalFilename().isEmpty()) {
-            imageurl1 = files[1].getOriginalFilename();
-        }
-        String imageurl2 = "no-image.png";
-        if (!files[2].getOriginalFilename().isEmpty()) {
-            imageurl2 = files[2].getOriginalFilename();
-        }
-        String imageurl3 = "no-image.png";
-        if (!files[3].getOriginalFilename().isEmpty()) {
-            imageurl3 = files[3].getOriginalFilename();
-        }
-        String imageurl4 = "no-image.png";
-        if (!files[4].getOriginalFilename().isEmpty()) {
-            imageurl4 = files[4].getOriginalFilename();
-        }
-        String imageurl5 = "no-image.png";
-        if (!files[5].getOriginalFilename().isEmpty()) {
-            imageurl5 = files[5].getOriginalFilename();
-        }
+            String questionimgurl = "no-image.png";
+            if (!files[0].getOriginalFilename().isEmpty()) {
+                questionimgurl = files[0].getOriginalFilename();
+            }
+            String imageurl1 = "no-image.png";
+            if (!files[1].getOriginalFilename().isEmpty()) {
+                imageurl1 = files[1].getOriginalFilename();
+            }
+            String imageurl2 = "no-image.png";
+            if (!files[2].getOriginalFilename().isEmpty()) {
+                imageurl2 = files[2].getOriginalFilename();
+            }
+            String imageurl3 = "no-image.png";
+            if (!files[3].getOriginalFilename().isEmpty()) {
+                imageurl3 = files[3].getOriginalFilename();
+            }
+            String imageurl4 = "no-image.png";
+            if (!files[4].getOriginalFilename().isEmpty()) {
+                imageurl4 = files[4].getOriginalFilename();
+            }
+            String imageurl5 = "no-image.png";
+            if (!files[5].getOriginalFilename().isEmpty()) {
+                imageurl5 = files[5].getOriginalFilename();
+            }
 
-        beanObj.setQuestionimgurl(questionimgurl);
-        beanObj.setImageurl1(imageurl1);
-        beanObj.setImageurl2(imageurl2);
-        beanObj.setImageurl3(imageurl3);
-        beanObj.setImageurl4(imageurl4);
-        beanObj.setImageurl5(imageurl5);
-        beanObj.setCans1("");
-        beanObj.setCans2("");
-        beanObj.setCans3("");
-        beanObj.setCans4("");
-        beanObj.setIsapproved("Y");
+            beanObj.setQuestionimgurl(questionimgurl);
+            beanObj.setImageurl1(imageurl1);
+            beanObj.setImageurl2(imageurl2);
+            beanObj.setImageurl3(imageurl3);
+            beanObj.setImageurl4(imageurl4);
+            beanObj.setImageurl5(imageurl5);
+            beanObj.setCans1("");
+            beanObj.setCans2("");
+            beanObj.setCans3("");
+            beanObj.setCans4("");
+            beanObj.setIsapproved("Y");
 
-        this.superService.saveObject(beanObj);
-        model.addAttribute("questions", new QuestionDAO());
+            this.superService.saveObject(beanObj);
+            model.addAttribute("questions", new QuestionDAO());
 
-        model.addAttribute("mode", "add");
-        model.addAttribute("action", "add.io");
-
+            model.addAttribute("mode", "add");
+            model.addAttribute("action", "add.io");
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         request.getSession().setAttribute("body", "/admin/questions/addQuestions.jsp");
         return "redirect:/admin/questions/init.io";
     }
@@ -168,24 +176,27 @@ public class QuestionController {
     public String initUpdate(HttpServletRequest request, HttpServletResponse response, Model model) {
 
         String recid = request.getParameter("recid");
-        QuestionDAO beanObj = (QuestionDAO) this.superService.getObjectById(new QuestionDAO(), new Integer(recid));
-        String imgurl0 = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/uploaded/questions/" + beanObj.getQuestionimgurl();
-        String imgurl1 = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/uploaded/questions/" + beanObj.getImageurl1();
-        String imgurl2 = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/uploaded/questions/" + beanObj.getImageurl2();
-        String imgurl3 = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/uploaded/questions/" + beanObj.getImageurl3();
-        String imgurl4 = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/uploaded/questions/" + beanObj.getImageurl4();
-        String imgurl5 = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/uploaded/questions/" + beanObj.getImageurl5();
-        //beanObj.setImageurl1(imgurl1);
-        model.addAttribute("imgurl0", imgurl0);
-        model.addAttribute("imgurl1", imgurl1);
-        model.addAttribute("imgurl2", imgurl2);
-        model.addAttribute("imgurl3", imgurl3);
-        model.addAttribute("imgurl4", imgurl4);
-        model.addAttribute("imgurl5", imgurl5);
-        model.addAttribute("questions", beanObj);
-        model.addAttribute("action", "update.io");
-        model.addAttribute("mode", "update");
-
+        try {
+            QuestionDAO beanObj = (QuestionDAO) this.superService.getObjectById(new QuestionDAO(), new Integer(recid));
+            String imgurl0 = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/uploaded/questions/" + beanObj.getQuestionimgurl();
+            String imgurl1 = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/uploaded/questions/" + beanObj.getImageurl1();
+            String imgurl2 = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/uploaded/questions/" + beanObj.getImageurl2();
+            String imgurl3 = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/uploaded/questions/" + beanObj.getImageurl3();
+            String imgurl4 = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/uploaded/questions/" + beanObj.getImageurl4();
+            String imgurl5 = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/uploaded/questions/" + beanObj.getImageurl5();
+            //beanObj.setImageurl1(imgurl1);
+            model.addAttribute("imgurl0", imgurl0);
+            model.addAttribute("imgurl1", imgurl1);
+            model.addAttribute("imgurl2", imgurl2);
+            model.addAttribute("imgurl3", imgurl3);
+            model.addAttribute("imgurl4", imgurl4);
+            model.addAttribute("imgurl5", imgurl5);
+            model.addAttribute("questions", beanObj);
+            model.addAttribute("action", "update.io");
+            model.addAttribute("mode", "update");
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         request.getSession().setAttribute("body", "/admin/questions/addQuestions.jsp");
         return "admin/common";
     }
@@ -193,59 +204,62 @@ public class QuestionController {
     @RequestMapping(value = "/update", method = {RequestMethod.GET, RequestMethod.POST})
     public String update(@ModelAttribute("questions") QuestionDAO beanObj, @RequestParam MultipartFile[] files, HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        for (int i = 0; i < files.length; i++) {
-            MultipartFile file = files[i];
+        try {
+            for (int i = 0; i < files.length; i++) {
+                MultipartFile file = files[i];
 
-            System.out.println("file ::::: " + file.getOriginalFilename());
-            String path = servletContext.getRealPath("/uploaded/questions/") + File.separator + file.getOriginalFilename();
-            File destinationFile = new File(path);
-            try {
-                if (!destinationFile.exists()) {
-                    destinationFile.createNewFile();
+                System.out.println("file ::::: " + file.getOriginalFilename());
+                String path = servletContext.getRealPath("/uploaded/questions/") + File.separator + file.getOriginalFilename();
+                File destinationFile = new File(path);
+                try {
+                    if (!destinationFile.exists()) {
+                        destinationFile.createNewFile();
+                    }
+                    file.transferTo(destinationFile);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                file.transferTo(destinationFile);
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-        }
-        String questionimgurl = beanObj.getQuestionimgurl();
-        if (!files[0].getOriginalFilename().isEmpty()) {
-            questionimgurl = files[0].getOriginalFilename();
-        }
-        String imageurl1 = beanObj.getImageurl1();
-        if (!files[1].getOriginalFilename().isEmpty()) {
-            imageurl1 = files[1].getOriginalFilename();
-        }
-        String imageurl2 = beanObj.getImageurl2();
-        if (!files[2].getOriginalFilename().isEmpty()) {
-            imageurl2 = files[2].getOriginalFilename();
-        }
-        String imageurl3 = beanObj.getImageurl3();
-        if (!files[3].getOriginalFilename().isEmpty()) {
-            imageurl3 = files[3].getOriginalFilename();
-        }
-        String imageurl4 = beanObj.getImageurl4();
-        if (!files[4].getOriginalFilename().isEmpty()) {
-            imageurl4 = files[4].getOriginalFilename();
-        }
-        String imageurl5 = beanObj.getImageurl5();
-        if (!files[5].getOriginalFilename().isEmpty()) {
-            imageurl5 = files[5].getOriginalFilename();
-        }
+            String questionimgurl = beanObj.getQuestionimgurl();
+            if (!files[0].getOriginalFilename().isEmpty()) {
+                questionimgurl = files[0].getOriginalFilename();
+            }
+            String imageurl1 = beanObj.getImageurl1();
+            if (!files[1].getOriginalFilename().isEmpty()) {
+                imageurl1 = files[1].getOriginalFilename();
+            }
+            String imageurl2 = beanObj.getImageurl2();
+            if (!files[2].getOriginalFilename().isEmpty()) {
+                imageurl2 = files[2].getOriginalFilename();
+            }
+            String imageurl3 = beanObj.getImageurl3();
+            if (!files[3].getOriginalFilename().isEmpty()) {
+                imageurl3 = files[3].getOriginalFilename();
+            }
+            String imageurl4 = beanObj.getImageurl4();
+            if (!files[4].getOriginalFilename().isEmpty()) {
+                imageurl4 = files[4].getOriginalFilename();
+            }
+            String imageurl5 = beanObj.getImageurl5();
+            if (!files[5].getOriginalFilename().isEmpty()) {
+                imageurl5 = files[5].getOriginalFilename();
+            }
 
-        beanObj.setQuestionimgurl(questionimgurl);
-        beanObj.setImageurl1(imageurl1);
-        beanObj.setImageurl2(imageurl2);
-        beanObj.setImageurl3(imageurl3);
-        beanObj.setImageurl4(imageurl4);
-        beanObj.setImageurl5(imageurl5);
-        beanObj.setCans1("");
-        beanObj.setCans2("");
-        beanObj.setCans3("");
-        beanObj.setCans4("");
-        beanObj.setIsapproved("Y");
-        this.superService.updateObject(beanObj);
-
+            beanObj.setQuestionimgurl(questionimgurl);
+            beanObj.setImageurl1(imageurl1);
+            beanObj.setImageurl2(imageurl2);
+            beanObj.setImageurl3(imageurl3);
+            beanObj.setImageurl4(imageurl4);
+            beanObj.setImageurl5(imageurl5);
+            beanObj.setCans1("");
+            beanObj.setCans2("");
+            beanObj.setCans3("");
+            beanObj.setCans4("");
+            beanObj.setIsapproved("Y");
+            this.superService.updateObject(beanObj);
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         return "redirect:/admin/questions/init.io";
     }
 
@@ -529,7 +543,7 @@ public class QuestionController {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("This is Error message", e);
         }
         request.getSession().setAttribute("importdata", data);
         model.addAttribute("action", "importQuestionExcel.io");
@@ -654,7 +668,7 @@ public class QuestionController {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("This is Error message", e);
         }
         request.getSession().setAttribute("importdata", data);
         model.addAttribute("action", "importMultiLangExcel.io");
@@ -668,18 +682,21 @@ public class QuestionController {
     @RequestMapping(value = "/insertQuestions", method = RequestMethod.GET)
     public String insertQuestions(HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        ArrayList data = (ArrayList) request.getSession().getAttribute("importdata");
-        if (data.size() > 0) {
-            Iterator itr = data.iterator();
-            while (itr.hasNext()) {
-                QuestionDAO questiondao = (QuestionDAO) itr.next();
-                this.superService.saveObject(questiondao);
+        try {
+            ArrayList data = (ArrayList) request.getSession().getAttribute("importdata");
+            if (data.size() > 0) {
+                Iterator itr = data.iterator();
+                while (itr.hasNext()) {
+                    QuestionDAO questiondao = (QuestionDAO) itr.next();
+                    this.superService.saveObject(questiondao);
+                }
             }
+            model.addAttribute("questions", new QuestionDAO());
+
+            model.addAttribute("ssc", getSectorSkillCouncil());
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
-        model.addAttribute("questions", new QuestionDAO());
-
-        model.addAttribute("ssc", getSectorSkillCouncil());
-
         request.getSession().setAttribute("body", "/admin/questions/questions.jsp");
         return "admin/common";
     }
@@ -687,19 +704,22 @@ public class QuestionController {
     @RequestMapping(value = "/insertMultiQuestions", method = RequestMethod.GET)
     public String insertMultiQuestions(HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        ArrayList data = (ArrayList) request.getSession().getAttribute("importdata");
-        if (data.size() > 0) {
-            Iterator itr = data.iterator();
-            while (itr.hasNext()) {
-                MultiLangQuestionDAO questiondao = (MultiLangQuestionDAO) itr.next();
-                this.superService.saveObject(questiondao);
-                questiondao.setStatus("Insert Successfully");
+        try {
+            ArrayList data = (ArrayList) request.getSession().getAttribute("importdata");
+            if (data.size() > 0) {
+                Iterator itr = data.iterator();
+                while (itr.hasNext()) {
+                    MultiLangQuestionDAO questiondao = (MultiLangQuestionDAO) itr.next();
+                    this.superService.saveObject(questiondao);
+                    questiondao.setStatus("Insert Successfully");
+                }
             }
+            request.getSession().removeAttribute("importdata");
+            model.addAttribute("action", "importMultiLangExcel.io");
+            model.addAttribute("importdata", data);
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
-        request.getSession().removeAttribute("importdata");
-        model.addAttribute("action", "importMultiLangExcel.io");
-        model.addAttribute("importdata", data);
-
         request.getSession().setAttribute("body", "/admin/questions/importmultilanguage.jsp");
         return "admin/common";
     }
@@ -707,27 +727,30 @@ public class QuestionController {
     @RequestMapping(value = "/openqplang", method = RequestMethod.GET)
     public String openqplang(HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        ArrayList data = new ArrayList();
-        String questionid = request.getParameter("qid");
-        Map param = new HashMap();
-        param.put("question_id", new Integer(questionid));
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new MultiLangQuestionDAO(), param);
-        System.out.println("Get Record Size :" + records.size());
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                MultiLangQuestionDAO dataObj = (MultiLangQuestionDAO) itr.next();
-                if (dataObj.getQuestion_id() == new Integer(questionid)) {
-                    dataObj.setActions("<a href=#  onclick=\"editQuestion('" + dataObj.getId() + "');\">Edit</a>");
-                    data.add(dataObj);
+        try {
+            ArrayList data = new ArrayList();
+            String questionid = request.getParameter("qid");
+            Map param = new HashMap();
+            param.put("question_id", new Integer(questionid));
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new MultiLangQuestionDAO(), param);
+            System.out.println("Get Record Size :" + records.size());
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    MultiLangQuestionDAO dataObj = (MultiLangQuestionDAO) itr.next();
+                    if (dataObj.getQuestion_id() == new Integer(questionid)) {
+                        dataObj.setActions("<a href=#  onclick=\"editQuestion('" + dataObj.getId() + "');\">Edit</a>");
+                        data.add(dataObj);
+                    }
                 }
             }
+            model.addAttribute("multilangquestion", new MultiLangQuestionDAO());
+            model.addAttribute("records", data);
+
+            model.addAttribute("mode", "add");
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
-        model.addAttribute("multilangquestion", new MultiLangQuestionDAO());
-        model.addAttribute("records", data);
-
-        model.addAttribute("mode", "add");
-
         request.getSession().setAttribute("body", "/admin/questions/showmultilanguage.jsp");
         return "admin/commonmodal";
     }
@@ -736,12 +759,15 @@ public class QuestionController {
     public String delete(HttpServletRequest request, HttpServletResponse response, Model model) {
 
         String recid = request.getParameter("recid");
-        this.superService.deleteObjectById(new QuestionDAO(), new Integer(recid));
+        try {
+            this.superService.deleteObjectById(new QuestionDAO(), new Integer(recid));
 
-        model.addAttribute("questions", new QuestionDAO());
+            model.addAttribute("questions", new QuestionDAO());
 
-        model.addAttribute("ssc", getSectorSkillCouncil());
-
+            model.addAttribute("ssc", getSectorSkillCouncil());
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         request.getSession().setAttribute("body", "/admin/questions/questions.jsp");
         return "admin/common";
     }
@@ -750,22 +776,28 @@ public class QuestionController {
     public @ResponseBody
     String getMultiQuestion(@RequestParam("mqid") String mqid, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        MultiLangQuestionDAO beanObj = (MultiLangQuestionDAO) this.superService.getObjectById(new MultiLangQuestionDAO(), new Integer(mqid));
         JSONObject jsonObj = new JSONObject();
-        jsonObj.append("ID", beanObj.getId());
-        System.out.println("Hindi converstion ...." + beanObj.getQuestion_title());
+        try {
+            MultiLangQuestionDAO beanObj = (MultiLangQuestionDAO) this.superService.getObjectById(new MultiLangQuestionDAO(), new Integer(mqid));
 
-        jsonObj.append("question_title", beanObj.getQuestion_title());
+            jsonObj.append("ID", beanObj.getId());
+            System.out.println("Hindi converstion ...." + beanObj.getQuestion_title());
 
-        jsonObj.append("option1", beanObj.getOption1());
+            jsonObj.append("question_title", beanObj.getQuestion_title());
 
-        jsonObj.append("option2", beanObj.getOption2());
+            jsonObj.append("option1", beanObj.getOption1());
 
-        jsonObj.append("option3", beanObj.getOption3());
+            jsonObj.append("option2", beanObj.getOption2());
 
-        jsonObj.append("option4", beanObj.getOption4());
+            jsonObj.append("option3", beanObj.getOption3());
 
-        jsonObj.append("option5", beanObj.getOption5());
+            jsonObj.append("option4", beanObj.getOption4());
+
+            jsonObj.append("option5", beanObj.getOption5());
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         return jsonObj.toString();
     }
 
@@ -783,7 +815,7 @@ public class QuestionController {
         try {
             this.superService.updateObject(beanObj);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("This is Error message", e);
         }
         JSONObject jsonObj = new JSONObject();
         jsonObj.append("status", "update successfully");
@@ -853,7 +885,7 @@ public class QuestionController {
             response.getOutputStream().close();
             System.out.println("Code is Here...");
         } catch (Exception e) {
-            e.printStackTrace();
+           logger.error("This is Error message", e);
         }
         System.out.println("Code is Here...");
     }
@@ -912,7 +944,7 @@ public class QuestionController {
     String getQuestionsbypc(@RequestParam("qp_id") String qpid, @RequestParam("nosid") String nosid, @RequestParam("pcid") String pcid) {
 
         String questions = getAllQuestionsByPC(new Integer(qpid), new Integer(nosid), new Integer(pcid));
-         System.out.println("Get question by pc from Question Bank");
+        System.out.println("Get question by pc from Question Bank");
         return questions;
     }
 

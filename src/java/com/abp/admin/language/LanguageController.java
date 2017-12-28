@@ -8,6 +8,7 @@ package com.abp.admin.language;
 import com.abp.superservice.SuperService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping("/admin/language")
 public class LanguageController {
 
+    private static final Logger logger = Logger.getLogger(LanguageController.class);
     private SuperService superService;
 
     @Autowired(required = true)
@@ -44,14 +46,22 @@ public class LanguageController {
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public String add(@ModelAttribute("language") LanguageDAO beanObj, HttpServletRequest request, HttpServletResponse response, Model model) {
-        this.superService.saveObject(beanObj);
+        try {
+            this.superService.saveObject(beanObj);
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         return "redirect:/admin/language/init.io";
     }
 
     @RequestMapping(value = "/initSearch", method = RequestMethod.GET)
     public String initSearch(HttpServletRequest request, HttpServletResponse response, Model model) {
-        model.addAttribute("language", new LanguageDAO());
-        model.addAttribute("records", this.superService.listAllObjects(new LanguageDAO()));
+        try {
+            model.addAttribute("language", new LanguageDAO());
+            model.addAttribute("records", this.superService.listAllObjects(new LanguageDAO()));
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         request.getSession().setAttribute("body", "/admin/language/searchlanguage.jsp");
         return "admin/common";
     }
@@ -59,10 +69,14 @@ public class LanguageController {
     @RequestMapping(value = "/initUpdate", method = RequestMethod.GET)
     public String initUpdate(HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        String recid = (String) request.getParameter("recid");
-        model.addAttribute("language", this.superService.getObjectById(new LanguageDAO(), new Integer(recid)));
-        model.addAttribute("action", "update.io");
-        model.addAttribute("mode", "update");
+        try {
+            String recid = (String) request.getParameter("recid");
+            model.addAttribute("language", this.superService.getObjectById(new LanguageDAO(), new Integer(recid)));
+            model.addAttribute("action", "update.io");
+            model.addAttribute("mode", "update");
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         request.getSession().setAttribute("body", "/admin/language/addlanguage.jsp");
         return "admin/common";
     }
@@ -74,6 +88,7 @@ public class LanguageController {
         try {
             this.superService.updateObject(beanObj);
         } catch (Exception e) {
+            logger.error("This is Error message", e);
             model.addAttribute("language", beanObj);
             model.addAttribute("action", "update.io");
             model.addAttribute("mode", "update");
@@ -87,9 +102,12 @@ public class LanguageController {
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
     public String delete(HttpServletRequest request, HttpServletResponse response, Model model) {
 
-        String recid = (String) request.getParameter("recid");
-        this.superService.deleteObjectById(new LanguageDAO(), new Integer(recid));
-        
+        try {
+            String recid = (String) request.getParameter("recid");
+            this.superService.deleteObjectById(new LanguageDAO(), new Integer(recid));
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         return "redirect:/admin/language/initSearch.io";
     }
 

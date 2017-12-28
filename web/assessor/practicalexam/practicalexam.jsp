@@ -129,7 +129,7 @@
         function takeExam(id) {
 
             var batchid = $('#batchid').val();
-            var w = window.open("<%=request.getContextPath()%>/assessor/practicalexam/continueExam.io?userid=" + id + "&batchid=" + batchid, "popupWindow", "width=1200, height=500, scrollbars=yes");
+            var w = window.open("<%=request.getContextPath()%>/assessor/practicalexam/captureUserImage.io?userid=" + id + "&batchid=" + batchid, "popupWindow", "width=1200, height=500, scrollbars=yes");
         }
 
     </script>

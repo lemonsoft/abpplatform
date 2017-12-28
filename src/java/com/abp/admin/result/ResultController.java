@@ -30,6 +30,7 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/admin/result")
 public class ResultController {
+
+    private static final Logger logger = Logger.getLogger(ResultController.class);
 
     @Autowired
     private ServletContext servletContext;
@@ -78,31 +81,37 @@ public class ResultController {
         String userid = request.getParameter("userid");
 
         System.out.println(userid + " : " + userresultdetailid);
-        UserResultDetailDAO userdetaildao = (UserResultDetailDAO) this.superService.getObjectById(new UserResultDetailDAO(), new Integer(userresultdetailid));
 
-        model.addAttribute("result", new ResultDAO());
+        try {
+            UserResultDetailDAO userdetaildao = (UserResultDetailDAO) this.superService.getObjectById(new UserResultDetailDAO(), new Integer(userresultdetailid));
 
-        Map datatheorywise = displayTheoryWiseresult(new Integer(userid), new Integer(userresultdetailid));
+            model.addAttribute("result", new ResultDAO());
 
-        model.addAttribute("startdatetime", userdetaildao.getExamstarttime());
-        model.addAttribute("enddatetime", userdetaildao.getExamendtime());
-        model.addAttribute("totaltime", userdetaildao.getTotaltime());
-        model.addAttribute("timetaken", userdetaildao.getTimetaken());
-        model.addAttribute("ipaddress", userdetaildao.getIpaddress());
-        model.addAttribute("browser", userdetaildao.getBrowserversion());
+            Map datatheorywise = displayTheoryWiseresult(new Integer(userid), new Integer(userresultdetailid));
 
-        model.addAttribute("datatheorywise", datatheorywise.get("datalist"));
-        model.addAttribute("totalmarks", datatheorywise.get("totalmarks"));
-        model.addAttribute("totaltheorymarks", getTotalTheoryMarks(new Integer(userid), new Integer(userresultdetailid)));
+            model.addAttribute("startdatetime", userdetaildao.getExamstarttime());
+            model.addAttribute("enddatetime", userdetaildao.getExamendtime());
+            model.addAttribute("totaltime", userdetaildao.getTotaltime());
+            model.addAttribute("timetaken", userdetaildao.getTimetaken());
+            model.addAttribute("ipaddress", userdetaildao.getIpaddress());
+            model.addAttribute("browser", userdetaildao.getBrowserversion());
 
-        ArrayList asseslogdao = getAssesmentLog(new Integer(userid), new Integer(userresultdetailid));
-        model.addAttribute("asseslogdao", asseslogdao);
+            model.addAttribute("datatheorywise", datatheorywise.get("datalist"));
+            model.addAttribute("totalmarks", datatheorywise.get("totalmarks"));
+            model.addAttribute("totaltheorymarks", getTotalTheoryMarks(new Integer(userid), new Integer(userresultdetailid)));
 
-        Map<String, ArrayList> practicallog = getPracticalwiseLog(new Integer(userid), new Integer(userresultdetailid));
-        model.addAttribute("practicallog", practicallog);
+            ArrayList asseslogdao = getAssesmentLog(new Integer(userid), new Integer(userresultdetailid));
+            model.addAttribute("asseslogdao", asseslogdao);
 
-        ArrayList questlogdao = getQuestionwiseLog(new Integer(userid), new Integer(userresultdetailid));
-        model.addAttribute("questlogdao", questlogdao);
+            Map<String, ArrayList> practicallog = getPracticalwiseLog(new Integer(userid), new Integer(userresultdetailid));
+            model.addAttribute("practicallog", practicallog);
+
+            ArrayList questlogdao = getQuestionwiseLog(new Integer(userid), new Integer(userresultdetailid));
+            model.addAttribute("questlogdao", questlogdao);
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
 
         request.getSession().setAttribute("body", "/admin/result/detailReport.jsp");
         return "admin/commonmodal";
@@ -113,26 +122,32 @@ public class ResultController {
 
         String userresultdetailid = request.getParameter("userresultid");
         String userid = request.getParameter("userid");
-        ArrayList record = new ArrayList();
-        Map<Integer, NosWiseLogDisplay> noswiselog = getNoswiseLog(new Integer(userid), new Integer(userresultdetailid));
-        for (Map.Entry<Integer, NosWiseLogDisplay> entry : noswiselog.entrySet()) {
-            record.add(entry.getValue());
 
-        }
-        Iterator itr = record.iterator();
-        while (itr.hasNext()) {
-            NosWiseLogDisplay noswiselogdao = (NosWiseLogDisplay) itr.next();
-            int totalscored = noswiselogdao.getScoredtheorymarks() + Integer.parseInt(noswiselogdao.getPracticalscoredmarks());
-            noswiselogdao.setScoredtotalmarks("" + totalscored);
-            int overallcutoff = Integer.parseInt(noswiselogdao.getOverallcutoff());
-            if (totalscored > overallcutoff) {
-                noswiselogdao.setResult("Pass");
-            } else {
-                noswiselogdao.setResult("Fail");
+        try {
+            ArrayList record = new ArrayList();
+            Map<Integer, NosWiseLogDisplay> noswiselog = getNoswiseLog(new Integer(userid), new Integer(userresultdetailid));
+            for (Map.Entry<Integer, NosWiseLogDisplay> entry : noswiselog.entrySet()) {
+                record.add(entry.getValue());
+
             }
+            Iterator itr = record.iterator();
+            while (itr.hasNext()) {
+                NosWiseLogDisplay noswiselogdao = (NosWiseLogDisplay) itr.next();
+                int totalscored = noswiselogdao.getScoredtheorymarks() + Integer.parseInt(noswiselogdao.getPracticalscoredmarks());
+                noswiselogdao.setScoredtotalmarks("" + totalscored);
+                int overallcutoff = Integer.parseInt(noswiselogdao.getOverallcutoff());
+                if (totalscored > overallcutoff) {
+                    noswiselogdao.setResult("Pass");
+                } else {
+                    noswiselogdao.setResult("Fail");
+                }
 
+            }
+            model.addAttribute("noswiselog", record);
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
-        model.addAttribute("noswiselog", record);
 
         request.getSession().setAttribute("body", "/admin/result/nosReport.jsp");
         return "admin/commonmodal";
@@ -145,25 +160,29 @@ public class ResultController {
         int totaltheory = 0;
         String userresultdetailid = request.getParameter("userresultid");
         String userid = request.getParameter("userid");
-        ArrayList record = new ArrayList();
-        Map<Integer, PCWiseLogDisplay> pcwiselog = getPcwiseLog(new Integer(userid), new Integer(userresultdetailid));
-        for (Map.Entry<Integer, PCWiseLogDisplay> entry : pcwiselog.entrySet()) {
-            record.add(entry.getValue());
+        try {
+            ArrayList record = new ArrayList();
+            Map<Integer, PCWiseLogDisplay> pcwiselog = getPcwiseLog(new Integer(userid), new Integer(userresultdetailid));
+            for (Map.Entry<Integer, PCWiseLogDisplay> entry : pcwiselog.entrySet()) {
+                record.add(entry.getValue());
 
+            }
+            Iterator itr = record.iterator();
+            while (itr.hasNext()) {
+                PCWiseLogDisplay pcwiselogdao = (PCWiseLogDisplay) itr.next();
+                totaltheory = totaltheory + pcwiselogdao.getScoredtheorymarks();
+                totalpractical = totalpractical + pcwiselogdao.getScoredpracticalmarks();
+                int totalscored = pcwiselogdao.getScoredtheorymarks() + pcwiselogdao.getScoredpracticalmarks();
+                pcwiselogdao.setScoredtotalmarks("" + totalscored);
+
+            }
+            model.addAttribute("totaltheory", totaltheory);
+            model.addAttribute("totalpractical", totalpractical);
+            model.addAttribute("pcwiselog", record);
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
-        Iterator itr = record.iterator();
-        while (itr.hasNext()) {
-            PCWiseLogDisplay pcwiselogdao = (PCWiseLogDisplay) itr.next();
-            totaltheory = totaltheory + pcwiselogdao.getScoredtheorymarks();
-            totalpractical = totalpractical + pcwiselogdao.getScoredpracticalmarks();
-            int totalscored = pcwiselogdao.getScoredtheorymarks() + pcwiselogdao.getScoredpracticalmarks();
-            pcwiselogdao.setScoredtotalmarks("" + totalscored);
-
-        }
-        model.addAttribute("totaltheory", totaltheory);
-        model.addAttribute("totalpractical", totalpractical);
-        model.addAttribute("pcwiselog", record);
-
         request.getSession().setAttribute("body", "/admin/result/pcreport.jsp");
         return "admin/commonmodal";
     }
@@ -218,21 +237,26 @@ public class ResultController {
 
         JSONObject jsonObj = new JSONObject();
         JSONArray jsonarr = new JSONArray();
-        Map param = new HashMap();
-        param.put("sscid", sscid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QualificationPackDAO(), param);
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                QualificationPackDAO data = (QualificationPackDAO) itr.next();
-                if (data.getSscid().equals(sscid)) {
-                    jsonObj.append("ID", data.getQpid());
-                    jsonObj.append("NAME", data.getQpackname());
-                    jsonarr.put(jsonObj);
-                }
 
-                jsonObj = new JSONObject();
+        try {
+            Map param = new HashMap();
+            param.put("sscid", sscid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QualificationPackDAO(), param);
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    QualificationPackDAO data = (QualificationPackDAO) itr.next();
+                    if (data.getSscid().equals(sscid)) {
+                        jsonObj.append("ID", data.getQpid());
+                        jsonObj.append("NAME", data.getQpackname());
+                        jsonarr.put(jsonObj);
+                    }
+
+                    jsonObj = new JSONObject();
+                }
             }
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
 
         return jsonarr.toString();
@@ -242,21 +266,27 @@ public class ResultController {
 
         JSONObject jsonObj = new JSONObject();
         JSONArray jsonarr = new JSONArray();
-        Map param = new HashMap();
-        param.put("qpackId", new Integer(qpackid));
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new BatchesDAO(), param);
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                BatchesDAO data = (BatchesDAO) itr.next();
-                if (data.getQpackId() == new Integer(qpackid)) {
-                    jsonObj.append("ID", data.getBatch_id());
-                    jsonObj.append("NAME", data.getBatch_id());
-                    jsonarr.put(jsonObj);
-                }
 
-                jsonObj = new JSONObject();
+        try {
+            Map param = new HashMap();
+            param.put("qpackId", new Integer(qpackid));
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new BatchesDAO(), param);
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    BatchesDAO data = (BatchesDAO) itr.next();
+                    if (data.getQpackId() == new Integer(qpackid)) {
+                        jsonObj.append("ID", data.getBatch_id());
+                        jsonObj.append("NAME", data.getBatch_id());
+                        jsonarr.put(jsonObj);
+                    }
+
+                    jsonObj = new JSONObject();
+                }
             }
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
 
         return jsonarr.toString();
@@ -265,32 +295,38 @@ public class ResultController {
     public String getResultByBatchID(int batchid, int qpackid) {
 
         JSONArray jsonarr = new JSONArray();
-        Map param = new HashMap();
-        param.put("batchid", batchid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new UserResultDetailDAO(), param);
-        Iterator itr = records.iterator();
-        while (itr.hasNext()) {
-            JSONObject jsonObj = new JSONObject();
-            UserResultDetailDAO userresultdao = (UserResultDetailDAO) itr.next();
-            UserDAO userdao = (UserDAO) this.superService.getObjectById(new UserDAO(), userresultdao.getUserid());
-            jsonObj.append("ID", userresultdao.getID() + "," + userdao.getID());
-            jsonObj.append("enrollmentno", userdao.getEnrollmentno());
-            jsonObj.append("name", userdao.getTraineename());
-            QualificationPackDAO qpackdao = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), qpackid);
-            jsonObj.append("maxtheory", qpackdao.getTotaltheorymarks());
-            jsonObj.append("theorycuttoff", qpackdao.getTheorycutoffmarks());
-            int totaltheorymarks = getTotalTheoryMarks(userdao.getID(), userresultdao.getID());
-            jsonObj.append("scoredtheorymarks", getTotalTheoryMarks(userdao.getID(), userresultdao.getID()));
-            jsonObj.append("maxpractical", qpackdao.getTotalpracticalmarks());
-            jsonObj.append("practicalcuttoff", qpackdao.getPracticalcutoffmarks());
 
-            int scorepracticalmarks = calculatePracticalmarksQPackID(qpackdao.getQpid(), userdao.getID(), userresultdao.getID());
-            jsonObj.append("scoredpracticalmarks", "" + scorepracticalmarks);
-            jsonObj.append("overallcutoff", qpackdao.getOverallcutoffmarks());
-            int totalscored = totaltheorymarks + scorepracticalmarks;
-            jsonObj.append("scoredtotal", totalscored);
-            jsonObj.append("scoredweightedavg", "-");
-            jsonarr.put(jsonObj);
+        try {
+            Map param = new HashMap();
+            param.put("batchid", batchid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new UserResultDetailDAO(), param);
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                JSONObject jsonObj = new JSONObject();
+                UserResultDetailDAO userresultdao = (UserResultDetailDAO) itr.next();
+                UserDAO userdao = (UserDAO) this.superService.getObjectById(new UserDAO(), userresultdao.getUserid());
+                jsonObj.append("ID", userresultdao.getID() + "," + userdao.getID());
+                jsonObj.append("enrollmentno", userdao.getEnrollmentno());
+                jsonObj.append("name", userdao.getTraineename());
+                QualificationPackDAO qpackdao = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), qpackid);
+                jsonObj.append("maxtheory", qpackdao.getTotaltheorymarks());
+                jsonObj.append("theorycuttoff", qpackdao.getTheorycutoffmarks());
+                int totaltheorymarks = getTotalTheoryMarks(userdao.getID(), userresultdao.getID());
+                jsonObj.append("scoredtheorymarks", getTotalTheoryMarks(userdao.getID(), userresultdao.getID()));
+                jsonObj.append("maxpractical", qpackdao.getTotalpracticalmarks());
+                jsonObj.append("practicalcuttoff", qpackdao.getPracticalcutoffmarks());
+
+                int scorepracticalmarks = calculatePracticalmarksQPackID(qpackdao.getQpid(), userdao.getID(), userresultdao.getID());
+                jsonObj.append("scoredpracticalmarks", "" + scorepracticalmarks);
+                jsonObj.append("overallcutoff", qpackdao.getOverallcutoffmarks());
+                int totalscored = totaltheorymarks + scorepracticalmarks;
+                jsonObj.append("scoredtotal", totalscored);
+                jsonObj.append("scoredweightedavg", "-");
+                jsonarr.put(jsonObj);
+            }
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
 
         return jsonarr.toString();
@@ -300,31 +336,39 @@ public class ResultController {
     public int getTotalTheoryMarks(int userid, int userresultdetailid) {
 
         int totaltheorymarks = 0;
-        Map param = new HashMap();
-        param.put("userresultdetailid", userresultdetailid);
-        param.put("userid", userid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new TheoryWiseResultDAO(), param);
-        Iterator itr = records.iterator();
-        while (itr.hasNext()) {
+        try {
+            Map param = new HashMap();
+            param.put("userresultdetailid", userresultdetailid);
+            param.put("userid", userid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new TheoryWiseResultDAO(), param);
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
 
-            TheoryWiseResultDAO theorywisedao = (TheoryWiseResultDAO) itr.next();
-            totaltheorymarks = totaltheorymarks + getMarksByQuestionID(theorywisedao.getQuestionid(), theorywisedao.getCorrectanswer());
-            System.out.println(" totaltheorymarks   " + totaltheorymarks);
+                TheoryWiseResultDAO theorywisedao = (TheoryWiseResultDAO) itr.next();
+                totaltheorymarks = totaltheorymarks + getMarksByQuestionID(theorywisedao.getQuestionid(), theorywisedao.getCorrectanswer());
+                System.out.println(" totaltheorymarks   " + totaltheorymarks);
+            }
+
+            System.out.println(" total totaltheorymarks   " + totaltheorymarks);
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
-
-        System.out.println(" total totaltheorymarks   " + totaltheorymarks);
-
         return totaltheorymarks;
     }
 
     public int getMarksByQuestionID(int questionid, String selectOption) {
 
         int marks = 0;
-        QuestionDAO questiondao = (QuestionDAO) this.superService.getObjectById(new QuestionDAO(), questionid);
-        System.out.println(" correct Option  " + questiondao.getCorrect_option());
-        System.out.println(" select Option  " + selectOption);
-        if (questiondao.getCorrect_option().equalsIgnoreCase(selectOption)) {
-            marks = questiondao.getMarks();
+        try {
+            QuestionDAO questiondao = (QuestionDAO) this.superService.getObjectById(new QuestionDAO(), questionid);
+            System.out.println(" correct Option  " + questiondao.getCorrect_option());
+            System.out.println(" select Option  " + selectOption);
+            if (questiondao.getCorrect_option().equalsIgnoreCase(selectOption)) {
+                marks = questiondao.getMarks();
+            }
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
 
         return marks;
@@ -334,34 +378,40 @@ public class ResultController {
 
         ArrayList theorydao = new ArrayList();
         int totalmarks = 0;
-        Map param = new HashMap();
-        param.put("userresultdetailid", userresultdetailid);
-        param.put("userid", userid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new TheoryWiseResultDAO(), param);
-        Iterator itr = records.iterator();
-        while (itr.hasNext()) {
-            DisplayTheoryResult displayObj = new DisplayTheoryResult();
-            TheoryWiseResultDAO theorywisedao = (TheoryWiseResultDAO) itr.next();
-            displayObj.setSno("" + theorywisedao.getQuestionno());
-            QuestionDAO questiondao = (QuestionDAO) this.superService.getObjectById(new QuestionDAO(), theorywisedao.getQuestionid());
-            displayObj.setQuestion(questiondao.getQuestion_title());
-            displayObj.setOption1(questiondao.getOption1());
-            displayObj.setOption2(questiondao.getOption2());
-            displayObj.setOption3(questiondao.getOption3());
-            displayObj.setOption4(questiondao.getOption4());
-            displayObj.setCorrectanswer("Option " + questiondao.getCorrect_option());
-            displayObj.setSelectedanswer("Option " + theorywisedao.getCorrectanswer());
-            displayObj.setReviewlater(theorywisedao.getReviewlater());
-            displayObj.setTimetaken(theorywisedao.getTimetaken());
-            displayObj.setMarks("" + questiondao.getMarks());
-            displayObj.setScoredmarks("" + getMarksByQuestionID(theorywisedao.getQuestionid(), theorywisedao.getCorrectanswer()));
-            theorydao.add(displayObj);
-            totalmarks = totalmarks + questiondao.getMarks();
+
+        try {
+
+            Map param = new HashMap();
+            param.put("userresultdetailid", userresultdetailid);
+            param.put("userid", userid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new TheoryWiseResultDAO(), param);
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                DisplayTheoryResult displayObj = new DisplayTheoryResult();
+                TheoryWiseResultDAO theorywisedao = (TheoryWiseResultDAO) itr.next();
+                displayObj.setSno("" + theorywisedao.getQuestionno());
+                QuestionDAO questiondao = (QuestionDAO) this.superService.getObjectById(new QuestionDAO(), theorywisedao.getQuestionid());
+                displayObj.setQuestion(questiondao.getQuestion_title());
+                displayObj.setOption1(questiondao.getOption1());
+                displayObj.setOption2(questiondao.getOption2());
+                displayObj.setOption3(questiondao.getOption3());
+                displayObj.setOption4(questiondao.getOption4());
+                displayObj.setCorrectanswer("Option " + questiondao.getCorrect_option());
+                displayObj.setSelectedanswer("Option " + theorywisedao.getCorrectanswer());
+                displayObj.setReviewlater(theorywisedao.getReviewlater());
+                displayObj.setTimetaken(theorywisedao.getTimetaken());
+                displayObj.setMarks("" + questiondao.getMarks());
+                displayObj.setScoredmarks("" + getMarksByQuestionID(theorywisedao.getQuestionid(), theorywisedao.getCorrectanswer()));
+                theorydao.add(displayObj);
+                totalmarks = totalmarks + questiondao.getMarks();
+            }
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
         Map data = new HashMap();
         data.put("datalist", theorydao);
         data.put("totalmarks", totalmarks);
-
         return data;
     }
 
@@ -369,19 +419,23 @@ public class ResultController {
 
         int i = 1;
         ArrayList assesrecord = new ArrayList();
-        Map param = new HashMap();
-        param.put("userresultdetailid", userresultdetailid);
-        param.put("userid", userid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new AssesmentLogDAO(), param);
-        Iterator itr = records.iterator();
-        while (itr.hasNext()) {
-            AssesmentLogDisplay assesslog = new AssesmentLogDisplay();
-            AssesmentLogDAO asseslog = (AssesmentLogDAO) itr.next();
-            assesslog.setSno("" + i);
-            assesslog.setDatetime(asseslog.getLogactiondate());
-            assesslog.setAction(asseslog.getActiontaken());
-            assesrecord.add(assesslog);
-            i++;
+        try {
+            Map param = new HashMap();
+            param.put("userresultdetailid", userresultdetailid);
+            param.put("userid", userid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new AssesmentLogDAO(), param);
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                AssesmentLogDisplay assesslog = new AssesmentLogDisplay();
+                AssesmentLogDAO asseslog = (AssesmentLogDAO) itr.next();
+                assesslog.setSno("" + i);
+                assesslog.setDatetime(asseslog.getLogactiondate());
+                assesslog.setAction(asseslog.getActiontaken());
+                assesrecord.add(assesslog);
+                i++;
+            }
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
         return assesrecord;
     }
@@ -390,21 +444,26 @@ public class ResultController {
 
         int i = 1;
         ArrayList quesrecord = new ArrayList();
-        Map param = new HashMap();
-        param.put("userresultdetailid", userresultdetailid);
-        param.put("userid", userid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QuestionWiseLogDAO(), param);
-        Iterator itr = records.iterator();
-        while (itr.hasNext()) {
-            QuestionWiseLog questionlog = new QuestionWiseLog();
-            QuestionWiseLogDAO questionslog = (QuestionWiseLogDAO) itr.next();
-            questionlog.setSno("" + i);
-            questionlog.setQuestionno("" + questionslog.getQuestionno());
-            questionlog.setStartdate(questionslog.getStartdate());
-            questionlog.setEnddate(questionslog.getEnddate());
-            questionlog.setTimetaken(questionslog.getTimetaken());
-            quesrecord.add(questionlog);
-            i++;
+
+        try {
+            Map param = new HashMap();
+            param.put("userresultdetailid", userresultdetailid);
+            param.put("userid", userid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QuestionWiseLogDAO(), param);
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                QuestionWiseLog questionlog = new QuestionWiseLog();
+                QuestionWiseLogDAO questionslog = (QuestionWiseLogDAO) itr.next();
+                questionlog.setSno("" + i);
+                questionlog.setQuestionno("" + questionslog.getQuestionno());
+                questionlog.setStartdate(questionslog.getStartdate());
+                questionlog.setEnddate(questionslog.getEnddate());
+                questionlog.setTimetaken(questionslog.getTimetaken());
+                quesrecord.add(questionlog);
+                i++;
+            }
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
         return quesrecord;
     }
@@ -412,47 +471,53 @@ public class ResultController {
     private Map<String, ArrayList> getPracticalwiseLog(int userid, int userresultdetailid) {
 
         Map<String, ArrayList> questions = new HashMap();
-        Map param = new HashMap();
-        param.put("userresultdetailid", userresultdetailid);
-        param.put("userid", userid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PracticalWiseresultDAO(), param);
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                PracticalWiseresultDAO practicallog = (PracticalWiseresultDAO) itr.next();
-                System.out.println(" practlog ::::" + practicallog.getQuestionid());
 
-                DisplayPracticalResult dprdao = new DisplayPracticalResult();
-                SenarioQuestionDAO qdao = (SenarioQuestionDAO) this.superService.getObjectById(new SenarioQuestionDAO(), practicallog.getQuestionid());
-                dprdao.setSnquestion(qdao.getQuestion());
-                dprdao.setAnswerstatus(practicallog.getAnswerstatus());
-                dprdao.setActualmarks("" + getTotalMarksofQuestion(practicallog.getQuestionid()));
-                if (practicallog.getAnswerstatus().equalsIgnoreCase("yes")) {
-                    dprdao.setScoredmarks(getTotalMarksofQuestion(practicallog.getQuestionid()));
-                } else {
-                    dprdao.setScoredmarks(0);
+        try {
+            Map param = new HashMap();
+            param.put("userresultdetailid", userresultdetailid);
+            param.put("userid", userid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PracticalWiseresultDAO(), param);
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    PracticalWiseresultDAO practicallog = (PracticalWiseresultDAO) itr.next();
+                    System.out.println(" practlog ::::" + practicallog.getQuestionid());
+
+                    DisplayPracticalResult dprdao = new DisplayPracticalResult();
+                    SenarioQuestionDAO qdao = (SenarioQuestionDAO) this.superService.getObjectById(new SenarioQuestionDAO(), practicallog.getQuestionid());
+                    dprdao.setSnquestion(qdao.getQuestion());
+                    dprdao.setAnswerstatus(practicallog.getAnswerstatus());
+                    dprdao.setActualmarks("" + getTotalMarksofQuestion(practicallog.getQuestionid()));
+                    if (practicallog.getAnswerstatus().equalsIgnoreCase("yes")) {
+                        dprdao.setScoredmarks(getTotalMarksofQuestion(practicallog.getQuestionid()));
+                    } else {
+                        dprdao.setScoredmarks(0);
+                    }
+
+                    if (questions.get("" + qdao.getSenario_id()) != null) {
+
+                        ArrayList questionsall = (ArrayList) questions.get("" + qdao.getSenario_id());
+                        questionsall.add(dprdao);
+                        questions.put("" + qdao.getSenario_id(), questionsall);
+                    } else {
+                        ArrayList questionsall = new ArrayList();
+                        questionsall.add(dprdao);
+                        questions.put("" + qdao.getSenario_id(), questionsall);
+                    }
+
                 }
-
-                if (questions.get("" + qdao.getSenario_id()) != null) {
-
-                    ArrayList questionsall = (ArrayList) questions.get("" + qdao.getSenario_id());
-                    questionsall.add(dprdao);
-                    questions.put("" + qdao.getSenario_id(), questionsall);
-                } else {
-                    ArrayList questionsall = new ArrayList();
-                    questionsall.add(dprdao);
-                    questions.put("" + qdao.getSenario_id(), questionsall);
-                }
-
             }
-        }
 
-        for (String key : questions.keySet()) {
-            System.out.println(key);
-            ArrayList values = (ArrayList) questions.get(key);
-            String quest = getSenarioQuestionByID(key);
-            questions.remove(key);
-            questions.put(quest, values);
+            for (String key : questions.keySet()) {
+                System.out.println(key);
+                ArrayList values = (ArrayList) questions.get(key);
+                String quest = getSenarioQuestionByID(key);
+                questions.remove(key);
+                questions.put(quest, values);
+            }
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
 
         return questions;
@@ -461,16 +526,21 @@ public class ResultController {
     private int getTotalMarksofQuestion(int questionid) {
 
         int totalmarks = 0;
-        Map param = new HashMap();
-        param.put("question_id", questionid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PCWithMarksDAO(), param);
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                PCWithMarksDAO pcwithmarks = (PCWithMarksDAO) itr.next();
-                totalmarks = totalmarks + pcwithmarks.getMarks();
-            }
 
+        try {
+            Map param = new HashMap();
+            param.put("question_id", questionid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PCWithMarksDAO(), param);
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    PCWithMarksDAO pcwithmarks = (PCWithMarksDAO) itr.next();
+                    totalmarks = totalmarks + pcwithmarks.getMarks();
+                }
+
+            }
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
 
         return totalmarks;
@@ -489,60 +559,66 @@ public class ResultController {
 
         //ArrayList nosrecord = new ArrayList();
         Map<Integer, NosWiseLogDisplay> nosparam = new HashMap();
-        Map param = new HashMap();
-        param.put("userresultdetailid", userresultdetailid);
-        param.put("userid", userid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new TheoryWiseResultDAO(), param);
-        Iterator itr = records.iterator();
-        while (itr.hasNext()) {
 
-            //NosWiseLogDisplay noswisedao = new NosWiseLogDisplay();
-            TheoryWiseResultDAO theorydao = (TheoryWiseResultDAO) itr.next();
+        try {
+            Map param = new HashMap();
+            param.put("userresultdetailid", userresultdetailid);
+            param.put("userid", userid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new TheoryWiseResultDAO(), param);
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
 
-            int questid = theorydao.getQuestionid();
-            QuestionDAO questiondao = (QuestionDAO) this.superService.getObjectById(new QuestionDAO(), questid);
+                //NosWiseLogDisplay noswisedao = new NosWiseLogDisplay();
+                TheoryWiseResultDAO theorydao = (TheoryWiseResultDAO) itr.next();
 
-            int nosid = questiondao.getNosid();
-            if (nosparam.containsKey(nosid)) {
+                int questid = theorydao.getQuestionid();
+                QuestionDAO questiondao = (QuestionDAO) this.superService.getObjectById(new QuestionDAO(), questid);
 
-                NosWiseLogDisplay noswiselogdao = (NosWiseLogDisplay) nosparam.get(nosid);
-                if (theorydao.getCorrectanswer().equals(questiondao.getCorrect_option())) {
-                    int marks = noswiselogdao.getScoredtheorymarks();
-                    marks = marks + questiondao.getMarks();
-                    noswiselogdao.setScoredtheorymarks(marks);
+                int nosid = questiondao.getNosid();
+                if (nosparam.containsKey(nosid)) {
 
-                }
-                nosparam.put(nosid, noswiselogdao);
+                    NosWiseLogDisplay noswiselogdao = (NosWiseLogDisplay) nosparam.get(nosid);
+                    if (theorydao.getCorrectanswer().equals(questiondao.getCorrect_option())) {
+                        int marks = noswiselogdao.getScoredtheorymarks();
+                        marks = marks + questiondao.getMarks();
+                        noswiselogdao.setScoredtheorymarks(marks);
 
-            } else {
+                    }
+                    nosparam.put(nosid, noswiselogdao);
 
-                NOSDAO nosdao = (NOSDAO) this.superService.getObjectById(new NOSDAO(), nosid);
-                NosWiseLogDisplay noswisedao = new NosWiseLogDisplay();
-                noswisedao.setNosid(nosdao.getNosid());
-                noswisedao.setTheorymarks(nosdao.getTheorycutoffmarks());
-                noswisedao.setTheorycutoff(nosdao.getTheorycutoffmarks());
-                if (theorydao.getCorrectanswer().equals(questiondao.getCorrect_option())) {
-                    noswisedao.setScoredtheorymarks(questiondao.getMarks());
                 } else {
-                    noswisedao.setScoredtheorymarks(0);
+
+                    NOSDAO nosdao = (NOSDAO) this.superService.getObjectById(new NOSDAO(), nosid);
+                    NosWiseLogDisplay noswisedao = new NosWiseLogDisplay();
+                    noswisedao.setNosid(nosdao.getNosid());
+                    noswisedao.setTheorymarks(nosdao.getTheorycutoffmarks());
+                    noswisedao.setTheorycutoff(nosdao.getTheorycutoffmarks());
+                    if (theorydao.getCorrectanswer().equals(questiondao.getCorrect_option())) {
+                        noswisedao.setScoredtheorymarks(questiondao.getMarks());
+                    } else {
+                        noswisedao.setScoredtheorymarks(0);
+                    }
+
+                    noswisedao.setPracticalmarks(nosdao.getPracticalcutoffmarks());
+                    noswisedao.setPracticalcutoff(nosdao.getPracticalcutoffmarks());
+                    int practicalscored = calculatePracticalmarksNOSID(nosdao.getNosID(), userid, userresultdetailid);
+                    noswisedao.setPracticalscoredmarks("" + practicalscored);
+                    int totalmarks = Integer.parseInt(nosdao.getTheorycutoffmarks()) + Integer.parseInt(nosdao.getPracticalcutoffmarks());
+                    noswisedao.setTotalmarks("" + totalmarks);
+
+                    noswisedao.setOverallcutoff(nosdao.getOverallcutoffmarks());
+                    noswisedao.setScoredtotalmarks("");
+                    noswisedao.setWeightedavg("0");
+                    noswisedao.setScoredweightavg("--");
+                    noswisedao.setResult("--");
+                    nosparam.put(nosid, noswisedao);
                 }
 
-                noswisedao.setPracticalmarks(nosdao.getPracticalcutoffmarks());
-                noswisedao.setPracticalcutoff(nosdao.getPracticalcutoffmarks());
-                int practicalscored = calculatePracticalmarksNOSID(nosdao.getNosID(), userid, userresultdetailid);
-                noswisedao.setPracticalscoredmarks("" + practicalscored);
-                int totalmarks = Integer.parseInt(nosdao.getTheorycutoffmarks()) + Integer.parseInt(nosdao.getPracticalcutoffmarks());
-                noswisedao.setTotalmarks("" + totalmarks);
-
-                noswisedao.setOverallcutoff(nosdao.getOverallcutoffmarks());
-                noswisedao.setScoredtotalmarks("");
-                noswisedao.setWeightedavg("0");
-                noswisedao.setScoredweightavg("--");
-                noswisedao.setResult("--");
-                nosparam.put(nosid, noswisedao);
+                // nosrecord.add(noswisedao);
             }
 
-            // nosrecord.add(noswisedao);
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
 
         return nosparam;
@@ -551,50 +627,56 @@ public class ResultController {
     private Map<Integer, PCWiseLogDisplay> getPcwiseLog(int userid, int userresultdetailid) {
 
         Map<Integer, PCWiseLogDisplay> pcparam = new HashMap();
-        Map param = new HashMap();
-        param.put("userresultdetailid", userresultdetailid);
-        param.put("userid", userid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new TheoryWiseResultDAO(), param);
-        Iterator itr = records.iterator();
-        while (itr.hasNext()) {
 
-            TheoryWiseResultDAO theorydao = (TheoryWiseResultDAO) itr.next();
-            int questid = theorydao.getQuestionid();
-            QuestionDAO questiondao = (QuestionDAO) this.superService.getObjectById(new QuestionDAO(), questid);
-            int pcid = questiondao.getPcid();
-            if (pcparam.containsKey(pcid)) {
+        try {
+            Map param = new HashMap();
+            param.put("userresultdetailid", userresultdetailid);
+            param.put("userid", userid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new TheoryWiseResultDAO(), param);
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
 
-                PCWiseLogDisplay pcwiselogdao = (PCWiseLogDisplay) pcparam.get(pcid);
-                if (theorydao.getCorrectanswer().equals(questiondao.getCorrect_option())) {
-                    int marks = pcwiselogdao.getScoredtheorymarks();
-                    marks = marks + questiondao.getMarks();
-                    pcwiselogdao.setScoredtheorymarks(marks);
-                }
-                pcparam.put(pcid, pcwiselogdao);
+                TheoryWiseResultDAO theorydao = (TheoryWiseResultDAO) itr.next();
+                int questid = theorydao.getQuestionid();
+                QuestionDAO questiondao = (QuestionDAO) this.superService.getObjectById(new QuestionDAO(), questid);
+                int pcid = questiondao.getPcid();
+                if (pcparam.containsKey(pcid)) {
 
-            } else {
+                    PCWiseLogDisplay pcwiselogdao = (PCWiseLogDisplay) pcparam.get(pcid);
+                    if (theorydao.getCorrectanswer().equals(questiondao.getCorrect_option())) {
+                        int marks = pcwiselogdao.getScoredtheorymarks();
+                        marks = marks + questiondao.getMarks();
+                        pcwiselogdao.setScoredtheorymarks(marks);
+                    }
+                    pcparam.put(pcid, pcwiselogdao);
 
-                PCDAO pcdao = (PCDAO) this.superService.getObjectById(new PCDAO(), pcid);
-                PCWiseLogDisplay pcwisedao = new PCWiseLogDisplay();
-                pcwisedao.setPcid(pcdao.getPcid());
-                pcwisedao.setTheorymarks(pcdao.getTheorycutoffmarks());
-                if (theorydao.getCorrectanswer().equals(questiondao.getCorrect_option())) {
-                    pcwisedao.setScoredtheorymarks(questiondao.getMarks());
                 } else {
-                    pcwisedao.setScoredtheorymarks(0);
+
+                    PCDAO pcdao = (PCDAO) this.superService.getObjectById(new PCDAO(), pcid);
+                    PCWiseLogDisplay pcwisedao = new PCWiseLogDisplay();
+                    pcwisedao.setPcid(pcdao.getPcid());
+                    pcwisedao.setTheorymarks(pcdao.getTheorycutoffmarks());
+                    if (theorydao.getCorrectanswer().equals(questiondao.getCorrect_option())) {
+                        pcwisedao.setScoredtheorymarks(questiondao.getMarks());
+                    } else {
+                        pcwisedao.setScoredtheorymarks(0);
+                    }
+
+                    pcwisedao.setPracticalmarks(pcdao.getPracticalcutoffmarks());
+                    int totalpracticalmarks = calculatePracticalMarksByPCID(pcdao.getPcID(), userid, userresultdetailid);
+                    pcwisedao.setScoredpracticalmarks(totalpracticalmarks);
+                    int totalmarks = Integer.parseInt(pcdao.getTheorycutoffmarks()) + Integer.parseInt(pcdao.getPracticalcutoffmarks());
+                    pcwisedao.setTotalmarks("" + totalmarks);
+                    pcwisedao.setScoredtotalmarks("--");
+
+                    pcparam.put(pcid, pcwisedao);
+
                 }
-
-                pcwisedao.setPracticalmarks(pcdao.getPracticalcutoffmarks());
-                int totalpracticalmarks = calculatePracticalMarksByPCID(pcdao.getPcID(), userid, userresultdetailid);
-                pcwisedao.setScoredpracticalmarks(totalpracticalmarks);
-                int totalmarks = Integer.parseInt(pcdao.getTheorycutoffmarks()) + Integer.parseInt(pcdao.getPracticalcutoffmarks());
-                pcwisedao.setTotalmarks("" + totalmarks);
-                pcwisedao.setScoredtotalmarks("--");
-
-                pcparam.put(pcid, pcwisedao);
 
             }
 
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
 
         return pcparam;
@@ -603,55 +685,61 @@ public class ResultController {
     private int calculatePracticalmarksQPackID(int qpackid, int userid, int userresultdetailid) {
 
         int totalscoredmarks = 0;
-        Map param = new HashMap();
-        param.put("userresultdetailid", userresultdetailid);
-        param.put("userid", userid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PracticalWiseresultDAO(), param);
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                PracticalWiseresultDAO pwrdao = (PracticalWiseresultDAO) itr.next();
-                int questionid = pwrdao.getQuestionid();
 
-                Map param1 = new HashMap();
-                param1.put("qpackid", "" + qpackid);
-                List<SuperBean> records1 = this.superService.listAllObjectsByCriteria(new NOSDAO(), param1);
-                if (records1.size() > 0) {
-                    Iterator itr1 = records1.iterator();
-                    while (itr1.hasNext()) {
-                        NOSDAO nosdao = (NOSDAO) itr1.next();
+        try {
+            Map param = new HashMap();
+            param.put("userresultdetailid", userresultdetailid);
+            param.put("userid", userid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PracticalWiseresultDAO(), param);
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    PracticalWiseresultDAO pwrdao = (PracticalWiseresultDAO) itr.next();
+                    int questionid = pwrdao.getQuestionid();
 
-                        Map param2 = new HashMap();
-                        param2.put("nosid", "" + nosdao.getNosID());
-                        List<SuperBean> records2 = this.superService.listAllObjectsByCriteria(new PCDAO(), param2);
-                        if (records2.size() > 0) {
-                            Iterator itr2 = records2.iterator();
-                            while (itr2.hasNext()) {
-                                PCDAO pcdao = (PCDAO) itr2.next();
-                                int pcid = pcdao.getPcID();
+                    Map param1 = new HashMap();
+                    param1.put("qpackid", "" + qpackid);
+                    List<SuperBean> records1 = this.superService.listAllObjectsByCriteria(new NOSDAO(), param1);
+                    if (records1.size() > 0) {
+                        Iterator itr1 = records1.iterator();
+                        while (itr1.hasNext()) {
+                            NOSDAO nosdao = (NOSDAO) itr1.next();
 
-                                System.out.println("  questionid " + questionid);
-                                System.out.println("  pcid " + pcid);
-                                if (pwrdao.getAnswerstatus().equalsIgnoreCase("yes")) {
-                                    Map param3 = new HashMap();
-                                    param3.put("question_id", questionid);
-                                    param3.put("pcid", pcid);
-                                    List<SuperBean> records3 = this.superService.listAllObjectsByCriteria(new PCWithMarksDAO(), param3);
-                                    if (records3.size() > 0) {
-                                        PCWithMarksDAO pcwithmarks = (PCWithMarksDAO) records3.get(0);
-                                        System.out.println("  marks " + pcwithmarks.getMarks());
-                                        totalscoredmarks = totalscoredmarks + pcwithmarks.getMarks();
+                            Map param2 = new HashMap();
+                            param2.put("nosid", "" + nosdao.getNosID());
+                            List<SuperBean> records2 = this.superService.listAllObjectsByCriteria(new PCDAO(), param2);
+                            if (records2.size() > 0) {
+                                Iterator itr2 = records2.iterator();
+                                while (itr2.hasNext()) {
+                                    PCDAO pcdao = (PCDAO) itr2.next();
+                                    int pcid = pcdao.getPcID();
+
+                                    System.out.println("  questionid " + questionid);
+                                    System.out.println("  pcid " + pcid);
+                                    if (pwrdao.getAnswerstatus().equalsIgnoreCase("yes")) {
+                                        Map param3 = new HashMap();
+                                        param3.put("question_id", questionid);
+                                        param3.put("pcid", pcid);
+                                        List<SuperBean> records3 = this.superService.listAllObjectsByCriteria(new PCWithMarksDAO(), param3);
+                                        if (records3.size() > 0) {
+                                            PCWithMarksDAO pcwithmarks = (PCWithMarksDAO) records3.get(0);
+                                            System.out.println("  marks " + pcwithmarks.getMarks());
+                                            totalscoredmarks = totalscoredmarks + pcwithmarks.getMarks();
+                                        }
                                     }
                                 }
+
                             }
 
                         }
-
                     }
+
                 }
 
             }
 
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
 
         System.out.println("  totalscoredmarks ::::: ::: " + totalscoredmarks);
@@ -663,42 +751,48 @@ public class ResultController {
     private int calculatePracticalmarksNOSID(int nosid, int userid, int userresultdetailid) {
 
         int totalscoredmarks = 0;
-        Map param = new HashMap();
-        param.put("userresultdetailid", userresultdetailid);
-        param.put("userid", userid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PracticalWiseresultDAO(), param);
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                PracticalWiseresultDAO pwrdao = (PracticalWiseresultDAO) itr.next();
-                int questionid = pwrdao.getQuestionid();
-                Map param2 = new HashMap();
-                param2.put("nosid", "" + nosid);
-                List<SuperBean> records2 = this.superService.listAllObjectsByCriteria(new PCDAO(), param2);
-                if (records2.size() > 0) {
-                    Iterator itr2 = records2.iterator();
-                    while (itr2.hasNext()) {
-                        PCDAO pcdao = (PCDAO) itr2.next();
-                        int pcid = pcdao.getPcID();
 
-                        System.out.println("  questionid " + questionid);
-                        System.out.println("  pcid " + pcid);
-                        if (pwrdao.getAnswerstatus().equalsIgnoreCase("yes")) {
-                            Map param3 = new HashMap();
-                            param3.put("question_id", questionid);
-                            param3.put("pcid", pcid);
-                            List<SuperBean> records3 = this.superService.listAllObjectsByCriteria(new PCWithMarksDAO(), param3);
-                            if (records3.size() > 0) {
-                                PCWithMarksDAO pcwithmarks = (PCWithMarksDAO) records3.get(0);
-                                System.out.println("  marks " + pcwithmarks.getMarks());
-                                totalscoredmarks = totalscoredmarks + pcwithmarks.getMarks();
+        try {
+            Map param = new HashMap();
+            param.put("userresultdetailid", userresultdetailid);
+            param.put("userid", userid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PracticalWiseresultDAO(), param);
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    PracticalWiseresultDAO pwrdao = (PracticalWiseresultDAO) itr.next();
+                    int questionid = pwrdao.getQuestionid();
+                    Map param2 = new HashMap();
+                    param2.put("nosid", "" + nosid);
+                    List<SuperBean> records2 = this.superService.listAllObjectsByCriteria(new PCDAO(), param2);
+                    if (records2.size() > 0) {
+                        Iterator itr2 = records2.iterator();
+                        while (itr2.hasNext()) {
+                            PCDAO pcdao = (PCDAO) itr2.next();
+                            int pcid = pcdao.getPcID();
+
+                            System.out.println("  questionid " + questionid);
+                            System.out.println("  pcid " + pcid);
+                            if (pwrdao.getAnswerstatus().equalsIgnoreCase("yes")) {
+                                Map param3 = new HashMap();
+                                param3.put("question_id", questionid);
+                                param3.put("pcid", pcid);
+                                List<SuperBean> records3 = this.superService.listAllObjectsByCriteria(new PCWithMarksDAO(), param3);
+                                if (records3.size() > 0) {
+                                    PCWithMarksDAO pcwithmarks = (PCWithMarksDAO) records3.get(0);
+                                    System.out.println("  marks " + pcwithmarks.getMarks());
+                                    totalscoredmarks = totalscoredmarks + pcwithmarks.getMarks();
+                                }
                             }
                         }
-                    }
 
+                    }
                 }
+
             }
 
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
 
         System.out.println("  totalscoredmarks ::::: ::: " + totalscoredmarks);
@@ -710,33 +804,38 @@ public class ResultController {
     private int calculatePracticalMarksByPCID(int pcid, int userid, int userresultdetailid) {
 
         int totalscoredmarks = 0;
-        Map param = new HashMap();
-        param.put("userresultdetailid", userresultdetailid);
-        param.put("userid", userid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PracticalWiseresultDAO(), param);
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                PracticalWiseresultDAO pwrdao = (PracticalWiseresultDAO) itr.next();
-                int questionid = pwrdao.getQuestionid();
-                System.out.println("  questionid " + questionid);
-                System.out.println("  pcid " + pcid);
-                if (pwrdao.getAnswerstatus().equalsIgnoreCase("yes")) {
-                    Map param3 = new HashMap();
-                    param3.put("question_id", questionid);
-                    param3.put("pcid", pcid);
-                    List<SuperBean> records3 = this.superService.listAllObjectsByCriteria(new PCWithMarksDAO(), param3);
-                    if (records3.size() > 0) {
-                        PCWithMarksDAO pcwithmarks = (PCWithMarksDAO) records3.get(0);
-                        System.out.println("  marks " + pcwithmarks.getMarks());
-                        totalscoredmarks = totalscoredmarks + pcwithmarks.getMarks();
+
+        try {
+            Map param = new HashMap();
+            param.put("userresultdetailid", userresultdetailid);
+            param.put("userid", userid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PracticalWiseresultDAO(), param);
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    PracticalWiseresultDAO pwrdao = (PracticalWiseresultDAO) itr.next();
+                    int questionid = pwrdao.getQuestionid();
+                    System.out.println("  questionid " + questionid);
+                    System.out.println("  pcid " + pcid);
+                    if (pwrdao.getAnswerstatus().equalsIgnoreCase("yes")) {
+                        Map param3 = new HashMap();
+                        param3.put("question_id", questionid);
+                        param3.put("pcid", pcid);
+                        List<SuperBean> records3 = this.superService.listAllObjectsByCriteria(new PCWithMarksDAO(), param3);
+                        if (records3.size() > 0) {
+                            PCWithMarksDAO pcwithmarks = (PCWithMarksDAO) records3.get(0);
+                            System.out.println("  marks " + pcwithmarks.getMarks());
+                            totalscoredmarks = totalscoredmarks + pcwithmarks.getMarks();
+                        }
                     }
+
                 }
-
             }
-        }
-        System.out.println("  totalscoredmarks ::::: ::: " + totalscoredmarks);
+            System.out.println("  totalscoredmarks ::::: ::: " + totalscoredmarks);
 
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         return totalscoredmarks;
 
     }

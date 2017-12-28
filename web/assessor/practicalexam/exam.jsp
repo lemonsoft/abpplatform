@@ -73,7 +73,7 @@
 
                         </div><!-- end frm-row section -->
                         <div class="frm-row">
-                            <div class="section colm colm12"><span id="result"></span></div>
+                            <div class="section colm colm12"><span id="result" style="color:green;font-style: normal;"></span></div>
                         </div>
 
 
@@ -107,7 +107,7 @@
                     data: {userid: userid, batchid: batchid, quesno: quesno, answer: answer},
                     type: 'GET',
                     success: function (data) {
-                        //alert(data.status);
+                        
                         if (data.status == 'save') {
                             $('#result').text("Result Saved Successfully");
                         }

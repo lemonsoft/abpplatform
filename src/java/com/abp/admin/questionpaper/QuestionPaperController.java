@@ -20,6 +20,7 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/admin/questionpaper")
 public class QuestionPaperController {
+
+    private static final Logger logger = Logger.getLogger(QuestionPaperController.class);
 
     @Autowired
     private ServletContext servletContext;
@@ -67,15 +70,20 @@ public class QuestionPaperController {
     public String editQuestionPaper(HttpServletRequest request, HttpServletResponse response, Model model) {
 
         String qpaperid = request.getParameter("qpaperid");
-        QuestionPaperDAO beanObj = (QuestionPaperDAO) this.superService.getObjectById(new QuestionPaperDAO(), new Integer(qpaperid));
 
-        model.addAttribute("israndom", beanObj.getIsrandom());
-        model.addAttribute("isoptionrandom", beanObj.getIsoptionrandom());
-        model.addAttribute("isactive", beanObj.getIsactive());
+        try {
+            QuestionPaperDAO beanObj = (QuestionPaperDAO) this.superService.getObjectById(new QuestionPaperDAO(), new Integer(qpaperid));
 
-        model.addAttribute("qpaper", beanObj);
-        model.addAttribute("mode", "update");
+            model.addAttribute("israndom", beanObj.getIsrandom());
+            model.addAttribute("isoptionrandom", beanObj.getIsoptionrandom());
+            model.addAttribute("isactive", beanObj.getIsactive());
 
+            model.addAttribute("qpaper", beanObj);
+            model.addAttribute("mode", "update");
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         request.getSession().setAttribute("body", "/admin/generateqp/questionpaper.jsp");
         return "admin/commonmodal";
     }
@@ -85,6 +93,7 @@ public class QuestionPaperController {
     String updateQuestionPaper(@RequestParam("questionpaperid") String questionpaperid, @RequestParam("qpackid") String qpackid, @RequestParam("questionpapername") String questionpapername, @RequestParam("totaltime") String totaltime, @RequestParam("totalmarks") String totalmarks, @RequestParam("israndom") String israndom, @RequestParam("isoptionrandom") String isoptionrandom, @RequestParam("isactive") String isactive) {
 
         JSONObject jsonObj = new JSONObject();
+
         QuestionPaperDAO beanObj = (QuestionPaperDAO) this.superService.getObjectById(new QuestionPaperDAO(), new Integer(questionpaperid));
         beanObj.setQuestionpapername(questionpapername);
         beanObj.setTotaltime(new Integer(totaltime));
@@ -97,7 +106,7 @@ public class QuestionPaperController {
             this.superService.updateObject(beanObj);
             jsonObj.append("status", "ok");
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("This is Error message", e);
             jsonObj.append("status", "fail");
         }
 
@@ -128,43 +137,49 @@ public class QuestionPaperController {
 
         String qpackid = request.getParameter("qpackid");
 
-        QualificationPackDAO qpObj = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(qpackid));
-        int totalmarksadded = 0;
-        ArrayList dataview = new ArrayList();
-        Map param = new HashMap();
-        param.put("qpackid", new Integer(qpackid));
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QuestionPaperDAO(), param);
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                QuestionPaperDAO data = (QuestionPaperDAO) itr.next();
-                String questionids[] = data.getQuestionids().split(",");
-                for (int i = 0; i < questionids.length; i++) {
+        try {
+            QualificationPackDAO qpObj = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(qpackid));
+            int totalmarksadded = 0;
+            ArrayList dataview = new ArrayList();
+            Map param = new HashMap();
+            param.put("qpackid", new Integer(qpackid));
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QuestionPaperDAO(), param);
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    QuestionPaperDAO data = (QuestionPaperDAO) itr.next();
+                    String questionids[] = data.getQuestionids().split(",");
+                    for (int i = 0; i < questionids.length; i++) {
 
-                    QuestionDAO beanObj = (QuestionDAO) this.superService.getObjectById(new QuestionDAO(), new Integer(questionids[i]));
-                    if (beanObj != null) {
-                        DisplayQuestion viewquestion = new DisplayQuestion();
-                        viewquestion.setQuestionID("" + beanObj.getId());
-                        viewquestion.setQuestionTitle(beanObj.getQuestion_title());
-                        viewquestion.setOption1(beanObj.getOption1());
-                        viewquestion.setOption2(beanObj.getOption2());
-                        viewquestion.setOption3(beanObj.getOption3());
-                        viewquestion.setOption4(beanObj.getOption4());
-                        viewquestion.setOption5(beanObj.getOption5());
-                        viewquestion.setMarks("" + beanObj.getMarks());
-                        totalmarksadded = totalmarksadded + beanObj.getMarks();
-                        viewquestion.setPcID(getPCID(beanObj.getPcid()));
+                        QuestionDAO beanObj = (QuestionDAO) this.superService.getObjectById(new QuestionDAO(), new Integer(questionids[i]));
+                        if (beanObj != null) {
+                            DisplayQuestion viewquestion = new DisplayQuestion();
+                            viewquestion.setQuestionID("" + beanObj.getId());
+                            viewquestion.setQuestionTitle(beanObj.getQuestion_title());
+                            viewquestion.setOption1(beanObj.getOption1());
+                            viewquestion.setOption2(beanObj.getOption2());
+                            viewquestion.setOption3(beanObj.getOption3());
+                            viewquestion.setOption4(beanObj.getOption4());
+                            viewquestion.setOption5(beanObj.getOption5());
+                            viewquestion.setMarks("" + beanObj.getMarks());
+                            totalmarksadded = totalmarksadded + beanObj.getMarks();
+                            viewquestion.setPcID(getPCID(beanObj.getPcid()));
 
-                        dataview.add(viewquestion);
+                            dataview.add(viewquestion);
+                        }
                     }
-                }
 
+                }
             }
+            model.addAttribute("totalmarksadded", totalmarksadded);
+            model.addAttribute("theorymarks", qpObj.getTotaltheorymarks());
+            model.addAttribute("dataview", dataview);
+            model.addAttribute("questionpaperdao", new QuestionPaperDAO());
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+
         }
-        model.addAttribute("totalmarksadded", totalmarksadded);
-        model.addAttribute("theorymarks", qpObj.getTotaltheorymarks());
-        model.addAttribute("dataview", dataview);
-        model.addAttribute("questionpaperdao", new QuestionPaperDAO());
         request.getSession().setAttribute("body", "/admin/questionpaper/viewQuestions.jsp");
         return "admin/common";
     }
@@ -188,21 +203,28 @@ public class QuestionPaperController {
 
         JSONObject jsonObj = new JSONObject();
         JSONArray jsonarr = new JSONArray();
-        Map param = new HashMap();
-        param.put("sscid", sscid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QualificationPackDAO(), param);
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                QualificationPackDAO data = (QualificationPackDAO) itr.next();
-                if (data.getSscid().equals(sscid)) {
-                    jsonObj.append("ID", data.getQpid());
-                    jsonObj.append("NAME", data.getQpackname());
-                    jsonarr.put(jsonObj);
-                }
 
-                jsonObj = new JSONObject();
+        try {
+            Map param = new HashMap();
+            param.put("sscid", sscid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QualificationPackDAO(), param);
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    QualificationPackDAO data = (QualificationPackDAO) itr.next();
+                    if (data.getSscid().equals(sscid)) {
+                        jsonObj.append("ID", data.getQpid());
+                        jsonObj.append("NAME", data.getQpackname());
+                        jsonarr.put(jsonObj);
+                    }
+
+                    jsonObj = new JSONObject();
+                }
             }
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+
         }
 
         return jsonarr.toString();
@@ -212,29 +234,35 @@ public class QuestionPaperController {
 
         JSONObject jsonObj = new JSONObject();
         JSONArray jsonarr = new JSONArray();
-        QualificationPackDAO beanObj = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(qpackid));
 
-        Map param = new HashMap();
-        param.put("qpackid", qpackid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QuestionPaperDAO(), param);
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                QuestionPaperDAO data = (QuestionPaperDAO) itr.next();
+        try {
+            QualificationPackDAO beanObj = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(qpackid));
+            Map param = new HashMap();
+            param.put("qpackid", qpackid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QuestionPaperDAO(), param);
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    QuestionPaperDAO data = (QuestionPaperDAO) itr.next();
 
-                jsonObj.append("questionpaperid", data.getQuestionpaperid());
-                jsonObj.append("questionpapername", data.getQuestionpapername());
-                jsonObj.append("totalmarks", data.getTotalmarks());
-                jsonObj.append("qpackname", beanObj.getQpackname());
-                jsonObj.append("israndom", data.getIsrandom());
-                jsonObj.append("isoptionrandom", data.getIsoptionrandom());
-                jsonObj.append("isactive", data.getIsactive());
-                jsonObj.append("totaltime", data.getTotaltime());
-                jsonObj.append("createddatetime", data.getCreateddatetime());
-                jsonarr.put(jsonObj);
+                    jsonObj.append("questionpaperid", data.getQuestionpaperid());
+                    jsonObj.append("questionpapername", data.getQuestionpapername());
+                    jsonObj.append("totalmarks", data.getTotalmarks());
+                    jsonObj.append("qpackname", beanObj.getQpackname());
+                    jsonObj.append("israndom", data.getIsrandom());
+                    jsonObj.append("isoptionrandom", data.getIsoptionrandom());
+                    jsonObj.append("isactive", data.getIsactive());
+                    jsonObj.append("totaltime", data.getTotaltime());
+                    jsonObj.append("createddatetime", data.getCreateddatetime());
+                    jsonarr.put(jsonObj);
 
-                jsonObj = new JSONObject();
+                    jsonObj = new JSONObject();
+                }
             }
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+
         }
 
         return jsonarr.toString();

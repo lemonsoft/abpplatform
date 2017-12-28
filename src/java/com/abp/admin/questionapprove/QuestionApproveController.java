@@ -5,7 +5,6 @@
  */
 package com.abp.admin.questionapprove;
 
-import com.abp.admin.batches.UserDAO;
 import com.abp.admin.project.questions.QuestionDAO;
 import com.abp.admin.qualificationpack.NOSDAO;
 import com.abp.admin.qualificationpack.PCDAO;
@@ -20,6 +19,7 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +38,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/admin/questionsapprove")
 public class QuestionApproveController {
+
+    private static final Logger logger = Logger.getLogger(QuestionApproveController.class);
 
     @Autowired
     private ServletContext servletContext;
@@ -137,7 +139,7 @@ public class QuestionApproveController {
             this.superService.updateObject(questiondao);
             jsonObj.append("status", "save");
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("This is Error message", e);
             jsonObj.append("status", "fail");
         }
 
@@ -163,21 +165,26 @@ public class QuestionApproveController {
 
         JSONObject jsonObj = new JSONObject();
         JSONArray jsonarr = new JSONArray();
-        Map param = new HashMap();
-        param.put("sscid", sscid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QualificationPackDAO(), param);
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                QualificationPackDAO data = (QualificationPackDAO) itr.next();
-                if (data.getSscid().equals(sscid)) {
-                    jsonObj.append("ID", data.getQpid());
-                    jsonObj.append("NAME", data.getQpackname());
-                    jsonarr.put(jsonObj);
-                }
+        try {
+            Map param = new HashMap();
+            param.put("sscid", sscid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QualificationPackDAO(), param);
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    QualificationPackDAO data = (QualificationPackDAO) itr.next();
+                    if (data.getSscid().equals(sscid)) {
+                        jsonObj.append("ID", data.getQpid());
+                        jsonObj.append("NAME", data.getQpackname());
+                        jsonarr.put(jsonObj);
+                    }
 
-                jsonObj = new JSONObject();
+                    jsonObj = new JSONObject();
+                }
             }
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
 
         return jsonarr.toString();
@@ -187,21 +194,27 @@ public class QuestionApproveController {
 
         JSONObject jsonObj = new JSONObject();
         JSONArray jsonarr = new JSONArray();
-        Map param = new HashMap();
-        param.put("qpackid", qpid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new NOSDAO(), param);
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                NOSDAO data = (NOSDAO) itr.next();
-                if (data.getQpackid().equals(qpid)) {
-                    jsonObj.append("ID", data.getNosID());
-                    jsonObj.append("NAME", data.getNosname());
-                    jsonarr.put(jsonObj);
-                }
 
-                jsonObj = new JSONObject();
+        try {
+            Map param = new HashMap();
+            param.put("qpackid", qpid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new NOSDAO(), param);
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    NOSDAO data = (NOSDAO) itr.next();
+                    if (data.getQpackid().equals(qpid)) {
+                        jsonObj.append("ID", data.getNosID());
+                        jsonObj.append("NAME", data.getNosname());
+                        jsonarr.put(jsonObj);
+                    }
+
+                    jsonObj = new JSONObject();
+                }
             }
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
 
         return jsonarr.toString();
@@ -211,21 +224,27 @@ public class QuestionApproveController {
 
         JSONObject jsonObj = new JSONObject();
         JSONArray jsonarr = new JSONArray();
-        Map param = new HashMap();
-        param.put("nosid", nosid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PCDAO(), param);
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                PCDAO data = (PCDAO) itr.next();
-                if (data.getNosid().equals(nosid)) {
-                    jsonObj.append("ID", data.getPcID());
-                    jsonObj.append("NAME", data.getPcname());
-                    jsonarr.put(jsonObj);
-                }
 
-                jsonObj = new JSONObject();
+        try {
+            Map param = new HashMap();
+            param.put("nosid", nosid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PCDAO(), param);
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    PCDAO data = (PCDAO) itr.next();
+                    if (data.getNosid().equals(nosid)) {
+                        jsonObj.append("ID", data.getPcID());
+                        jsonObj.append("NAME", data.getPcname());
+                        jsonarr.put(jsonObj);
+                    }
+
+                    jsonObj = new JSONObject();
+                }
             }
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
 
         return jsonarr.toString();
@@ -235,38 +254,44 @@ public class QuestionApproveController {
 
         JSONObject jsonObj = new JSONObject();
         JSONArray jsonarr = new JSONArray();
-        Map param = new HashMap();
-        param.put("qpackid", qpid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QuestionDAO(), param);
-        System.out.println("Get Record Size :" + records.size());
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                QuestionDAO data = (QuestionDAO) itr.next();
-                if (data.getQpackid() == qpid) {
-                    System.out.println(data.getId());
-                    jsonObj.append("ID", data.getId());
-                    jsonObj.append("question_title", data.getQuestion_title());
-                    jsonObj.append("questionimgurl", data.getQuestionimgurl());
-                    System.out.println("qimg::::" + data.getQuestionimgurl());
-                    jsonObj.append("option1", data.getOption1());
-                    jsonObj.append("imageurl1", data.getImageurl1());
-                    jsonObj.append("option2", data.getOption2());
-                    jsonObj.append("imageurl2", data.getImageurl2());
-                    jsonObj.append("option3", data.getOption3());
-                    jsonObj.append("imageurl3", data.getImageurl3());
-                    jsonObj.append("option4", data.getOption4());
-                    jsonObj.append("imageurl4", data.getImageurl4());
-                    jsonObj.append("option5", data.getOption5());
-                    jsonObj.append("imageurl5", data.getImageurl5());
-                    jsonObj.append("marks", data.getMarks());
-                    jsonObj.append("correctOption", data.getCorrect_option());
-                    jsonObj.append("isapproved", data.getIsapproved());
-                    jsonarr.put(jsonObj);
-                }
 
-                jsonObj = new JSONObject();
+        try {
+            Map param = new HashMap();
+            param.put("qpackid", qpid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QuestionDAO(), param);
+            System.out.println("Get Record Size :" + records.size());
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    QuestionDAO data = (QuestionDAO) itr.next();
+                    if (data.getQpackid() == qpid) {
+                        System.out.println(data.getId());
+                        jsonObj.append("ID", data.getId());
+                        jsonObj.append("question_title", data.getQuestion_title());
+                        jsonObj.append("questionimgurl", data.getQuestionimgurl());
+                        System.out.println("qimg::::" + data.getQuestionimgurl());
+                        jsonObj.append("option1", data.getOption1());
+                        jsonObj.append("imageurl1", data.getImageurl1());
+                        jsonObj.append("option2", data.getOption2());
+                        jsonObj.append("imageurl2", data.getImageurl2());
+                        jsonObj.append("option3", data.getOption3());
+                        jsonObj.append("imageurl3", data.getImageurl3());
+                        jsonObj.append("option4", data.getOption4());
+                        jsonObj.append("imageurl4", data.getImageurl4());
+                        jsonObj.append("option5", data.getOption5());
+                        jsonObj.append("imageurl5", data.getImageurl5());
+                        jsonObj.append("marks", data.getMarks());
+                        jsonObj.append("correctOption", data.getCorrect_option());
+                        jsonObj.append("isapproved", data.getIsapproved());
+                        jsonarr.put(jsonObj);
+                    }
+
+                    jsonObj = new JSONObject();
+                }
             }
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
 
         return jsonarr.toString();
@@ -276,38 +301,43 @@ public class QuestionApproveController {
 
         JSONObject jsonObj = new JSONObject();
         JSONArray jsonarr = new JSONArray();
-        Map param = new HashMap();
-        param.put("qpackid", "" + qpid);
-        param.put("nosid", "" + nosid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QuestionDAO(), param);
-        System.out.println("Get Record Size :" + records.size());
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                QuestionDAO data = (QuestionDAO) itr.next();
-                if (data.getQpackid() == qpid && data.getNosid() == nosid) {
-                    System.out.println(data.getId());
-                    jsonObj.append("ID", data.getId());
-                    jsonObj.append("question_title", data.getQuestion_title());
-                    jsonObj.append("questionimgurl", data.getQuestionimgurl());
-                    jsonObj.append("option1", data.getOption1());
-                    jsonObj.append("imageurl1", data.getImageurl1());
-                    jsonObj.append("option2", data.getOption2());
-                    jsonObj.append("imageurl2", data.getImageurl2());
-                    jsonObj.append("option3", data.getOption3());
-                    jsonObj.append("imageurl3", data.getImageurl3());
-                    jsonObj.append("option4", data.getOption4());
-                    jsonObj.append("imageurl4", data.getImageurl4());
-                    jsonObj.append("option5", data.getOption5());
-                    jsonObj.append("imageurl5", data.getImageurl5());
-                    jsonObj.append("marks", data.getMarks());
-                    jsonObj.append("correctOption", data.getCorrect_option());
-                    jsonObj.append("isapproved", data.getIsapproved());
-                    jsonarr.put(jsonObj);
-                }
 
-                jsonObj = new JSONObject();
+        try {
+            Map param = new HashMap();
+            param.put("qpackid", "" + qpid);
+            param.put("nosid", "" + nosid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QuestionDAO(), param);
+            System.out.println("Get Record Size :" + records.size());
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    QuestionDAO data = (QuestionDAO) itr.next();
+                    if (data.getQpackid() == qpid && data.getNosid() == nosid) {
+                        System.out.println(data.getId());
+                        jsonObj.append("ID", data.getId());
+                        jsonObj.append("question_title", data.getQuestion_title());
+                        jsonObj.append("questionimgurl", data.getQuestionimgurl());
+                        jsonObj.append("option1", data.getOption1());
+                        jsonObj.append("imageurl1", data.getImageurl1());
+                        jsonObj.append("option2", data.getOption2());
+                        jsonObj.append("imageurl2", data.getImageurl2());
+                        jsonObj.append("option3", data.getOption3());
+                        jsonObj.append("imageurl3", data.getImageurl3());
+                        jsonObj.append("option4", data.getOption4());
+                        jsonObj.append("imageurl4", data.getImageurl4());
+                        jsonObj.append("option5", data.getOption5());
+                        jsonObj.append("imageurl5", data.getImageurl5());
+                        jsonObj.append("marks", data.getMarks());
+                        jsonObj.append("correctOption", data.getCorrect_option());
+                        jsonObj.append("isapproved", data.getIsapproved());
+                        jsonarr.put(jsonObj);
+                    }
+
+                    jsonObj = new JSONObject();
+                }
             }
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
 
         return jsonarr.toString();
@@ -317,39 +347,44 @@ public class QuestionApproveController {
 
         JSONObject jsonObj = new JSONObject();
         JSONArray jsonarr = new JSONArray();
-        Map param = new HashMap();
-        param.put("qpackid", qpid);
-        param.put("nosid", nosid);
-        param.put("pcid", pcid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QuestionDAO(), param);
-        System.out.println("Get Record Size :" + records.size());
-        if (records.size() > 0) {
-            Iterator itr = records.iterator();
-            while (itr.hasNext()) {
-                QuestionDAO data = (QuestionDAO) itr.next();
-                if (data.getQpackid() == qpid && data.getNosid() == nosid && data.getPcid() == pcid) {
-                    System.out.println(data.getId());
-                    jsonObj.append("ID", data.getId());
-                    jsonObj.append("question_title", data.getQuestion_title());
-                    jsonObj.append("questionimgurl", data.getQuestionimgurl());
-                    jsonObj.append("option1", data.getOption1());
-                    jsonObj.append("imageurl1", data.getImageurl1());
-                    jsonObj.append("option2", data.getOption2());
-                    jsonObj.append("imageurl2", data.getImageurl2());
-                    jsonObj.append("option3", data.getOption3());
-                    jsonObj.append("imageurl3", data.getImageurl3());
-                    jsonObj.append("option4", data.getOption4());
-                    jsonObj.append("imageurl4", data.getImageurl4());
-                    jsonObj.append("option5", data.getOption5());
-                    jsonObj.append("imageurl5", data.getImageurl5());
-                    jsonObj.append("marks", data.getMarks());
-                    jsonObj.append("correctOption", data.getCorrect_option());
-                    jsonObj.append("isapproved", data.getIsapproved());
-                    jsonarr.put(jsonObj);
-                }
 
-                jsonObj = new JSONObject();
+        try {
+            Map param = new HashMap();
+            param.put("qpackid", qpid);
+            param.put("nosid", nosid);
+            param.put("pcid", pcid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QuestionDAO(), param);
+            System.out.println("Get Record Size :" + records.size());
+            if (records.size() > 0) {
+                Iterator itr = records.iterator();
+                while (itr.hasNext()) {
+                    QuestionDAO data = (QuestionDAO) itr.next();
+                    if (data.getQpackid() == qpid && data.getNosid() == nosid && data.getPcid() == pcid) {
+                        System.out.println(data.getId());
+                        jsonObj.append("ID", data.getId());
+                        jsonObj.append("question_title", data.getQuestion_title());
+                        jsonObj.append("questionimgurl", data.getQuestionimgurl());
+                        jsonObj.append("option1", data.getOption1());
+                        jsonObj.append("imageurl1", data.getImageurl1());
+                        jsonObj.append("option2", data.getOption2());
+                        jsonObj.append("imageurl2", data.getImageurl2());
+                        jsonObj.append("option3", data.getOption3());
+                        jsonObj.append("imageurl3", data.getImageurl3());
+                        jsonObj.append("option4", data.getOption4());
+                        jsonObj.append("imageurl4", data.getImageurl4());
+                        jsonObj.append("option5", data.getOption5());
+                        jsonObj.append("imageurl5", data.getImageurl5());
+                        jsonObj.append("marks", data.getMarks());
+                        jsonObj.append("correctOption", data.getCorrect_option());
+                        jsonObj.append("isapproved", data.getIsapproved());
+                        jsonarr.put(jsonObj);
+                    }
+
+                    jsonObj = new JSONObject();
+                }
             }
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
 
         return jsonarr.toString();

@@ -17,6 +17,7 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -31,6 +32,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 @RequestMapping("/admin/setting")
 public class SettingController {
+
+    private static final Logger logger = Logger.getLogger(SettingController.class);
 
     @Autowired
     private ServletContext servletContext;
@@ -58,50 +61,54 @@ public class SettingController {
 
         String getusername = request.getParameter("username");
 
-        System.out.println(" Get username : " + getusername);
-        String studentusername = beanObj.getStudentname();
-        if(getusername!=null){
-            studentusername =getusername;
-        }
-        
-        ArrayList datastore = new ArrayList();
-        Map param = new HashMap();
-        param.put("username", studentusername);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new UserDAO(), param);
-        if (records.size() > 0) {
+        try {
+            System.out.println(" Get username : " + getusername);
+            String studentusername = beanObj.getStudentname();
+            if (getusername != null) {
+                studentusername = getusername;
+            }
 
-            SettingDAO usersetting = new SettingDAO();
-            usersetting.setStudentname(studentusername);
+            ArrayList datastore = new ArrayList();
+            Map param = new HashMap();
+            param.put("username", studentusername);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new UserDAO(), param);
+            if (records.size() > 0) {
 
-            UserDAO userdao = (UserDAO) records.get(0);
-            int userid = userdao.getID();
-            int batchid = userdao.getBatchid();
-            BatchesDAO batchdao = (BatchesDAO) this.superService.getObjectById(new BatchesDAO(), batchid);
-            int totallogincount = batchdao.getLoginRestrict();
+                SettingDAO usersetting = new SettingDAO();
+                usersetting.setStudentname(studentusername);
 
-            Map param2 = new HashMap();
-            param2.put("userid", userid);
-            List<SuperBean> recordsurd = this.superService.listAllObjectsByCriteria(new UserResultDetailDAO(), param2);
-            if (recordsurd.size() > 0) {
-                UserResultDetailDAO userdetaildao = (UserResultDetailDAO) recordsurd.get(0);
-                usersetting.setRecordid("" + userdetaildao.getID());
-                if (totallogincount <= userdetaildao.getLogincount()) {
+                UserDAO userdao = (UserDAO) records.get(0);
+                int userid = userdao.getID();
+                int batchid = userdao.getBatchid();
+                BatchesDAO batchdao = (BatchesDAO) this.superService.getObjectById(new BatchesDAO(), batchid);
+                int totallogincount = batchdao.getLoginRestrict();
 
-                    usersetting.setEnablelogin("disable");
-                } else {
-                    usersetting.setEnablelogin("enable");
+                Map param2 = new HashMap();
+                param2.put("userid", userid);
+                List<SuperBean> recordsurd = this.superService.listAllObjectsByCriteria(new UserResultDetailDAO(), param2);
+                if (recordsurd.size() > 0) {
+                    UserResultDetailDAO userdetaildao = (UserResultDetailDAO) recordsurd.get(0);
+                    usersetting.setRecordid("" + userdetaildao.getID());
+                    if (totallogincount <= userdetaildao.getLogincount()) {
+
+                        usersetting.setEnablelogin("disable");
+                    } else {
+                        usersetting.setEnablelogin("enable");
+                    }
+
                 }
+
+                datastore.add(usersetting);
 
             }
 
-            datastore.add(usersetting);
+            model.addAttribute("setting", beanObj);
+            model.addAttribute("action", "search.io");
+            model.addAttribute("records", datastore);
 
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
-
-        model.addAttribute("setting", beanObj);
-        model.addAttribute("action", "search.io");
-        model.addAttribute("records", datastore);
-
         request.getSession().setAttribute("body", "/admin/settings/settings.jsp");
         return "admin/common";
     }
@@ -112,18 +119,23 @@ public class SettingController {
         String username = request.getParameter("username");
         String recid = request.getParameter("recid");
         String status = request.getParameter("status");
-        UserResultDetailDAO userresultdao = (UserResultDetailDAO) this.superService.getObjectById(new UserResultDetailDAO(), new Integer(recid));
-        if (status.equalsIgnoreCase("enable")) {
-            userresultdao.setLogincount(3);
-        }
-        if (status.equalsIgnoreCase("disable")) {
-            userresultdao.setLogincount(0);
-        }
-        this.superService.updateObject(userresultdao);
-        beanObj.setStudentname(username);
-        request.setAttribute("username", username);
-        model.addAttribute("setting", beanObj);
 
+        try {
+            UserResultDetailDAO userresultdao = (UserResultDetailDAO) this.superService.getObjectById(new UserResultDetailDAO(), new Integer(recid));
+            if (status.equalsIgnoreCase("enable")) {
+                userresultdao.setLogincount(3);
+            }
+            if (status.equalsIgnoreCase("disable")) {
+                userresultdao.setLogincount(0);
+            }
+            this.superService.updateObject(userresultdao);
+            beanObj.setStudentname(username);
+            request.setAttribute("username", username);
+            model.addAttribute("setting", beanObj);
+
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
         return "redirect:/admin/setting/search.io?username=" + username;
     }
 
@@ -131,16 +143,21 @@ public class SettingController {
 
         boolean flag = false;
 
-        Map param = new HashMap();
-        param.put("userid", userid);
-        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new UserResultDetailDAO(), param);
-        if (records.size() > 0) {
-            UserResultDetailDAO userdetaildao = (UserResultDetailDAO) records.get(0);
-            if (totallogincount <= userdetaildao.getLogincount()) {
+        try {
+            Map param = new HashMap();
+            param.put("userid", userid);
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new UserResultDetailDAO(), param);
+            if (records.size() > 0) {
+                UserResultDetailDAO userdetaildao = (UserResultDetailDAO) records.get(0);
+                if (totallogincount <= userdetaildao.getLogincount()) {
 
-                flag = true;
+                    flag = true;
+                }
+
             }
 
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
         }
 
         return flag;
