@@ -83,6 +83,7 @@
                 <value>com.abp.admin.result.PracticalWiseresultDAO</value>
                 <value>com.abp.admin.result.ImageLogDAO</value>
                 <value>com.abp.admin.result.AssesmentResult</value>
+                <value>com.abp.admin.resultsummary.ResultsummaryDAO</value>
             </list>
         </property>
         <property name="hibernateProperties">

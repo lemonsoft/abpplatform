@@ -573,12 +573,12 @@
 --  select * from questionwiselog;
 --  select * from assesmentlog;
 --  select * from practicalwiseresult;
--- --  select * from questionpaper;
---   select * from senarioquestions;
--- --  select * from practicalmmq;
---   select * from pcwithmarks;
---   select * from assessor;
---   select * from multilangquestion;
+--  select * from questionpaper;
+--  select * from senarioquestions;
+--  select * from practicalmmq;
+--  select * from pcwithmarks;
+--  select * from assessor;
+--  select * from multilangquestion;
 
 /* 
 
@@ -612,4 +612,10 @@ Spring Security Login Tables.
 --  
 -- INSERT INTO user_roles (user_id, role_id) VALUES (1, 2), (2, 1);
 
-select * from user_roles;
+select * from userresultdetail;
+select * from practicalwiseresult;
+select * from theorywiseresult;
+select * from questionwiselog;
+select * from practicalwiseresult;
+select * from batches;
+select * from questionpaper;

@@ -324,13 +324,7 @@
                     }
                 });
             });
-//            $("#openeditqp").click(function () {
-//                //var ssc_id = $('select[name=ssc_id]').val();
-//                alert("Test EDIt Dialog");
-//                //var w = window.open("<%=request.getContextPath()%>/admin/qualificationpack/openaddqp.io?sscid=" + ssc_id, "popupWindow", "width=1024, height=500, scrollbars=yes");
-//                //var $w = $(w.document.body);
-//                //$w.html("<textarea></textarea>");
-//            });
+
             $('#openeditqp').on('click', function (event) {
                 event.preventDefault();
                 alert("Test EDIt Dialog");

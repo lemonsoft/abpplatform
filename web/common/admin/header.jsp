@@ -212,13 +212,13 @@
                                                         <div class="col-md-4">
                                                             <ul class="mega-menu-submenu">
                                                                 <li aria-haspopup="true" class=" ">
-                                                                    <a href="layout_mega_menu_light.html" class="nav-link  "> Result Summary </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/resultsummary/init.io" class="nav-link  "> Result Summary </a>
                                                                 </li>
                                                                 <li aria-haspopup="true" class=" ">
-                                                                    <a href="layout_top_bar_light.html" class="nav-link  "> Job Role Master </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/jobrole/init.io" class="nav-link  "> Job Role Master </a>
                                                                 </li>
                                                                 <li aria-haspopup="true" class=" ">
-                                                                    <a href="layout_fluid_page.html" class="nav-link  "> Question Bank Analysis </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/qbankanalysis/init.io" class="nav-link  "> Question Bank Analysis </a>
                                                                 </li>
                                                                 <li aria-haspopup="true" class=" ">
                                                                     <a href="layout_top_bar_fixed.html" class="nav-link  "> Training Partner Wise </a>
