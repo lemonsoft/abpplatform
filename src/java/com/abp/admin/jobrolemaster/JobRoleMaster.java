@@ -17,6 +17,12 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +74,69 @@ public class JobRoleMaster {
         model.addAttribute("action", "search.io");
         request.getSession().setAttribute("body", "/admin/jobrole/jobrolemaster.jsp");
         return "admin/common";
+    }
+
+    @RequestMapping(value = "/writeExcel", method = RequestMethod.GET)
+    public void writeExcel(HttpServletRequest request, HttpServletResponse response, Model model) {
+
+        String sscid = request.getParameter("sscid");
+
+        SSCDAO sectorskill = (SSCDAO) this.superService.getObjectById(new SSCDAO(), new Integer(sscid));
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet spreadsheet = workbook.createSheet("job_rolemaster_report");
+
+        XSSFRow row = spreadsheet.createRow(0);
+        CellStyle style = workbook.createCellStyle();
+        style.setFillBackgroundColor(IndexedColors.AQUA.getIndex());
+        row.setRowStyle(style);
+        XSSFCell cell;
+        cell = row.createCell(0);
+        cell.setCellStyle(style);
+        cell.setCellValue("Sr.#");
+        cell = row.createCell(1);
+        cell.setCellValue("Sector");
+        cell = row.createCell(2);
+        cell.setCellValue("Job Role");
+        cell = row.createCell(3);
+        cell.setCellValue("Job Role Number");
+        cell = row.createCell(4);
+        cell.setCellValue("Job Role Level");
+
+        Map<String, String> param = new HashMap();
+        param.put("sscid", sscid);
+        List<SuperBean> objdao = this.superService.listAllObjectsByCriteria(new QualificationPackDAO(), param);
+        if (objdao.size() > 0) {
+            Iterator itr = objdao.iterator();
+            int i = 1;
+            while (itr.hasNext()) {
+                QualificationPackDAO qpack = (QualificationPackDAO) itr.next();
+                row = spreadsheet.createRow(i);
+                cell = row.createCell(0);
+                cell.setCellValue(i);
+                cell = row.createCell(1);
+                cell.setCellValue(sectorskill.getSscName());
+                cell = row.createCell(2);
+                cell.setCellValue(qpack.getQpackname());
+                cell = row.createCell(3);
+                cell.setCellValue(qpack.getQpackid());
+                cell = row.createCell(4);
+                cell.setCellValue(qpack.getQpacklevel());
+                i++;
+            }
+        }
+        try {
+            response.setContentType("application/vnd.ms-excel");
+            response.setHeader("Content-Disposition", "inline; filename=job_rolemaster_report.xls");
+
+            workbook.write(response.getOutputStream());
+            response.getOutputStream().flush();
+            response.getOutputStream().close();
+            System.out.println("Code is Here...");
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
+        System.out.println("Code is Here...");
+
     }
 
     @RequestMapping(value = "/sectorskill", method = RequestMethod.GET)

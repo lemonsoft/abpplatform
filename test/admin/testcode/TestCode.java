@@ -5,22 +5,21 @@
  */
 package admin.testcode;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
+import org.joda.time.*;
+import org.joda.time.format.*;
 
-/**
- *
- * @author ss
- */
 public class TestCode {
 
-    public static void main(String args[]) {
+    public static void main(String[] args) throws Exception {
+        
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy")
+                .withLocale(Locale.UK);
 
-        String pattern = "yyyy-MM";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        LocalDate date = formatter.parseLocalDate("18/08/2012");
 
-        String date = simpleDateFormat.format(new Date());
-        System.out.println(date);
-
+        System.out.println(date.getYear());  // 2012
+        System.out.println(date.getMonthOfYear()); // 8
+        System.out.println(date.getDayOfMonth());   // 18
     }
 }

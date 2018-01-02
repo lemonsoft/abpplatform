@@ -22,7 +22,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.log4j.Logger;
+
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -37,6 +37,8 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -56,7 +58,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/admin/questions")
 public class QuestionController {
 
-    private static final Logger logger = Logger.getLogger(QuestionController.class);
+    private static final Logger logger = LoggerFactory.getLogger(QuestionController.class);
     @Autowired
     private ServletContext servletContext;
 
@@ -827,8 +829,7 @@ public class QuestionController {
 
         String qpid = request.getParameter("qpid");
         XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet spreadsheet = workbook
-                .createSheet("questions");
+        XSSFSheet spreadsheet = workbook.createSheet("questions");
 
         XSSFRow row = spreadsheet.createRow(0);
         CellStyle style = workbook.createCellStyle();

@@ -618,4 +618,5 @@ select * from theorywiseresult;
 select * from questionwiselog;
 select * from practicalwiseresult;
 select * from batches;
+select * from questions;
 select * from questionpaper;

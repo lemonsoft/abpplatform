@@ -89,7 +89,8 @@
                     type: 'GET',
                     success: function (data) {
                         //alert(data);
-                        var str = "<tr><td>Sr.#</td><td>Sector</td><td>Job Role</td><td>Job Role Number</td><td>Job Role Level</td></tr>";
+                         var str ="<tr><td colspan=5 align=right><a href=\"<%=request.getContextPath()%>/admin/jobrole/writeExcel.io?sscid="+sscid+"\"><img src=\"<%=request.getContextPath()%>/assets/images/excel.ico\" width=30px height=30px/></a></td></tr>";
+                         str = str + "<tr><td>Sr.#</td><td>Sector</td><td>Job Role</td><td>Job Role Number</td><td>Job Role Level</td></tr>";
 
                         $.each(data, function (index, jsonObject) {
 

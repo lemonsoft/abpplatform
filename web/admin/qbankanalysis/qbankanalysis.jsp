@@ -8,7 +8,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-
+<%@taglib uri="/WEB-INF/displaytag.tld" prefix="display" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -85,18 +85,33 @@
                             </div><!-- end section -->
 
                         </div><!-- end frm-row section -->
+                        <c:if test="${records != null}"> 
+                            <div class="frm-row">
+                                
+                                <display:table name="records" class="table table-bordered" requestURI="initSearch.io" pagesize="40">
+                                    <display:column property="questionid" title="Question ID" />
+                                    <display:column property="question" title="Question"/>
+                                    <display:column property="noofattempt" title="No. of Candidates Who Attempted"/>
+                                    <display:column property="incorrectattempt" title="Incorrect Attempt"/>
+                                    <display:column property="correctatmpt" title="Correct Attempt"/>
+                                    <display:column property="notattempt" title="Not Attempted"/>
+                                </display:table>
 
+                            </div>
+                        </c:if>
 
 
                     </div><!-- end .form-body section -->
-                    
+
+
+
                 </form:form>
 
             </div><!-- end .smart-forms section -->
         </div><!-- end .smart-wrap section -->
     </body>
     <script type="text/javascript">
-        
+
         $(document).ready(function () {
             $("#sscid").change(function () {
 
@@ -108,14 +123,14 @@
                         data: {ssc_id: sscid},
                         type: 'GET',
                         success: function (data) {
-                           
+
                             var str = "<option value=''>------- Select --------</option>";
                             if (data.length === 0) {
                                 str = "<option value=''>------- Select --------</option>";
                             }
                             $.each(data, function (index, jsonObject) {
                                 str = str + "<option value=" + jsonObject.ID + ">" + jsonObject.NAME + "</option>";
-                                
+
                             });
                             $("#qpid").html(str);
                         }
