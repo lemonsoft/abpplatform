@@ -221,7 +221,7 @@
                                                                     <a href="<%=request.getContextPath()%>/admin/qbankanalysis/init.io" class="nav-link  "> Question Bank Analysis </a>
                                                                 </li>
                                                                 <li aria-haspopup="true" class=" ">
-                                                                    <a href="layout_top_bar_fixed.html" class="nav-link  "> Training Partner Wise </a>
+                                                                    <a href="<%=request.getContextPath()%>//admin/tpwisereport/init.io" class="nav-link  "> Training Partner Wise </a>
                                                                 </li>
                                                                 <li aria-haspopup="true" class=" ">
                                                                     <a href="layout_mega_menu_fixed.html" class="nav-link  "> Consolidate Assessor Dashboard </a>

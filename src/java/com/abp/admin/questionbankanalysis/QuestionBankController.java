@@ -23,6 +23,12 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -148,6 +154,142 @@ public class QuestionBankController {
         model.addAttribute("action", "search.io");
         request.getSession().setAttribute("body", "/admin/qbankanalysis/qbankanalysis.jsp");
         return "admin/common";
+
+    }
+
+    @RequestMapping(value = "/writeExcel", method = RequestMethod.GET)
+    public void writeExcel(HttpServletRequest request, HttpServletResponse response, Model model) {
+
+        String qpid = request.getParameter("qpackid");
+        String srcdate = request.getParameter("srcdate");
+        Set questionBank = new HashSet();
+        String seldate = srcdate;
+        Map qpacks = new HashMap();
+        qpacks.put("qpackid", new Integer(qpid));
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QuestionPaperDAO(), qpacks);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                QuestionPaperDAO data = (QuestionPaperDAO) itr.next();
+                String questionids[] = data.getQuestionids().split(",");
+
+                for (int i = 0; i < questionids.length; i++) {
+                    questionBank.add(questionids[i]);
+                }
+
+            }
+        }
+
+        System.out.println("questionBank : " + questionBank);
+
+        ArrayList record = new ArrayList();
+        if (questionBank.size() > 0) {
+            Iterator itr = questionBank.iterator();
+            while (itr.hasNext()) {
+                String questids = (String) itr.next();
+                Map questdetails = new HashMap();
+                questdetails.put("questionid", new Integer(questids));
+                List<SuperBean> records2 = this.superService.listAllObjectsByCriteria(new TheoryWiseResultDAO(), questdetails);
+                if (records2.size() > 0) {
+                    Iterator itr2 = records2.iterator();
+                    String questionid = "";
+                    int correctat = 0;
+                    int incorrect = 0;
+                    int noattempt = 0;
+                    boolean flag = false;
+                    while (itr2.hasNext()) {
+                        TheoryWiseResultDAO theorywisedao = (TheoryWiseResultDAO) itr2.next();
+                        String compdate = theorywisedao.getRecorddate();
+                        compdate = compdate.substring(0, 7);
+                        System.out.println("Compare For date " + compdate);
+
+                        if (seldate.equals(compdate)) {
+                            flag = true;
+                            questionid = "" + theorywisedao.getQuestionid();
+                            if (isCorrectAttempt(questionid, theorywisedao.getCorrectanswer())) {
+                                correctat++;
+                            } else {
+                                incorrect++;
+                            }
+                        }
+
+                    }
+                    if (flag) {
+                        DisplayQuestionBank dispbank = new DisplayQuestionBank();
+                        dispbank.setQuestionid(questionid);
+                        dispbank.setQuestion(getQuestionbyId(questids));
+                        dispbank.setNoofattempt("" + records2.size());
+                        dispbank.setCorrectatmpt("" + correctat);
+                        dispbank.setIncorrectattempt("" + incorrect);
+                        dispbank.setNotattempt("" + noattempt);
+                        record.add(dispbank);
+                    }
+
+                }
+
+            }
+
+        }
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet spreadsheet = workbook.createSheet("question_bank_analysis");
+
+        XSSFRow row = spreadsheet.createRow(0);
+        CellStyle style = workbook.createCellStyle();
+        style.setFillBackgroundColor(IndexedColors.AQUA.getIndex());
+        row.setRowStyle(style);
+        XSSFCell cell;
+        cell = row.createCell(0);
+        cell.setCellStyle(style);
+        cell.setCellValue("Sr.#");
+        cell = row.createCell(1);
+        cell.setCellValue("Question ID");
+        cell = row.createCell(2);
+        cell.setCellValue("Question");
+        cell = row.createCell(3);
+        cell.setCellValue("No. of Candidates Who Attempted");
+        cell = row.createCell(4);
+        cell.setCellValue("Incorrect Attempt");
+        cell = row.createCell(5);
+        cell.setCellValue("Correct Attempt");
+        cell = row.createCell(6);
+        cell.setCellValue("Not Attempted");
+
+        if (record.size() > 0) {
+            Iterator itr = record.iterator();
+            int i = 1;
+            while (itr.hasNext()) {
+                DisplayQuestionBank dispqbank = (DisplayQuestionBank) itr.next();
+                row = spreadsheet.createRow(i);
+                cell = row.createCell(0);
+                cell.setCellValue(i);
+                cell = row.createCell(1);
+                cell.setCellValue(dispqbank.getQuestionid());
+                cell = row.createCell(2);
+                cell.setCellValue(dispqbank.getQuestion());
+                cell = row.createCell(3);
+                cell.setCellValue(dispqbank.getNoofattempt());
+                cell = row.createCell(4);
+                cell.setCellValue(dispqbank.getIncorrectattempt());
+                cell = row.createCell(5);
+                cell.setCellValue(dispqbank.getCorrectatmpt());
+                cell = row.createCell(6);
+                cell.setCellValue(dispqbank.getNotattempt());
+                i++;
+            }
+        }
+        try {
+            response.setContentType("application/vnd.ms-excel");
+            response.setHeader("Content-Disposition", "inline; filename=question_bank_analysis.xls");
+
+            workbook.write(response.getOutputStream());
+            response.getOutputStream().flush();
+            response.getOutputStream().close();
+            System.out.println("Code is Here...");
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
+        System.out.println("Code is Here...");
 
     }
 
