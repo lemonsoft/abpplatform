@@ -7,12 +7,17 @@ package com.abp.admin.trainingpartner;
 
 import com.abp.admin.batches.BatchesDAO;
 import com.abp.admin.batches.UserDAO;
+import com.abp.admin.practicalmmq.PCWithMarksDAO;
+import com.abp.admin.project.questions.QuestionDAO;
 import com.abp.admin.qualificationpack.QualificationPackDAO;
+import com.abp.admin.result.PracticalWiseresultDAO;
+import com.abp.admin.result.TheoryWiseResultDAO;
 import com.abp.admin.result.UserResultDetailDAO;
 import com.abp.admin.ssc.SSCDAO;
 import com.abp.statedistrict.StateDAO;
 import com.abp.superdao.SuperBean;
 import com.abp.superservice.SuperService;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -70,9 +75,10 @@ public class TrainingPwiseController {
         System.out.println(" Sector " + beanObj.getSscid());
         System.out.println(" Job role " + beanObj.getQpackid());
         System.out.println(" Month " + beanObj.getMonth());
+        ArrayList record = new ArrayList();
         String seldate = beanObj.getMonth();
         Map qpacks = new HashMap();
-        qpacks.put("qpackid", new Integer(beanObj.getQpackid()));
+        qpacks.put("qpackId", new Integer(beanObj.getQpackid()));
         List<SuperBean> records = this.superService.listAllObjectsByCriteria(new BatchesDAO(), qpacks);
         if (records.size() > 0) {
             Iterator itr = records.iterator();
@@ -82,22 +88,56 @@ public class TrainingPwiseController {
                 String tpname = data.getTpName();
                 String tpstate = getStateNameById(data.getState_id());
 
+                DisplayTrainingPartnerwise disptpwisedao = new DisplayTrainingPartnerwise();
+                disptpwisedao.setTrainingpartner(tpname);
+                disptpwisedao.setLocation(tpstate);
+
+                int totaltheorypass = 0;
+                int totaltheoryfailed = 0;
+                int totalpracticalpass = 0;
+                int totalpracticalfailed = 0;
+
                 Map usersparam = new HashMap();
-                usersparam.put("qpackid", new Integer(beanObj.getQpackid()));
+                usersparam.put("batchid", data.getID());
                 List<SuperBean> recordsusr = this.superService.listAllObjectsByCriteria(new UserDAO(), usersparam);
+                disptpwisedao.setTotalstudent("" + recordsusr.size());
                 if (recordsusr.size() > 0) {
+
                     Iterator itrusr = recordsusr.iterator();
                     while (itrusr.hasNext()) {
-                        UserDAO datausr = (UserDAO) itr.next();
-
+                        UserDAO datausr = (UserDAO) itrusr.next();
+                        boolean istheory = isTheoryPass(datausr.getID(), data.getID(), new Integer(beanObj.getQpackid()));
+                        if (istheory) {
+                            totaltheorypass++;
+                        } else {
+                            totaltheoryfailed++;
+                        }
+                        boolean ispractical = isPracticalPass(datausr.getID(), data.getID(), new Integer(beanObj.getQpackid()));
+                        if (ispractical) {
+                            totalpracticalpass++;
+                        } else {
+                            totalpracticalfailed++;
+                        }
                     }
 
                 }
+                disptpwisedao.setTheorypassed("" + totaltheorypass);
+                disptpwisedao.setTheoryfailed("" + totaltheoryfailed);
+                disptpwisedao.setPracticalpassed("" + totalpracticalpass);
+                disptpwisedao.setPracticalfailed("" + totalpracticalfailed);
+                record.add(disptpwisedao);
 
             }
         }
 
-        return "";
+        model.addAttribute("records", record);
+        model.addAttribute("tpdao", new DisplayTrainingPartnerwise());
+        model.addAttribute("ssc", getSectorSkillCouncil());
+        model.addAttribute("mode", "add");
+
+        model.addAttribute("action", "search.io");
+        request.getSession().setAttribute("body", "/admin/tpwisereport/trainingpartnerwise.jsp");
+        return "admin/common";
     }
 
     @RequestMapping(value = "/getQP", method = RequestMethod.GET, produces = "application/json")
@@ -172,28 +212,135 @@ public class TrainingPwiseController {
         return jsonarr.toString();
     }
 
-    private boolean isPracticalPass(int userid, int batchid) {
+    private boolean isPracticalPass(int userid, int batchid, int qpackid) {
 
-        return false;
-    }
-
-    private boolean isTheoryPass(int userid, int batchid) {
-
+        boolean flagthry = false;
         Map param = new HashMap();
         param.put("userid", userid);
-        param.put("userid", batchid);
+        param.put("batchid", batchid);
         List<SuperBean> records = this.superService.listAllObjectsByCriteria(new UserResultDetailDAO(), param);
         if (records.size() > 0) {
             Iterator itr = records.iterator();
             while (itr.hasNext()) {
                 UserResultDetailDAO data = (UserResultDetailDAO) itr.next();
+                flagthry = checkAllPracticalQuestion(userid, data.getID(), qpackid);
+            }
+        }
+        return flagthry;
+    }
+
+    private boolean isTheoryPass(int userid, int batchid, int qpackid) {
+
+        boolean flagthry = false;
+        Map param = new HashMap();
+        param.put("userid", userid);
+        param.put("batchid", batchid);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new UserResultDetailDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                UserResultDetailDAO data = (UserResultDetailDAO) itr.next();
+                flagthry = checkAllTheoryQuestions(userid, data.getID(), qpackid);
             }
         }
 
-        return false;
+        return flagthry;
     }
-    
-    
+
+    private boolean checkAllPracticalQuestion(int userid, int userdetailid, int qpackid) {
+
+        boolean flag = false;
+        int totalpracticalmarks = 0;
+        Map param = new HashMap();
+        param.put("userid", userid);
+        param.put("userresultdetailid", userdetailid);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PracticalWiseresultDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                PracticalWiseresultDAO data = (PracticalWiseresultDAO) itr.next();
+                if (data.getAnswerstatus().equalsIgnoreCase("yes")) {
+                    totalpracticalmarks = totalpracticalmarks + getAllPracticalmarks(data.getQuestionid());
+                }
+
+            }
+        }
+        QualificationPackDAO beanObj = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), qpackid);
+        int getPracticalCutoffmarks = Integer.parseInt(beanObj.getPracticalcutoffmarks());
+        if (totalpracticalmarks > getPracticalCutoffmarks) {
+            flag = true;
+        }
+
+        return flag;
+    }
+
+    private int getAllPracticalmarks(int questionid) {
+
+        int marks = 0;
+        Map param = new HashMap();
+        param.put("question_id", questionid);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PCWithMarksDAO(), param);
+        if (records.size() > 0) {
+            PCWithMarksDAO pcmarks = (PCWithMarksDAO) records.get(0);
+            marks = pcmarks.getMarks();
+        }
+
+        return marks;
+    }
+
+    private boolean checkAllTheoryQuestions(int userid, int userdetailid, int qpackid) {
+
+        boolean flag = false;
+        Map param = new HashMap();
+        param.put("userid", userid);
+        param.put("ID", userdetailid);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new UserResultDetailDAO(), param);
+        if (records.size() > 0) {
+            UserResultDetailDAO data = (UserResultDetailDAO) records.get(0);
+            int totaltheorymarks = getTotalTheoryMarks(userid, userdetailid, data.getQuestionids());
+            QualificationPackDAO beanObj = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), qpackid);
+            int getTheoryCutoffmarks = Integer.parseInt(beanObj.getTheorycutoffmarks());
+            if (totaltheorymarks > getTheoryCutoffmarks) {
+                flag = true;
+            }
+        }
+
+        return flag;
+    }
+
+    private int getTotalTheoryMarks(int userid, int userdetailid, String questionids) {
+
+        int totaltheorymarks = 0;
+        String questions[] = questionids.split(",");
+        for (int i = 0; i < questions.length; i++) {
+            Map param = new HashMap();
+            param.put("userid", userid);
+            param.put("userresultdetailid", userdetailid);
+            param.put("questionid", Integer.parseInt(questions[i]));
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new TheoryWiseResultDAO(), param);
+            if (records.size() > 0) {
+                TheoryWiseResultDAO data = (TheoryWiseResultDAO) records.get(0);
+                String selectanswer = data.getCorrectanswer();
+                totaltheorymarks = totaltheorymarks + getMarksofQuestion(questions[i], selectanswer);
+            }
+
+        }
+        return totaltheorymarks;
+    }
+
+    private int getMarksofQuestion(String questionid, String selectOption) {
+
+        int marks = 0;
+        QuestionDAO questdao = (QuestionDAO) this.superService.getObjectById(new QuestionDAO(), Integer.parseInt(questionid));
+        if (questdao != null) {
+            String corectopt = questdao.getCorrect_option();
+            if (Integer.parseInt(corectopt) == Integer.parseInt(selectOption)) {
+                marks = questdao.getMarks();
+            }
+
+        }
+        return marks;
+    }
 
     private String getStateNameById(int stateid) {
 
