@@ -16,6 +16,7 @@
         <link rel="stylesheet" type="text/css"  href="<%=request.getContextPath()%>/assets/css/smart-themes/blue.css">
         <link rel="stylesheet" type="text/css"  href="<%=request.getContextPath()%>/assets/css/font-awesome.min.css">
 
+        <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/assets/css/easyLocator.css">  
 
         <!--[if lte IE 9]>
             <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>    
@@ -33,19 +34,84 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i>Map Assessment</h4>
+                    <h4><i class="fa fa-pencil-square"></i>Our Assessment Locations</h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
 
-
+                <form:form method="post" action="${action}"  commandName="locationdao">
                 <div class="form-body theme-blue">
                     <div class="frm-row">
+                        <div class="section colm colm4"> 
+                            <div class="section">
+                                <label for="names" class="field-label">From Date</label>
+                                <label class="field prepend-icon">
+                                    <form:input path="fromdate" type="date" id="fromdate" class="gui-input" placeholder="From Date" required="true"/>
+
+                                    <span class="field-icon"><i class="fa fa-location-arrow"></i></span> 
+                                </label>
+                            </div><!-- end section -->
+                        </div><!-- end section -->
+                        <div class="section colm colm4"> 
+                            <div class="section">
+                                <label for="names" class="field-label">To Date</label>
+                                <label class="field prepend-icon">
+
+                                    <form:input path="todate" type="date" id="todate" class="gui-input" placeholder="To Date" required="true"/>
+
+                                    <span class="field-icon"><i class="fa fa-location-arrow"></i></span> 
+                                </label>
+                            </div><!-- end section -->
+                        </div><!-- end section -->
+                        <div class="section colm colm4">
+                            <div class="section">
+                                <label for="names" class="field-label">&nbsp;</label>
+                                <label class="field prepend-icon">
+
+                                    <button type="submit" class="button btn-blue"><spring:message code="common.button.search" text="Search" /></button>
+
+                                    
+                                </label>
+                            </div><!-- end section -->
+                            
+                        </div>
+
+                    </div><!-- end frm-row section -->
+                    </form:form>
+                    <div class="frm-row">
+
 
                         <div class="section colm colm12">
 
 
-                            <div id="gmap" style="with:300px;height:250px;"></div>
+                            <div id="locatorList" style="height:400px"></div>
+                            <script>
+                                $(document).ready(function () {
+
+                                    var data = [{
+                                            title: 'Tag',
+                                            description: '',
+                                            image: '',
+                                            link: '',
+                                            iconMarker: '',
+                                            iconMarkerActive: '',
+                                            lat: 26.922070,
+                                            lng: 75.778885
+                                        }]
+                                    var easyLocator = $('#locatorList').easyLocator({
+                                        myLocations: data,
+                                        apiKey: 'AIzaSyB28b_RQ6Pnz9_Zhcf5VUVw_q3A8sRoskg',
+                                        useMarkerCluster: true,
+                                        markerClustererOptions: {
+                                            imagePath: 'images/m'
+                                        }
+                                    });
+                                    easyLocator.onEvents.progress(function (evt) {
+                                        console.log(evt);
+                                    });
+                                });
+                            </script>
+
 
 
                         </div><!-- end section -->
@@ -54,8 +120,10 @@
             </div><!-- end .smart-forms section -->
         </div><!-- end .smart-wrap section -->
     </body>
-    <script src="https://maps.google.com/maps/api/js?sensor=false&libraries=geometry&v=3.22&key=AIzaSyB28b_RQ6Pnz9_Zhcf5VUVw_q3A8sRoskg">
-    </script>
-    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-    <script src="<%=request.getContextPath()%>/assets/js/maplace.js"></script>
+
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="<%=request.getContextPath()%>/assets/js/easyLocator.js"></script>
+<script src="<%=request.getContextPath()%>/assets/js/markerclusterer.min.js"></script>
+
 </html>

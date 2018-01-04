@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -35,8 +36,23 @@ public class AssesmentLocationController {
     public ModelAndView init(HttpServletRequest request, HttpServletResponse response) {
 
         ModelAndView model = new ModelAndView("admin/common");
+        model.addObject("locationdao", new LocationDao());
 
         request.getSession().setAttribute("body", "/admin/location/location.jsp");
         return model;
+    }
+
+    @RequestMapping(value = "/search", method = {RequestMethod.POST, RequestMethod.GET})
+    public String search(HttpServletRequest request, HttpServletResponse response, LocationDao beanObj, Model model) {
+
+        String fromdate = beanObj.getFromdate();
+        String todate = beanObj.getTodate();
+
+        System.out.println("from date : " + fromdate);
+        System.out.println("to date : " + todate);
+
+        model.addAttribute("locationdao", new LocationDao());
+        request.getSession().setAttribute("body", "/admin/location/location.jsp");
+        return "admin/common";
     }
 }

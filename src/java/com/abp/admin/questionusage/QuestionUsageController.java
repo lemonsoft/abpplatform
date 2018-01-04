@@ -9,6 +9,7 @@ import com.abp.admin.project.questions.QuestionDAO;
 import com.abp.admin.qualificationpack.NOSDAO;
 import com.abp.admin.qualificationpack.PCDAO;
 import com.abp.admin.qualificationpack.QualificationPackDAO;
+import com.abp.admin.result.TheoryWiseResultDAO;
 import com.abp.admin.ssc.SSCDAO;
 import com.abp.superdao.SuperBean;
 import com.abp.superservice.SuperService;
@@ -285,8 +286,22 @@ public class QuestionUsageController {
                         jsonObj.append("imageurl4", data.getImageurl4());
                         jsonObj.append("option5", data.getOption5());
                         jsonObj.append("imageurl5", data.getImageurl5());
-                        jsonObj.append("appeared", "0%");
-                        jsonObj.append("answered", "0%");
+                        int appear = questionAppearedNo(data.getId());
+                        System.out.println("Appear % " + appear);
+                        if (appear > 0) {
+                            jsonObj.append("appeared", "100%");
+                        } else {
+                            jsonObj.append("appeared", "0%");
+                        }
+                        int accurate = answeraccurately(data.getId());
+                        System.out.println("accurate % " + accurate);
+                        if (accurate > 0) {
+                            int percent = (int) (accurate / appear) * 100;
+                            System.out.println("percent % " + percent);
+                            jsonObj.append("answered", percent + "%");
+                        } else {
+                            jsonObj.append("answered", "0%");
+                        }
                         jsonObj.append("isphaseout", data.getIsphaseout());
                         jsonarr.put(jsonObj);
                     }
@@ -332,8 +347,22 @@ public class QuestionUsageController {
                         jsonObj.append("imageurl4", data.getImageurl4());
                         jsonObj.append("option5", data.getOption5());
                         jsonObj.append("imageurl5", data.getImageurl5());
-                        jsonObj.append("appeared", "0%");
-                        jsonObj.append("answered", "0%");
+                        int appear = questionAppearedNo(data.getId());
+                        System.out.println("Appear % " + appear);
+                        if (appear > 0) {
+                            jsonObj.append("appeared", "100%");
+                        } else {
+                            jsonObj.append("appeared", "0%");
+                        }
+                        int accurate = answeraccurately(data.getId());
+                        System.out.println("accurate % " + accurate);
+                        if (accurate > 0) {
+                            int percent = (int) (accurate / appear) * 100;
+                            System.out.println("percent % " + percent);
+                            jsonObj.append("answered", percent + "%");
+                        } else {
+                            jsonObj.append("answered", "0%");
+                        }
                         jsonObj.append("isphaseout", data.getIsphaseout());
                         jsonarr.put(jsonObj);
                     }
@@ -381,8 +410,23 @@ public class QuestionUsageController {
                         jsonObj.append("imageurl4", data.getImageurl4());
                         jsonObj.append("option5", data.getOption5());
                         jsonObj.append("imageurl5", data.getImageurl5());
-                        jsonObj.append("appeared", "0%");
-                        jsonObj.append("answered", "0%");
+                        int appear = questionAppearedNo(data.getId());
+                        System.out.println("Appear % " + appear);
+                        if (appear > 0) {
+                            jsonObj.append("appeared", "100%");
+                        } else {
+                            jsonObj.append("appeared", "0%");
+                        }
+                        int accurate = answeraccurately(data.getId());
+                        System.out.println("accurate % " + accurate);
+                        if (accurate > 0) {
+                            int percent = (int) (accurate / appear) * 100;
+                            System.out.println("percent % " + percent);
+                            jsonObj.append("answered", percent + "%");
+                        } else {
+                            jsonObj.append("answered", "0%");
+                        }
+
                         jsonObj.append("isphaseout", data.getIsphaseout());
                         jsonarr.put(jsonObj);
                     }
@@ -396,5 +440,48 @@ public class QuestionUsageController {
         }
 
         return jsonarr.toString();
+    }
+
+    private int questionAppearedNo(int questionid) {
+
+        int questionappear = 0;
+        Map param = new HashMap();
+        param.put("questionid", questionid);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new TheoryWiseResultDAO(), param);
+        if (records.size() > 0) {
+            questionappear = records.size();
+        }
+        return questionappear;
+    }
+
+    private int answeraccurately(int questionid) {
+
+        int answeraccurately = 0;
+        Map param = new HashMap();
+        param.put("questionid", questionid);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new TheoryWiseResultDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                TheoryWiseResultDAO theorydao = (TheoryWiseResultDAO) itr.next();
+                boolean flag = checkCorrectAnswer(questionid, theorydao.getCorrectanswer());
+                if (flag) {
+                    answeraccurately++;
+                }
+            }
+
+        }
+        return answeraccurately;
+    }
+
+    private boolean checkCorrectAnswer(int questionid, String answerselect) {
+
+        boolean flag = false;
+        QuestionDAO questiondao = (QuestionDAO) this.superService.getObjectById(new QuestionDAO(), new Integer(questionid));
+        if (questiondao.getCorrect_option().equalsIgnoreCase(answerselect)) {
+
+            flag = true;
+        }
+        return flag;
     }
 }

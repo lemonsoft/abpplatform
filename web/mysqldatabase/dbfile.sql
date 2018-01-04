@@ -612,6 +612,7 @@ Spring Security Login Tables.
 --  
 -- INSERT INTO user_roles (user_id, role_id) VALUES (1, 2), (2, 1);
 
+select * from assesmentresult;
 select * from userresultdetail;
 select * from practicalwiseresult;
 select * from theorywiseresult;
@@ -620,3 +621,4 @@ select * from practicalwiseresult;
 select * from batches;
 select * from questions;
 select * from questionpaper;
+select * from users;

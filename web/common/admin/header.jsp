@@ -212,19 +212,19 @@
                                                         <div class="col-md-4">
                                                             <ul class="mega-menu-submenu">
                                                                 <li aria-haspopup="true" class=" ">
-                                                                    <a href="<%=request.getContextPath()%>/admin/resultsummary/init.io" class="nav-link  "> Result Summary </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/resultsummary/init.io" class="nav-link"> Result Summary </a>
                                                                 </li>
                                                                 <li aria-haspopup="true" class=" ">
-                                                                    <a href="<%=request.getContextPath()%>/admin/jobrole/init.io" class="nav-link  "> Job Role Master </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/jobrole/init.io" class="nav-link"> Job Role Master </a>
                                                                 </li>
                                                                 <li aria-haspopup="true" class=" ">
-                                                                    <a href="<%=request.getContextPath()%>/admin/qbankanalysis/init.io" class="nav-link  "> Question Bank Analysis </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/qbankanalysis/init.io" class="nav-link"> Question Bank Analysis </a>
                                                                 </li>
                                                                 <li aria-haspopup="true" class=" ">
-                                                                    <a href="<%=request.getContextPath()%>//admin/tpwisereport/init.io" class="nav-link  "> Training Partner Wise </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/tpwisereport/init.io" class="nav-link"> Training Partner Wise </a>
                                                                 </li>
                                                                 <li aria-haspopup="true" class=" ">
-                                                                    <a href="layout_mega_menu_fixed.html" class="nav-link  "> Consolidate Assessor Dashboard </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/jobroleresult/init.io" class="nav-link"> Consolidate Job Role Result </a>
                                                                 </li>
                                                                 <li aria-haspopup="true" class=" ">
                                                                     <a href="layout_disabled_menu.html" class="nav-link  "> Assessor Report </a>
@@ -257,6 +257,9 @@
                                                                 </li>
                                                                 <li aria-haspopup="true" class=" ">
                                                                     <a href="layout_blank_page.html" class="nav-link  "> Job Role Wise </a>
+                                                                </li>
+                                                                <li aria-haspopup="true" class=" ">
+                                                                    <a href="<%=request.getContextPath()%>/admin/jobroleresult/init.io" class="nav-link"> Consolidate Assessor Dashboard </a>
                                                                 </li>
 
 
