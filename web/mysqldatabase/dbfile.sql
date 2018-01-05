@@ -622,3 +622,4 @@ select * from batches;
 select * from questions;
 select * from questionpaper;
 select * from users;
+select * from qualificationpack;

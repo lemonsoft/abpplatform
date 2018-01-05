@@ -8,7 +8,12 @@ package com.abp.admin.consolidatejobroleresult;
 import com.abp.admin.assessor.AssessorDAO;
 import com.abp.admin.batches.BatchesDAO;
 import com.abp.admin.batches.UserDAO;
+import com.abp.admin.practicalmmq.PCWithMarksDAO;
+import com.abp.admin.project.questions.QuestionDAO;
 import com.abp.admin.qualificationpack.QualificationPackDAO;
+import com.abp.admin.result.PracticalWiseresultDAO;
+import com.abp.admin.result.TheoryWiseResultDAO;
+import com.abp.admin.result.UserResultDetailDAO;
 import com.abp.admin.ssc.SSCDAO;
 import com.abp.statedistrict.DistrictDAO;
 import com.abp.statedistrict.StateDAO;
@@ -72,9 +77,8 @@ public class ConsolidateJobRoleResult {
         System.out.println(" Job role " + beanObj.getQpackid());
         System.out.println(" Month " + beanObj.getMonth());
 
-        ArrayList recordss=new ArrayList();
+        ArrayList recordss = new ArrayList();
         QualificationPackDAO beanQpackObj = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(beanObj.getQpackid()));
-        
 
         Map qpacks = new HashMap();
         qpacks.put("qpackId", new Integer(beanObj.getQpackid()));
@@ -92,7 +96,8 @@ public class ConsolidateJobRoleResult {
                 dispjobroledao.setLocation(getDistrictNameById(data.getDistrict_id()));
                 dispjobroledao.setAssesmentdate(data.getAssessmentEndDate());
                 dispjobroledao.setAssesorname(getAssessorNameById(data.getAssessorId()));
-                dispjobroledao.setTotalnostudent(""+getTotalStudent(data.getID()));
+                dispjobroledao.setTotalnostudent("" + getTotalStudent(data.getID()));
+                dispjobroledao.setNotappeared("" + totalappear(data.getBatch_id()));
                 recordss.add(dispjobroledao);
             }
         }
@@ -193,7 +198,7 @@ public class ConsolidateJobRoleResult {
 
     private int getTotalStudent(int batchid) {
 
-        System.out.println("  batchid  : : : "+batchid);
+        System.out.println("  batchid  : : : " + batchid);
         int totalstudent = 0;
         Map param = new HashMap();
         param.put("batchid", batchid);
@@ -203,5 +208,179 @@ public class ConsolidateJobRoleResult {
         }
 
         return totalstudent;
+    }
+
+    private int totalappear(int batchid) {
+
+        int totalstudent = 0;
+        Map param = new HashMap();
+        param.put("batchid", batchid);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new UserDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                UserDAO userdao = (UserDAO) itr.next();
+
+                Map param2 = new HashMap();
+                param2.put("userid", userdao.getID());
+                List<SuperBean> records2 = this.superService.listAllObjectsByCriteria(new UserResultDetailDAO(), param2);
+                if (records2.size() > 0) {
+
+                    totalstudent++;
+                }
+            }
+        }
+
+        return totalstudent;
+
+    }
+
+    public int calculateTotalPass(int batchid) {
+
+        int totalpass = 0;
+        Map param = new HashMap();
+        param.put("batchid", batchid);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new UserDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                UserDAO userdao = (UserDAO) itr.next();
+
+            }
+        }
+
+        return totalpass;
+    }
+
+    
+
+    private boolean checkAllTheoryQuestions(int userid, int userdetailid, int qpackid) {
+
+        boolean flag = false;
+        Map param = new HashMap();
+        param.put("userid", userid);
+        param.put("ID", userdetailid);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new UserResultDetailDAO(), param);
+        if (records.size() > 0) {
+            UserResultDetailDAO data = (UserResultDetailDAO) records.get(0);
+            int totaltheorymarks = getTotalTheoryMarks(userid, userdetailid, data.getQuestionids());
+            QualificationPackDAO beanObj = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), qpackid);
+            int getTheoryCutoffmarks = Integer.parseInt(beanObj.getTheorycutoffmarks());
+            if (totaltheorymarks > getTheoryCutoffmarks) {
+                flag = true;
+            }
+        }
+
+        return flag;
+    }
+
+    private int getTotalTheoryMarks(int userid, int userdetailid, String questionids) {
+
+        int totaltheorymarks = 0;
+        String questions[] = questionids.split(",");
+        for (int i = 0; i < questions.length; i++) {
+            Map param = new HashMap();
+            param.put("userid", userid);
+            param.put("userresultdetailid", userdetailid);
+            param.put("questionid", Integer.parseInt(questions[i]));
+            List<SuperBean> records = this.superService.listAllObjectsByCriteria(new TheoryWiseResultDAO(), param);
+            if (records.size() > 0) {
+                TheoryWiseResultDAO data = (TheoryWiseResultDAO) records.get(0);
+                String selectanswer = data.getCorrectanswer();
+                totaltheorymarks = totaltheorymarks + getMarksofQuestion(questions[i], selectanswer);
+            }
+
+        }
+        return totaltheorymarks;
+    }
+
+    private int getMarksofQuestion(String questionid, String selectOption) {
+
+        int marks = 0;
+        QuestionDAO questdao = (QuestionDAO) this.superService.getObjectById(new QuestionDAO(), Integer.parseInt(questionid));
+        if (questdao != null) {
+            String corectopt = questdao.getCorrect_option();
+            if (Integer.parseInt(corectopt) == Integer.parseInt(selectOption)) {
+                marks = questdao.getMarks();
+            }
+
+        }
+        return marks;
+    }
+
+    private boolean checkAllPracticalQuestion(int userid, int userdetailid, int qpackid) {
+
+        boolean flag = false;
+        int totalpracticalmarks = 0;
+        Map param = new HashMap();
+        param.put("userid", userid);
+        param.put("userresultdetailid", userdetailid);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PracticalWiseresultDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                PracticalWiseresultDAO data = (PracticalWiseresultDAO) itr.next();
+                if (data.getAnswerstatus().equalsIgnoreCase("yes")) {
+                    totalpracticalmarks = totalpracticalmarks + getAllPracticalmarks(data.getQuestionid());
+                }
+
+            }
+        }
+        QualificationPackDAO beanObj = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), qpackid);
+        int getPracticalCutoffmarks = Integer.parseInt(beanObj.getPracticalcutoffmarks());
+        if (totalpracticalmarks > getPracticalCutoffmarks) {
+            flag = true;
+        }
+
+        return flag;
+    }
+
+    private int getAllPracticalmarks(int questionid) {
+
+        int marks = 0;
+        Map param = new HashMap();
+        param.put("question_id", questionid);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new PCWithMarksDAO(), param);
+        if (records.size() > 0) {
+            PCWithMarksDAO pcmarks = (PCWithMarksDAO) records.get(0);
+            marks = pcmarks.getMarks();
+        }
+
+        return marks;
+    }
+
+    private boolean isPracticalPass(int userid, int batchid, int qpackid) {
+
+        boolean flagthry = false;
+        Map param = new HashMap();
+        param.put("userid", userid);
+        param.put("batchid", batchid);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new UserResultDetailDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                UserResultDetailDAO data = (UserResultDetailDAO) itr.next();
+                flagthry = checkAllPracticalQuestion(userid, data.getID(), qpackid);
+            }
+        }
+        return flagthry;
+    }
+
+    private boolean isTheoryPass(int userid, int batchid, int qpackid) {
+
+        boolean flagthry = false;
+        Map param = new HashMap();
+        param.put("userid", userid);
+        param.put("batchid", batchid);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new UserResultDetailDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                UserResultDetailDAO data = (UserResultDetailDAO) itr.next();
+                flagthry = checkAllTheoryQuestions(userid, data.getID(), qpackid);
+            }
+        }
+
+        return flagthry;
     }
 }

@@ -247,7 +247,7 @@
                                                                     <a href="layout_disabled_menu.html" class="nav-link  "> Time Analysis </a>
                                                                 </li>
                                                                 <li aria-haspopup="true" class=" ">
-                                                                    <a href="layout_blank_page.html" class="nav-link  "> Location wise </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/locationwise/init.io" class="nav-link  "> Location wise </a>
                                                                 </li>
                                                                 <li aria-haspopup="true" class=" ">
                                                                     <a href="layout_mega_menu_fixed.html" class="nav-link  "> Batch Analysis- NOS Wise </a>
@@ -259,7 +259,7 @@
                                                                     <a href="layout_blank_page.html" class="nav-link  "> Job Role Wise </a>
                                                                 </li>
                                                                 <li aria-haspopup="true" class=" ">
-                                                                    <a href="<%=request.getContextPath()%>/admin/jobroleresult/init.io" class="nav-link"> Consolidate Assessor Dashboard </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/assesordashboard/init.io" class="nav-link"> Consolidate Assessor Dashboard </a>
                                                                 </li>
 
 

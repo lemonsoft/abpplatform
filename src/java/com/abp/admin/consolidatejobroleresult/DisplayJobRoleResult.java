@@ -193,6 +193,4 @@ public class DisplayJobRoleResult {
         this.resultsubmissonactualdate = resultsubmissonactualdate;
     }
     
-    
-    
 }
