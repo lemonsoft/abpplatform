@@ -134,10 +134,11 @@
         });
 
         function writeExcelSheet() {
-            var qpackid = $("#state").val();
-            var srcdate = $("#month").val();
-            alert(srcdate + " Test data " + qpackid);
-            window.location.href = "<%=request.getContextPath()%>/admin/jobroleresult/writeExcel.io?qpackid=" + qpackid + "&srcdate=" + srcdate;
+            
+            var sscid = $("#sscid").val();
+            var state = $("#state").val();
+            alert(sscid + " Test data " + state);
+            window.location.href = "<%=request.getContextPath()%>/admin/assesordashboard/writeExcel.io?sscid=" + sscid + "&state=" + state;
 
         }
     </script>
