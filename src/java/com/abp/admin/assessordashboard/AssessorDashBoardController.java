@@ -183,7 +183,7 @@ public class AssessorDashBoardController {
         ArrayList record = new ArrayList();
         int i = 1;
         Map param = new HashMap();
-        param.put("sscid", Integer.parseInt(sscid));
+        param.put("sscid", sscid);
         List<SuperBean> records = this.superService.listAllObjectsByCriteria(new QualificationPackDAO(), param);
         if (records.size() > 0) {
             Iterator itr = records.iterator();
@@ -209,15 +209,15 @@ public class AssessorDashBoardController {
         XSSFCell cell;
         cell = row.createCell(0);
         cell.setCellStyle(style);
-        cell.setCellValue("Sr.#");
+        cell.setCellValue("SrNo#");
         cell = row.createCell(1);
-        cell.setCellValue("Question ID");
+        cell.setCellValue("Job Role");
         cell = row.createCell(2);
-        cell.setCellValue("Question");
+        cell.setCellValue("Total Assessor");
         cell = row.createCell(3);
-        cell.setCellValue("No. of Candidates Who Attempted");
-        cell = row.createCell(4);
+        cell.setCellValue("State");
 
+        System.out.println("Record : "+record.size());
         if (record.size() > 0) {
             Iterator itr = record.iterator();
             int ik = 1;
@@ -227,12 +227,10 @@ public class AssessorDashBoardController {
                 cell = row.createCell(0);
                 cell.setCellValue(i);
                 cell = row.createCell(1);
-                cell.setCellValue(dispqbank.getSrno());
-                cell = row.createCell(2);
                 cell.setCellValue(dispqbank.getJobrole());
-                cell = row.createCell(3);
+                cell = row.createCell(2);
                 cell.setCellValue(dispqbank.getTotalassessor());
-                cell = row.createCell(4);
+                cell = row.createCell(3);
                 cell.setCellValue(dispqbank.getState());
 
                 ik++;

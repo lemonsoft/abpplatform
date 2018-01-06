@@ -33,12 +33,12 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i>Training Partner Wise</h4>
+                    <h4><i class="fa fa-pencil-square"></i>Individual Assessor Dashboard</h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
 
-                <form:form method="post" action="${action}"  commandName="tpdao">
+                <form:form method="post" action="${action}"  commandName="individualdao">
 
                     <div class="form-body theme-blue">
 
@@ -55,27 +55,8 @@
                                     <span class="field-icon"><i class="fa fa-location-arrow"></i></span> 
                                 </label>
                             </div><!-- end section -->
-                            <div class="section colm colm3"> 
-                                <div class="section">
-                                    <label for="names" class="field-label">Job Role</label>
-                                    <label class="field prepend-icon">
-                                        <form:select path="qpackid" id="qpackid" class="gui-input" >
-                                            <form:option value="0">--Select--</form:option>
-                                        </form:select>
-
-                                        <span class="field-icon"><i class="fa fa-location-arrow"></i></span> 
-                                    </label>
-                                </div><!-- end section -->
-                            </div><!-- end section -->
-                            <div class="section colm colm3"> 
-                                <div class="section">
-                                    <label for="names" class="field-label">Select Month</label>
-                                    <label class="field prepend-icon">
-
-                                        <form:input path="month" type="month" id="month" class="gui-input"/>
-                                    </label>
-                                </div><!-- end section -->
-                            </div><!-- end section -->
+                            
+                            
                             <div class="section colm colm2"> 
                                 <div class="section">
                                     <label for="names" class="field-label">&nbsp;</label>
@@ -87,15 +68,19 @@
                         <c:if test="${records != null}"> 
                             <div class="frm-row">
                                 <table><tr><td colspan=5 align=right><a href="#" onclick="writeExcelSheet();"><img src="<%=request.getContextPath()%>/assets/images/excel.ico" width=30px height=30px/></a></td></tr></table>
-                                                <display:table name="records" class="table table-bordered" requestURI="initSearch.io" pagesize="40">
-                                                    <display:column property="trainingpartner" title="Training Partner" />
-                                                    <display:column property="totalstudent" title="Total Students"/>
-                                                    <display:column property="theorypassed" title="Theory Passed"/>
-                                                    <display:column property="theoryfailed" title="Theory Failed"/>
-                                                    <display:column property="practicalpassed" title="Practical Passed"/>
-                                                    <display:column property="practicalfailed" title="Practical Failed"/>
-                                                    <display:column property="location" title="Location"/>
-                                                </display:table>
+                                <display:table name="records" class="table table-bordered" requestURI="initSearch.io" pagesize="40">
+                                    <display:column property="srno" title="SrNo#" />
+                                    <display:column property="assesorname" title="Assesor Name"/>
+                                    <display:column property="jobroles" title="Job Roles"/>
+                                    <display:column property="affiliationdate" title="Affiliation date"/>
+                                    <display:column property="state" title="State"/>
+                                    <display:column property="city" title="City"/>
+                                    <display:column property="aadharno" title="Aadhar No"/>
+                                    <display:column property="qualification" title="Qualification"/>
+                                    <display:column property="totalexp" title="Total Experience"/>
+                                    <display:column property="noofcandidateasses" title="Number of Candidates Assesed"/>
+                                    <display:column property="pass" title="Pass %"/>
+                                 </display:table>
 
                             </div>
                         </c:if>
@@ -132,11 +117,11 @@
                                 str = str + "<option value=" + jsonObject.ID + ">" + jsonObject.NAME + "</option>";
 
                             });
-                            $("#qpackid").html(str);
+                            $("#state").html(str);
                         }
                     });
                 } else {
-                    $("#qpackid").html("<option value=''>------- Select --------</option>");
+                    $("#state").html("<option value=''>------- Select --------</option>");
                 }
             });
 
@@ -145,10 +130,10 @@
         });
 
         function writeExcelSheet() {
-            var qpackid = $("#qpackid").val();
-            var srcdate = $("#month").val();
-            alert(srcdate + " Test data " + qpackid);
-            window.location.href = "<%=request.getContextPath()%>/admin/tpwisereport/writeExcel.io?qpackid=" + qpackid + "&srcdate=" + srcdate;
+            
+            var sscid = $("#sscid").val();
+            alert(sscid + " Test data " );
+            window.location.href = "<%=request.getContextPath()%>/admin/individualdashboard/writeExcel.io?sscid=" + sscid;
 
         }
     </script>

@@ -15,6 +15,7 @@ import com.abp.admin.result.PracticalWiseresultDAO;
 import com.abp.admin.result.TheoryWiseResultDAO;
 import com.abp.admin.result.UserResultDetailDAO;
 import com.abp.admin.ssc.SSCDAO;
+import com.abp.admin.trainingpartner.DisplayTrainingPartnerwise;
 import com.abp.statedistrict.DistrictDAO;
 import com.abp.statedistrict.StateDAO;
 import com.abp.superdao.SuperBean;
@@ -28,6 +29,12 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,10 +116,147 @@ public class ConsolidateJobRoleResult {
         request.getSession().setAttribute("body", "/admin/consolidatejobroleresult/jobroleresult.jsp");
         return "admin/common";
     }
+    
+    @RequestMapping(value = "/writeExcel", method = RequestMethod.GET)
+    public void writeExcel(HttpServletRequest request, HttpServletResponse response, Model model) {
+
+        String sscid = request.getParameter("sscid");
+        String qpackid = request.getParameter("qpackid");
+        String month = request.getParameter("month");
+
+       
+        ArrayList record = new ArrayList();
+        QualificationPackDAO beanQpackObj = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(qpackid));
+
+        Map qpacks = new HashMap();
+        qpacks.put("qpackId", new Integer(qpackid));
+        List<SuperBean> recordsw = this.superService.listAllObjectsByCriteria(new BatchesDAO(), qpacks);
+        if (recordsw.size() > 0) {
+            Iterator itr = recordsw.iterator();
+            while (itr.hasNext()) {
+                BatchesDAO data = (BatchesDAO) itr.next();
+                DisplayJobRoleResult dispjobroledao = new DisplayJobRoleResult();
+                dispjobroledao.setJobrole(beanQpackObj.getQpackname());
+                dispjobroledao.setTpname(data.getTpName());
+                dispjobroledao.setBatchid("" + data.getBatch_id());
+                dispjobroledao.setCenterid("" + data.getCenter_id());
+                dispjobroledao.setState(getStateNameById(data.getState_id()));
+                dispjobroledao.setLocation(getDistrictNameById(data.getDistrict_id()));
+                dispjobroledao.setAssesmentdate(data.getAssessmentEndDate());
+                dispjobroledao.setAssesorname(getAssessorNameById(data.getAssessorId()));
+                dispjobroledao.setTotalnostudent("" + getTotalStudent(data.getID()));
+                dispjobroledao.setNotappeared("" + totalappear(data.getBatch_id()));
+                record.add(dispjobroledao);
+            }
+        }
+
+        System.out.println(sscid + " : : Get Parameter Value " + qpackid);
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet spreadsheet = workbook.createSheet("training_partner_wise");
+        XSSFRow row = spreadsheet.createRow(0);
+        CellStyle style = workbook.createCellStyle();
+        style.setFillBackgroundColor(IndexedColors.AQUA.getIndex());
+        row.setRowStyle(style);
+        XSSFCell cell;
+        cell = row.createCell(0);
+        cell.setCellStyle(style);
+        cell.setCellValue("Sr.#");
+        cell = row.createCell(1);
+        cell.setCellValue("Job Role");
+        cell = row.createCell(2);
+        cell.setCellValue("TP Name");
+        cell = row.createCell(3);
+        cell.setCellValue("Batch ID");
+        cell = row.createCell(4);
+        cell.setCellValue("Centre ID");
+        cell = row.createCell(5);
+        cell.setCellValue("State");
+        cell = row.createCell(6);
+        cell.setCellValue("Location");
+        cell = row.createCell(7);
+        cell.setCellValue("Assessor Name");
+        cell = row.createCell(8);
+        cell.setCellValue("Pass");
+        cell = row.createCell(9);
+        cell.setCellValue("Fail");
+        cell = row.createCell(10);
+        cell.setCellValue("Not Appeared");
+        cell = row.createCell(11);
+        cell.setCellValue("Total No. of Students");
+        cell = row.createCell(12);
+        cell.setCellValue("Assessment Date");
+        cell = row.createCell(13);
+        cell.setCellValue("Result Submission - Planned Date");
+        cell = row.createCell(14);
+        cell.setCellValue("Result Submission - Actual Date");
+        cell = row.createCell(15);
+        cell.setCellValue("Status");
+        cell = row.createCell(16);
+        cell.setCellValue("Deviation in Number of Days");
+        
+
+        System.out.println("Record : " + record.size());
+        if (record.size() > 0) {
+            Iterator itr = record.iterator();
+            int ik = 1;
+            while (itr.hasNext()) {
+                DisplayJobRoleResult dispqbank = (DisplayJobRoleResult) itr.next();
+                row = spreadsheet.createRow(ik);
+                cell = row.createCell(0);
+                cell.setCellValue(ik);
+                cell = row.createCell(1);
+                cell.setCellValue(dispqbank.getJobrole());
+                cell = row.createCell(2);
+                cell.setCellValue(dispqbank.getTpname());
+                cell = row.createCell(3);
+                cell.setCellValue(dispqbank.getBatchid());
+                cell = row.createCell(4);
+                cell.setCellValue(dispqbank.getCenterid());
+                cell = row.createCell(5);
+                cell.setCellValue(dispqbank.getState());
+                cell = row.createCell(6);
+                cell.setCellValue(dispqbank.getLocation());
+                cell = row.createCell(7);
+                cell.setCellValue(dispqbank.getAssesorname());
+                cell = row.createCell(8);
+                cell.setCellValue(dispqbank.getPass());
+                cell = row.createCell(9);
+                cell.setCellValue(dispqbank.getFail());
+                cell = row.createCell(10);
+                cell.setCellValue(dispqbank.getNotappeared());
+                cell = row.createCell(11);
+                cell.setCellValue(dispqbank.getTotalnostudent());
+                cell = row.createCell(12);
+                cell.setCellValue(dispqbank.getAssesmentdate());
+                cell = row.createCell(13);
+                cell.setCellValue(dispqbank.getResultsubmissonplanneddate());
+                cell = row.createCell(14);
+                cell.setCellValue(dispqbank.getResultsubmissonactualdate());
+                cell = row.createCell(15);
+                cell.setCellValue(dispqbank.getStatus());
+                cell = row.createCell(16);
+                cell.setCellValue(dispqbank.getDeviationnoofdays());
+                ik++;
+            }
+        }
+
+        try {
+            response.setContentType("application/vnd.ms-excel");
+            response.setHeader("Content-Disposition", "inline; filename=training_partner_wise.xls");
+
+            workbook.write(response.getOutputStream());
+            response.getOutputStream().flush();
+            response.getOutputStream().close();
+            System.out.println("Code is Here...");
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
+        System.out.println("Code is Here...");
+
+    }
 
     @RequestMapping(value = "/getQP", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    String getQP(@RequestParam("ssc_id") String sscid) {
+    public @ResponseBody  String getQP(@RequestParam("ssc_id") String sscid) {
 
         System.out.println("SSC ID::" + sscid);
         String districts = getQualificationPackByID(sscid);

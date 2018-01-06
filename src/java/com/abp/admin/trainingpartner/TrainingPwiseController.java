@@ -5,6 +5,7 @@
  */
 package com.abp.admin.trainingpartner;
 
+import com.abp.admin.assessordashboard.AssessorDashBoardDAO;
 import com.abp.admin.batches.BatchesDAO;
 import com.abp.admin.batches.UserDAO;
 import com.abp.admin.practicalmmq.PCWithMarksDAO;
@@ -26,6 +27,12 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -140,9 +147,131 @@ public class TrainingPwiseController {
         return "admin/common";
     }
 
+    @RequestMapping(value = "/writeExcel", method = RequestMethod.GET)
+    public void writeExcel(HttpServletRequest request, HttpServletResponse response, Model model) {
+
+        String sscid = request.getParameter("sscid");
+        String qpackid = request.getParameter("qpackid");
+        String month = request.getParameter("month");
+
+        ArrayList record = new ArrayList();
+        String seldate = month;
+        Map qpacks = new HashMap();
+        qpacks.put("qpackId", new Integer(qpackid));
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new BatchesDAO(), qpacks);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                BatchesDAO data = (BatchesDAO) itr.next();
+                String startdate = data.getAssessmentStartDate();
+                String tpname = data.getTpName();
+                String tpstate = getStateNameById(data.getState_id());
+
+                DisplayTrainingPartnerwise disptpwisedao = new DisplayTrainingPartnerwise();
+                disptpwisedao.setTrainingpartner(tpname);
+                disptpwisedao.setLocation(tpstate);
+
+                int totaltheorypass = 0;
+                int totaltheoryfailed = 0;
+                int totalpracticalpass = 0;
+                int totalpracticalfailed = 0;
+
+                Map usersparam = new HashMap();
+                usersparam.put("batchid", data.getID());
+                List<SuperBean> recordsusr = this.superService.listAllObjectsByCriteria(new UserDAO(), usersparam);
+                disptpwisedao.setTotalstudent("" + recordsusr.size());
+                if (recordsusr.size() > 0) {
+
+                    Iterator itrusr = recordsusr.iterator();
+                    while (itrusr.hasNext()) {
+                        UserDAO datausr = (UserDAO) itrusr.next();
+                        boolean istheory = isTheoryPass(datausr.getID(), data.getID(), new Integer(qpackid));
+                        if (istheory) {
+                            totaltheorypass++;
+                        } else {
+                            totaltheoryfailed++;
+                        }
+                        boolean ispractical = isPracticalPass(datausr.getID(), data.getID(), new Integer(qpackid));
+                        if (ispractical) {
+                            totalpracticalpass++;
+                        } else {
+                            totalpracticalfailed++;
+                        }
+                    }
+
+                }
+                disptpwisedao.setTheorypassed("" + totaltheorypass);
+                disptpwisedao.setTheoryfailed("" + totaltheoryfailed);
+                disptpwisedao.setPracticalpassed("" + totalpracticalpass);
+                disptpwisedao.setPracticalfailed("" + totalpracticalfailed);
+                record.add(disptpwisedao);
+
+            }
+        }
+
+        System.out.println(sscid + " : : Get Parameter Value " + qpackid);
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet spreadsheet = workbook.createSheet("training_partner_wise");
+        XSSFRow row = spreadsheet.createRow(0);
+        CellStyle style = workbook.createCellStyle();
+        style.setFillBackgroundColor(IndexedColors.AQUA.getIndex());
+        row.setRowStyle(style);
+        XSSFCell cell;
+        cell = row.createCell(0);
+        cell.setCellStyle(style);
+        cell.setCellValue("Training Partner");
+        cell = row.createCell(1);
+        cell.setCellValue("Total Students");
+        cell = row.createCell(2);
+        cell.setCellValue("Theory Passed");
+        cell = row.createCell(3);
+        cell.setCellValue("Practical Passed");
+        cell = row.createCell(4);
+        cell.setCellValue("Practical Failed");
+        cell = row.createCell(5);
+        cell.setCellValue("Location");
+
+        System.out.println("Record : " + record.size());
+        if (record.size() > 0) {
+            Iterator itr = record.iterator();
+            int ik = 1;
+            while (itr.hasNext()) {
+                DisplayTrainingPartnerwise dispqbank = (DisplayTrainingPartnerwise) itr.next();
+                row = spreadsheet.createRow(ik);
+                cell = row.createCell(0);
+                cell.setCellValue(ik);
+                cell = row.createCell(1);
+                cell.setCellValue(dispqbank.getTrainingpartner());
+                cell = row.createCell(2);
+                cell.setCellValue(dispqbank.getTotalstudent());
+                cell = row.createCell(3);
+                cell.setCellValue(dispqbank.getTheorypassed());
+                cell = row.createCell(4);
+                cell.setCellValue(dispqbank.getPracticalfailed());
+                cell = row.createCell(5);
+                cell.setCellValue(dispqbank.getLocation());
+
+                ik++;
+            }
+        }
+
+        try {
+            response.setContentType("application/vnd.ms-excel");
+            response.setHeader("Content-Disposition", "inline; filename=training_partner_wise.xls");
+
+            workbook.write(response.getOutputStream());
+            response.getOutputStream().flush();
+            response.getOutputStream().close();
+            System.out.println("Code is Here...");
+        } catch (Exception e) {
+            logger.error("This is Error message", e);
+        }
+        System.out.println("Code is Here...");
+
+    }
+
     @RequestMapping(value = "/getQP", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    String getQP(@RequestParam("ssc_id") String sscid) {
+    public @ResponseBody  String getQP(@RequestParam("ssc_id") String sscid) {
 
         System.out.println("SSC ID::" + sscid);
         String districts = getQualificationPackByID(sscid);
@@ -352,7 +481,5 @@ public class TrainingPwiseController {
 
         return statename;
     }
-
-    
 
 }

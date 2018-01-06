@@ -227,10 +227,10 @@
                                                                     <a href="<%=request.getContextPath()%>/admin/jobroleresult/init.io" class="nav-link"> Consolidate Job Role Result </a>
                                                                 </li>
                                                                 <li aria-haspopup="true" class=" ">
-                                                                    <a href="layout_disabled_menu.html" class="nav-link  "> Assessor Report </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/assesorreport/init.io" class="nav-link  "> Assessor Report </a>
                                                                 </li>
                                                                 <li aria-haspopup="true" class=" ">
-                                                                    <a href="layout_blank_page.html" class="nav-link  "> Individual Assessor Dashboard </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/individualdashboard/init.io" class="nav-link  "> Individual Assessor Dashboard </a>
                                                                 </li>
 
 

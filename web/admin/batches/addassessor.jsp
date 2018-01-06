@@ -27,8 +27,8 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i>Assign Assessor</h4>
-                    <div style="position: absolute;top:5px;right:5px;width: 100px;"><a href="<%=request.getContextPath()%>/admin/batches/init.io" class="button btn-primary block pushed expand">Batches </a></div>
+                    <h4><i class="fa fa-pencil-square"></i><spring:message code="add.assessor.title" text="Assign Assessor" /></h4>
+                    <div style="position: absolute;top:5px;right:5px;width: 100px;"><a href="<%=request.getContextPath()%>/admin/batches/init.io" class="button btn-primary block pushed expand"><spring:message code="add.assessor.batches" text="Batches" /> </a></div>
 
                 </div><!-- end .form-header section -->
 
@@ -38,13 +38,13 @@
                         <div class="frm-row">
                             <div class="section colm colm6"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Sector Skill Council : ${sscid}</label>
+                                    <label for="names" class="field-label"><spring:message code="add.assessor.sectorskillcouncil" text="Sector Skill Council" /> ${sscid}</label>
 
                                 </div><!-- end section -->
                             </div><!-- end section -->
                             <div class="section colm colm6">
                                 <div class="section">
-                                    <label for="names" class="field-label">Qualification Pack :${qid}</label>
+                                    <label for="names" class="field-label"><spring:message code="add.assessor.qualificationpack" text="Qualification Pack" />:${qid}</label>
 
                                 </div><!-- end section -->
                             </div><!-- end section -->
@@ -53,13 +53,13 @@
                         <div class="frm-row">
                             <div class="section colm colm6"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Batch ID :${batch_id}</label>
+                                    <label for="names" class="field-label"><spring:message code="add.assessor.batchid" text="Batch ID" />:${batch_id}</label>
 
                                 </div><!-- end section -->
                             </div><!-- end section -->
                             <div class="section colm colm6">
                                 <div class="section">
-                                    <label for="names" class="field-label">Center Pincode : ${pincode}</label>
+                                    <label for="names" class="field-label"><spring:message code="add.assessor.centerid" text="Center Pincode" />: ${pincode}</label>
 
                                 </div><!-- end section -->
                             </div><!-- end section -->
@@ -68,30 +68,30 @@
                         <div class="frm-row">
                             <div class="section colm colm6"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Center District : ${district}</label>
+                                    <label for="names" class="field-label"><spring:message code="add.assessor.centerdistrict" text="Center District" /> : ${district}</label>
 
                                 </div><!-- end section -->
                             </div><!-- end section -->
                             <div class="section colm colm6">
                                 <div class="section">
-                                    <label for="names" class="field-label">Center State : ${state}</label>
+                                    <label for="names" class="field-label"><spring:message code="add.assessor.centerstate" text="Center State" /> : ${state}</label>
 
                                 </div><!-- end section -->
                             </div><!-- end section -->
 
                         </div><!-- end frm-row section -->
-                        <h3>Assigned Assessor</h3>
+                        <h3><spring:message code="add.assessor.title" text="Assigned Assessor" /> </h3>
                         <div class="frm-row">
                             <c:if test = "${record != null}">
                             <display:table name="record" class="table table-bordered" requestURI="addassessor.io" decorator="com.abp.admin.batches.AssessorDecorator" pagesize="1">
-                                <display:column property="loginid" title="Username"/>
-                                <display:column property="firstname" title="Name" />
-                                <display:column property="emailid" title="Email ID" />
-                                <display:column property="contactno" title="Contact No" />
-                                <display:column property="state" title="State" />
-                                <display:column property="district" title="District" />
-                                <display:column property="pincode" title="Pincode" />
-                                <display:column property="actions" title="Actions"/>
+                                <display:column property="loginid" titleKey="add.assessor.username"/>
+                                <display:column property="firstname" titleKey="add.assessor.name" />
+                                <display:column property="emailid" titleKey="add.assessor.emailid" />
+                                <display:column property="contactno" titleKey="add.assessor.contactno" />
+                                <display:column property="state" titleKey="add.assessor.state" />
+                                <display:column property="district" titleKey="add.assessor.district" />
+                                <display:column property="pincode" titleKey="add.assessor.pincode" />
+                                <display:column property="actions" titleKey="Actions"/>
                             </display:table>
                             </c:if>
                         </div>
@@ -99,7 +99,7 @@
 
 
                         <div class="frm-row">
-                            <h3>All Available Assessors</h3>
+                            <h3><spring:message code="add.assessor.allavailableassesor" text="All Available Assessors" /></h3>
                             <div class="section colm colm6"> 
                                 <div class="section">
                                     <label for="names" class="field-label"><spring:message code="assessor.stateid" text="State" /></label>

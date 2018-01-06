@@ -189,6 +189,8 @@
                 <value>admin/properties/ssc/ssc</value>
                 <value>admin/properties/statedistricts/statedistricts</value>
                 <value>admin/properties/qualificationpack/qualificationpack</value>
+                <value>admin/properties/assesorreport/assessorreport</value>
+                <value>admin/properties/batches/addassessor</value>
                 
             </list>
         </property>
