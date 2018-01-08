@@ -137,7 +137,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm4">
                                 <div class="section">
-                                    <label for="names" class="field-label"><spring:message code="atches.district" text="District" /></label>
+                                    <label for="names" class="field-label"><spring:message code="batches.district" text="District" /></label>
                                     <label class="field prepend-icon">
                                         <form:select path="district_id" id="district_id" class="gui-input" >
                                             

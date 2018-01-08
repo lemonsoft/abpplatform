@@ -48,7 +48,7 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i>Student Live Report</h4>
+                    <h4><i class="fa fa-pencil-square"></i><spring:message code="viewresult.title" text="Student Live Report" /></h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
@@ -62,8 +62,8 @@
                         </div><!-- end section -->
                         <div class="section colm colm4"> 
                             <div class="section">
-                                <label for="names" class="field-label">Student Name :${studentname}</label>
-                                <label for="names" class="field-label">Enrollment No:${enrollmentno}</label>
+                                <label for="names" class="field-label"><spring:message code="viewresult.studentname" text="Student Name" /> :${studentname}</label>
+                                <label for="names" class="field-label"><spring:message code="viewresult.enrollno" text="Enrollment No" />:${enrollmentno}</label>
                             </div><!-- end section -->
                         </div><!-- end section -->
 
@@ -74,25 +74,25 @@
 
                         <table class="table table-bordered" cellpadding="2" cellspacing="2" border="1">
 
-                            <tr><td>Exam Start Time : ${startdatetime}</td><td>Exam End Time :  ${enddatetime}</td><td>Exam Status :  ${examstatus}</td></tr>
-                            <tr>  <td>Total Time :  ${totaltime}</td><td>Time Taken :  ${timetaken}</td><td>Remaining Questions :  ${remainingquestion}</td></tr>
-                            <tr>  <td>IP Address :  ${ipaddress}</td><td>Browser Version : ${browser}</td><td>No of Questions Answered :  ${totalanswer}</td></tr>
+                            <tr><td><spring:message code="viewresult.starttime" text="Exam Start Time" /> : ${startdatetime}</td><td><spring:message code="viewresult.endtime" text="Exam End Time" /> :  ${enddatetime}</td><td><spring:message code="viewresult.examstatus" text="Exam Status" /> :  ${examstatus}</td></tr>
+                            <tr>  <td><spring:message code="viewresult.totaltime" text="Total Time" /> :  ${totaltime}</td><td><spring:message code="viewresult.timetaken" text="Time Taken" /> :  ${timetaken}</td><td><spring:message code="viewresult.remainingquestion" text="Remaining Questions" /> :  ${remainingquestion}</td></tr>
+                            <tr>  <td><spring:message code="viewresult.ipaddress" text="IP Address" /> :  ${ipaddress}</td><td><spring:message code="viewresult.browser" text="Browser Version" /> : ${browser}</td><td><spring:message code="viewresult.noofquestion" text="No of Questions Answered" /> :  ${totalanswer}</td></tr>
 
                         </table>
 
                         <display:table name="datatheorywise" class="table table-bordered" requestURI="totalreport.io"  pagesize="50">
-                            <display:column property="sno" title="Sno" />
-                            <display:column property="question" title="Question"/>
-                            <display:column property="option1" title="Option1"/>
-                            <display:column property="option2" title="Option2"/>
-                            <display:column property="option3" title="Option3"/>
-                            <display:column property="option4" title="Option4"/>
-                            <display:column property="correctanswer" title="Correctanswer"/>
-                            <display:column property="selectedanswer" title="Selectedanswer"/>
-                            <display:column property="marks" title="Marks"/>
-                            <display:column property="scoredmarks" title="Scoredmarks"/>
-                            <display:column property="timetaken" title="Timetaken"/>
-                            <display:column property="reviewlater" title="Reviewlater"/>
+                            <display:column property="sno" titleKey="viewresult.sno" />
+                            <display:column property="question" titleKey="viewresult.question"/>
+                            <display:column property="option1" titleKey="viewresult.option1"/>
+                            <display:column property="option2" titleKey="viewresult.option2"/>
+                            <display:column property="option3" titleKey="viewresult.option3"/>
+                            <display:column property="option4" titleKey="viewresult.option4"/>
+                            <display:column property="correctanswer" titleKey="viewresult.correctanswer"/>
+                            <display:column property="selectedanswer" titleKey="viewresult.selectedanswer"/>
+                            <display:column property="marks" titleKey="viewresult.marks"/>
+                            <display:column property="scoredmarks" titleKey="viewresult.scoredmarks"/>
+                            <display:column property="timetaken" titleKey="viewresult.timetaken"/>
+                            <display:column property="reviewlater" titleKey="viewresult.reviewlater"/>
                         </display:table>
                         <table class="table table-bordered" cellpadding="2" cellspacing="2" border="1">
                             <tr><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td >&nbsp;</td><td ><b>Total :</b> ${totalmarks}</td><td ><b>Scored :</b>${totaltheorymarks}</td><td >&nbsp;</td><td >&nbsp;</td></tr>

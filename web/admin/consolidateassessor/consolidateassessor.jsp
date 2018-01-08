@@ -57,7 +57,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm4"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">State</label>
+                                    <label for="names" class="field-label"><spring:message code="consolidateassessor.state" text="State" /></label>
                                     <label class="field prepend-icon">
                                         <form:select path="state" id="state" class="gui-input" >
                                             <form:option value="0">--Select--</form:option>
@@ -80,10 +80,10 @@
                             <div class="frm-row">
                                 <table><tr><td colspan=5 align=right><a href="#" onclick="writeExcelSheet();"><img src="<%=request.getContextPath()%>/assets/images/excel.ico" width=30px height=30px/></a></td></tr></table>
                                 <display:table name="records" class="table table-bordered" requestURI="initSearch.io" pagesize="40">
-                                    <display:column property="srno" title="SrNo#" />
-                                    <display:column property="jobrole" title="Job Role"/>
-                                    <display:column property="totalassessor" title="Total Assessor"/>
-                                    <display:column property="state" title="State"/>
+                                    <display:column property="srno" titleKey="consolidateassessor.srno" />
+                                    <display:column property="jobrole" titleKey="consolidateassessor.jobrole"/>
+                                    <display:column property="totalassessor" titleKey="consolidateassessor.totalassessor"/>
+                                    <display:column property="state" titleKey="consolidateassessor.state"/>
                                  </display:table>
 
                             </div>

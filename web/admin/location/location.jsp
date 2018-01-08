@@ -34,7 +34,7 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i>Our Assessment Locations</h4>
+                    <h4><i class="fa fa-pencil-square"></i><spring:message code="location.title" text="Our Assessment Locations" /></h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
@@ -44,7 +44,7 @@
                     <div class="frm-row">
                         <div class="section colm colm4"> 
                             <div class="section">
-                                <label for="names" class="field-label">From Date</label>
+                                <label for="names" class="field-label"><spring:message code="location.fromdate" text="From Date" /></label>
                                 <label class="field prepend-icon">
                                     <form:input path="fromdate" type="date" id="fromdate" class="gui-input" placeholder="From Date" required="true"/>
 
@@ -54,7 +54,7 @@
                         </div><!-- end section -->
                         <div class="section colm colm4"> 
                             <div class="section">
-                                <label for="names" class="field-label">To Date</label>
+                                <label for="names" class="field-label"><spring:message code="location.todate" text="To Date" /></label>
                                 <label class="field prepend-icon">
 
                                     <form:input path="todate" type="date" id="todate" class="gui-input" placeholder="To Date" required="true"/>

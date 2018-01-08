@@ -74,11 +74,11 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i>Questions Usage</h4>
+                    <h4><i class="fa fa-pencil-square"></i><spring:message code="questionsusage.title" text="Questions Usage" /></h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
-                <form:form method="post" action="${action}"   commandName="questions" > 
+                <form:form method="post" action="${action}"   commandName="questions"> 
                     <div class="form-body theme-blue">
                         <div class="frm-row">
                             <div class="section colm colm6"> 
@@ -113,7 +113,7 @@
                         <div class="frm-row">
                             <div class="section colm colm6"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Select NOS</label>
+                                    <label for="names" class="field-label"><spring:message code="questionsusage.selectnos" text="Select NOS" /></label>
                                     <label class="field prepend-icon">
                                         <form:select path="nosid" id="nosid" class="gui-input" >
                                             <form:option value="0">--Select--</form:option>
@@ -126,7 +126,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm6"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Select PC</label>
+                                    <label for="names" class="field-label"><spring:message code="questionsusage.selectpc" text="Select PC" /></label>
                                     <label class="field prepend-icon">
                                         <form:select path="pcid" id="pcid" class="gui-input" >
                                             <form:option value="0">--Select--</form:option>
@@ -294,8 +294,8 @@
                             success: function (data) {
 
                                 $("#example-basic4").empty();
-                                $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center">Question ID</th><th align="center">Question Title</th><th align="center">Option 1</th><th align="center">Option 2</th>' +
-                                        '<th align="center">Option 3</th><th align="center">Option 4</th><th align="center">Question Appeared</th><th align="center">Accurately Answered</th><th align="center">Is Phase Out</th></tr></thead >');
+                                $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center"><spring:message code="questionsusage.questionid" text="Question ID" /></th><th align="center"><spring:message code="questionsusage.questiontitle" text="Question Title" /></th><th align="center"><spring:message code="questionsusage.option1" text="Option 1" /></th><th align="center"><spring:message code="questionsusage.option2" text="Option 2" /></th>' +
+                                        '<th align="center"><spring:message code="questionsusage.option3" text="Option 3" /></th><th align="center"><spring:message code="questionsusage.option4" text="Option 4" /></th><th align="center"><spring:message code="questionsusage.questionappeared" text="Question Appeared" /></th><th align="center"><spring:message code="questionsusage.acuratelyanswer" text="Accurately Answered" /></th><th align="center"><spring:message code="questionsusage.isphaseout" text="Is Phase Out" /></th></tr></thead >');
                                 //alert(data.length);
                                 for (var i = 0, lennos = data.length; i < lennos; i++) {
                                     //alert(window.location.host);
@@ -337,8 +337,8 @@
                         success: function (data) {
 
                             $("#example-basic4").empty();
-                            $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center">Question ID</th><th align="center">Question Title</th><th align="center">Option 1</th><th align="center">Option 2</th>' +
-                                    '<th align="center">Option 3</th><th align="center">Option 4</th><th align="center">Question Appeared</th><th align="center">Accurately Answered</th><th align="center">Is Phase Out</th></tr></thead >');
+                            $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center"><spring:message code="questionsusage.questionid" text="Question ID" /></th><th align="center"><spring:message code="questionsusage.questiontitle" text="Question Title" /></th><th align="center"><spring:message code="questionsusage.option1" text="Option 1" /></th><th align="center"><spring:message code="questionsusage.option2" text="Option 2" /></th>' +
+                                        '<th align="center"><spring:message code="questionsusage.option3" text="Option 3" /></th><th align="center"><spring:message code="questionsusage.option4" text="Option 4" /></th><th align="center"><spring:message code="questionsusage.questionappeared" text="Question Appeared" /></th><th align="center"><spring:message code="questionsusage.acuratelyanswer" text="Accurately Answered" /></th><th align="center"><spring:message code="questionsusage.isphaseout" text="Is Phase Out" /></th></tr></thead >');
                             //alert(data.length);
                             for (var i = 0, lennos = data.length; i < lennos; i++) {
                                 //alert(window.location.host);
@@ -381,8 +381,8 @@
                         success: function (data) {
 
                             $("#example-basic4").empty();
-                            $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center">Question ID</th><th align="center">Question Title</th><th align="center">Option 1</th><th align="center">Option 2</th>' +
-                                    '<th align="center">Option 3</th><th align="center">Option 4</th><th align="center">Question Appeared</th><th align="center">Accurately Answered</th><th align="center">Is Phase Out</th></tr></thead >');
+                            $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center"><spring:message code="questionsusage.questionid" text="Question ID" /></th><th align="center"><spring:message code="questionsusage.questiontitle" text="Question Title" /></th><th align="center"><spring:message code="questionsusage.option1" text="Option 1" /></th><th align="center"><spring:message code="questionsusage.option2" text="Option 2" /></th>' +
+                                        '<th align="center"><spring:message code="questionsusage.option3" text="Option 3" /></th><th align="center"><spring:message code="questionsusage.option4" text="Option 4" /></th><th align="center"><spring:message code="questionsusage.questionappeared" text="Question Appeared" /></th><th align="center"><spring:message code="questionsusage.acuratelyanswer" text="Accurately Answered" /></th><th align="center"><spring:message code="questionsusage.isphaseout" text="Is Phase Out" /></th></tr></thead >');
                             //alert(data.length);
                             for (var i = 0, lennos = data.length; i < lennos; i++) {
                                 //alert(window.location.host);

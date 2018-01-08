@@ -74,7 +74,7 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i>Practical Multi Mapping Questions</h4>
+                    <h4><i class="fa fa-pencil-square"></i><spring:message code="practicalmmq.title" text="Practical Multi Mapping Questions" /></h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
@@ -109,7 +109,7 @@
                             </div><!-- end section -->
                         </div><!-- end frm-row section -->
                         <div class="frm-row" id="displaytabledata">
-                            <button type="button" class="button btn-blue" onclick="addSenario();">Add New Senario</button>
+                            <button type="button" class="button btn-blue" onclick="addSenario();"><spring:message code="practicalmmq.addsenario" text="Add New Senario" /></button>
                             <table id="example-basic4" class="table table-striped table-bordered table-hover dt-responsive"  border="1" cellpadding="2" cellspacing="2" width="100%">
 
                             </table>
@@ -162,8 +162,8 @@
                         success: function (data) {
 
                             $("#example-basic4").empty();
-                            $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center">Senario</th><th align="center">Marks</th>' +
-                                    '<th align="center">View Questions</th><th align="center">Edit</th></tr></thead >');
+                            $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center"><spring:message code="practicalmmq.senario" text="Senario" /></th><th align="center"><spring:message code="practicalmmq.marks" text="Marks" /></th>' +
+                                    '<th align="center"><spring:message code="practicalmmq.viewquestions" text="View Questions" /></th><th align="center"><spring:message code="practicalmmq.edit" text="Edit" /></th></tr></thead >');
                             //alert(data.length);
                             for (var i = 0, lennos = data.length; i < lennos; i++) {
                                 //alert(window.location.host);
@@ -219,9 +219,7 @@
 
                 event.preventDefault();
                 var w = window.open("<%=request.getContextPath()%>/admin/practicalmmq/viewQuestions.io?recid=" + id, "popupWindow", "width=1024, height=500, scrollbars=yes");
-               
-
-            }
+             }
 
             $('#onchange').on('click', function (event) {
                 event.preventDefault();

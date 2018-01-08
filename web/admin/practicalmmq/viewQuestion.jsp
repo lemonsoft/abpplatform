@@ -18,7 +18,7 @@
         <div class="smart-forms smart-container wrap-full">
 
             <div class="form-header header-blue">
-                <h4><i class="fa fa-pencil-square"></i>Senario Questions</h4>
+                <h4><i class="fa fa-pencil-square"></i><spring:message code="viewquestion.title" text="Senario Questions" /></h4>
                 <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
             </div><!-- end .form-header section -->
@@ -31,12 +31,10 @@
                     <c:if test = "${alldata!=null}">
 
                         <display:table name="alldata" class="table table-bordered" requestURI="initSearch.io"  pagesize="10">
-                            <display:column property="id" title="Sr No #" />
-                            <display:column property="question" title="Question"/>
-                            <display:column property="pcsselectedmarks" title="PC'S with Selected Marks"/>
-                            <display:column property="totalmarks" title="Total Marks"/>
-
-
+                            <display:column property="id" titleKey="viewquestion.srno" />
+                            <display:column property="question" titleKey="viewquestion.question"/>
+                            <display:column property="pcsselectedmarks" titleKey="viewquestion.pcwithmarks"/>
+                            <display:column property="totalmarks" titleKey="viewquestion.totalmarks"/>
                         </display:table>
 
 

@@ -47,7 +47,7 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i>Assigned Questions</h4>
+                    <h4><i class="fa fa-pencil-square"></i><spring:message code="viewquestion.title" text="Assigned Questions" /></h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
@@ -57,7 +57,7 @@
                         <div class="frm-row">
                             <div class="section colm colm6"> 
                                 <div class="section">
-                                    <label for="names" class="field-label"><b>Total Marks</b></label>
+                                    <label for="names" class="field-label"><b><spring:message code="viewquestion.totalmarks" text="Total Marks" /></b></label>
                                     <label class="field prepend-icon">
                                         ${theorymarks}
                                     </label>
@@ -65,7 +65,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm6"> 
                                 <div class="section">
-                                    <label for="names" class="field-label"><b>Marks Added</b></label>
+                                    <label for="names" class="field-label"><b><spring:message code="viewquestion.marksadded" text="Marks Added" /></b></label>
                                     <label class="field prepend-icon">
                                         ${totalmarksadded}
 
@@ -77,15 +77,15 @@
                         <div class="frm-row" id="displaytabledata">
 
                             <display:table name="dataview" class="table table-bordered" requestURI="viewquestions.io"  pagesize="30">
-                                <display:column property="questionID" title="Question ID" />
-                                <display:column property="questionTitle" title="Question Title"/>
-                                <display:column property="option1" title="Option 1"/>
-                                <display:column property="option2" title="Option 2"/>
-                                <display:column property="option3" title="Option 3"/>
-                                <display:column property="option4" title="Option 4"/>
-                                <display:column property="option5" title="Option 5"/>
-                                <display:column property="marks" title="Marks"/>
-                                <display:column property="pcID" title="PCID"/>
+                                <display:column property="questionID" titleKey="viewquestion.questionID" />
+                                <display:column property="questionTitle" titleKey="viewquestion.questionTitle"/>
+                                <display:column property="option1" titleKey="viewquestion.option1"/>
+                                <display:column property="option2" titleKey="viewquestion.option2"/>
+                                <display:column property="option3" titleKey="viewquestion.option3"/>
+                                <display:column property="option4" titleKey="viewquestion.option4"/>
+                                <display:column property="option5" titleKey="viewquestion.option5"/>
+                                <display:column property="marks" titleKey="viewquestion.marks"/>
+                                <display:column property="pcID" titleKey="viewquestion.pcID"/>
 
                             </display:table>
                         </div>

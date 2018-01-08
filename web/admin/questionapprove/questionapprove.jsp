@@ -74,7 +74,7 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i> Question Approval</h4>
+                    <h4><i class="fa fa-pencil-square"></i><spring:message code="questionapprove.title" text="Question Approval" /></h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
@@ -113,7 +113,7 @@
                         <div class="frm-row">
                             <div class="section colm colm6"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Select NOS</label>
+                                    <label for="names" class="field-label"><spring:message code="questionapprove.selectnos" text="Select NOS" /></label>
                                     <label class="field prepend-icon">
                                         <form:select path="nosid" id="nosid" class="gui-input" >
                                             <form:option value="0">--Select--</form:option>
@@ -126,7 +126,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm6"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Select PC</label>
+                                    <label for="names" class="field-label"><spring:message code="questionapprove.selectpc" text="Select PC" /></label>
                                     <label class="field prepend-icon">
                                         <form:select path="pcid" id="pcid" class="gui-input" >
                                             <form:option value="0">--Select--</form:option>
@@ -142,7 +142,7 @@
                         </div><!-- end frm-row section -->
 
                         <div class="frm-row" id="displaytabledata">
-                            
+
                             <table id="example-basic4" class="table table-striped table-bordered table-hover dt-responsive"  border="1" cellpadding="2" cellspacing="2" width="100%">
 
                             </table>
@@ -281,7 +281,7 @@
                         $("#expbtn").hide();
                     }
                 });
-                
+
                 $("#qpackid").change(function () {
 
                     var qpackid = $(this).val();
@@ -294,18 +294,18 @@
                             success: function (data) {
 
                                 $("#example-basic4").empty();
-                                $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center">Question ID</th><th align="center">Question Title</th><th align="center">Option 1</th><th align="center">Option 2</th>' +
-                                        '<th align="center">Option 3</th><th align="center">Option 4</th><th align="center">Option 5</th><th align="center">Marks</th><th align="center">Approved</th></tr></thead >');
+                                $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center"><spring:message code="questionapprove.questionid" text="Question ID" /></th><th align="center"><spring:message code="questionapprove.questiontitle" text="Question Title" /></th><th align="center"><spring:message code="questionapprove.option1" text="Option 1" /></th><th align="center"><spring:message code="questionapprove.option2" text="Option 2" /></th>' +
+                                        '<th align="center"><spring:message code="questionapprove.option3" text="Option 3" /></th><th align="center"><spring:message code="questionapprove.option4" text="Option 4" /></th><th align="center"><spring:message code="questionapprove.option5" text="Option 5" /></th><th align="center"><spring:message code="questionapprove.marks" text="Marks" /></th><th align="center"><spring:message code="questionapprove.approved" text="Approved" /></th></tr></thead >');
                                 //alert(data.length);
                                 for (var i = 0, lennos = data.length; i < lennos; i++) {
                                     //alert(window.location.host);
-                                    var actionicon="";
-                                    if(data[i].isapproved=='Y'){
-                                        actionicon="<a href=\"#\" onclick=\"initChange("+data[i].ID+",'"+data[i].isapproved+"');\" \"><img src=\"http://localhost:8085/ABP-Ver1/assets/images/Tick-Box.png\" width=20 height=20/></a>";
-                                    }else{
-                                        actionicon="<a href=\"#\" onclick=\"initChange("+data[i].ID+",'"+data[i].isapproved+"');\" \"><img src=\"http://localhost:8085/ABP-Ver1/assets/images/wrong.png\" width=20 height=20/></a>";
+                                    var actionicon = "";
+                                    if (data[i].isapproved == 'Y') {
+                                        actionicon = "<a href=\"#\" onclick=\"initChange(" + data[i].ID + ",'" + data[i].isapproved + "');\" \"><img src=\"http://localhost:8085/ABP-Ver1/assets/images/Tick-Box.png\" width=20 height=20/></a>";
+                                    } else {
+                                        actionicon = "<a href=\"#\" onclick=\"initChange(" + data[i].ID + ",'" + data[i].isapproved + "');\" \"><img src=\"http://localhost:8085/ABP-Ver1/assets/images/wrong.png\" width=20 height=20/></a>";
                                     }
-                                        
+
                                     $('#example-basic4 tr:last').after('<tr data-tt-id="1" id="qpack" style="height: 50px;font-size:12px;color: #000;background-color: #fff;"><td align="center">' + data[i].ID + '</td><td align="center">' + data[i].question_title + '&nbsp<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].questionimgurl + ' width="50" height="50"/></td><td align="center">' + data[i].option1 + '&nbsp;<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].imageurl1 + ' width="50" height="50"/></td><td align="center">' + data[i].option2 + '&nbsp;<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].imageurl2 + ' width="50" height="50"/></td><td align="center">' + data[i].option3 + '&nbsp;<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].imageurl3 + ' width="50" height="50"/></td><td align="center">' + data[i].option4 + '&nbsp;<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].imageurl4 + ' width="50" height="50"/></td><td align="center">' + data[i].option5 + '&nbsp;<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].imageurl5 + ' width="50" height="50"/></td><td align="center">' + data[i].marks + '</td><td align="center">' + actionicon + '</td></tr>');
 
 
@@ -337,22 +337,22 @@
                         success: function (data) {
 
                             $("#example-basic4").empty();
-                                $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center">Question ID</th><th align="center">Question Title</th><th align="center">Option 1</th><th align="center">Option 2</th>' +
-                                        '<th align="center">Option 3</th><th align="center">Option 4</th><th align="center">Option 5</th><th align="center">Marks</th><th align="center">Approved</th></tr></thead >');
-                                //alert(data.length);
-                                 for (var i = 0, lennos = data.length; i < lennos; i++) {
-                                    //alert(window.location.host);
-                                    var actionicon="";
-                                    if(data[i].isapproved=='Y'){
-                                        actionicon="<a href=\"#\" onclick=\"initChange("+data[i].ID+",'"+data[i].isapproved+"');\" \"><img src=\"http://localhost:8085/ABP-Ver1/assets/images/Tick-Box.png\" width=20 height=20/></a>";
-                                    }else{
-                                        actionicon="<a href=\"#\" onclick=\"initChange("+data[i].ID+",'"+data[i].isapproved+"');\" \"><img src=\"http://localhost:8085/ABP-Ver1/assets/images/wrong.png\" width=20 height=20/></a>";
-                                    }
-                                        
-                                    $('#example-basic4 tr:last').after('<tr data-tt-id="1" id="qpack" style="height: 50px;font-size:12px;color: #000;background-color: #fff;"><td align="center">' + data[i].ID + '</td><td align="center">' + data[i].question_title + '&nbsp<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].questionimgurl + ' width="50" height="50"/></td><td align="center">' + data[i].option1 + '&nbsp;<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].imageurl1 + ' width="50" height="50"/></td><td align="center">' + data[i].option2 + '&nbsp;<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].imageurl2 + ' width="50" height="50"/></td><td align="center">' + data[i].option3 + '&nbsp;<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].imageurl3 + ' width="50" height="50"/></td><td align="center">' + data[i].option4 + '&nbsp;<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].imageurl4 + ' width="50" height="50"/></td><td align="center">' + data[i].option5 + '&nbsp;<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].imageurl5 + ' width="50" height="50"/></td><td align="center">' + data[i].marks + '</td><td align="center">' + actionicon + '</td></tr>');
-
-
+                            $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center"><spring:message code="questionapprove.questionid" text="Question ID" /></th><th align="center"><spring:message code="questionapprove.questiontitle" text="Question Title" /></th><th align="center"><spring:message code="questionapprove.option1" text="Option 1" /></th><th align="center"><spring:message code="questionapprove.option2" text="Option 2" /></th>' +
+                                    '<th align="center"><spring:message code="questionapprove.option3" text="Option 3" /></th><th align="center"><spring:message code="questionapprove.option4" text="Option 4" /></th><th align="center"><spring:message code="questionapprove.option5" text="Option 5" /></th><th align="center"><spring:message code="questionapprove.marks" text="Marks" /></th><th align="center"><spring:message code="questionapprove.approved" text="Approved" /></th></tr></thead >');
+                            //alert(data.length);
+                            for (var i = 0, lennos = data.length; i < lennos; i++) {
+                                //alert(window.location.host);
+                                var actionicon = "";
+                                if (data[i].isapproved == 'Y') {
+                                    actionicon = "<a href=\"#\" onclick=\"initChange(" + data[i].ID + ",'" + data[i].isapproved + "');\" \"><img src=\"http://localhost:8085/ABP-Ver1/assets/images/Tick-Box.png\" width=20 height=20/></a>";
+                                } else {
+                                    actionicon = "<a href=\"#\" onclick=\"initChange(" + data[i].ID + ",'" + data[i].isapproved + "');\" \"><img src=\"http://localhost:8085/ABP-Ver1/assets/images/wrong.png\" width=20 height=20/></a>";
                                 }
+
+                                $('#example-basic4 tr:last').after('<tr data-tt-id="1" id="qpack" style="height: 50px;font-size:12px;color: #000;background-color: #fff;"><td align="center">' + data[i].ID + '</td><td align="center">' + data[i].question_title + '&nbsp<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].questionimgurl + ' width="50" height="50"/></td><td align="center">' + data[i].option1 + '&nbsp;<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].imageurl1 + ' width="50" height="50"/></td><td align="center">' + data[i].option2 + '&nbsp;<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].imageurl2 + ' width="50" height="50"/></td><td align="center">' + data[i].option3 + '&nbsp;<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].imageurl3 + ' width="50" height="50"/></td><td align="center">' + data[i].option4 + '&nbsp;<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].imageurl4 + ' width="50" height="50"/></td><td align="center">' + data[i].option5 + '&nbsp;<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].imageurl5 + ' width="50" height="50"/></td><td align="center">' + data[i].marks + '</td><td align="center">' + actionicon + '</td></tr>');
+
+
+                            }
 
 
                         }
@@ -381,22 +381,22 @@
                         success: function (data) {
 
                             $("#example-basic4").empty();
-                                $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center">Question ID</th><th align="center">Question Title</th><th align="center">Option 1</th><th align="center">Option 2</th>' +
-                                        '<th align="center">Option 3</th><th align="center">Option 4</th><th align="center">Option 5</th><th align="center">Marks</th><th align="center">Approved</th></tr></thead >');
-                                //alert(data.length);
-                                 for (var i = 0, lennos = data.length; i < lennos; i++) {
-                                    //alert(window.location.host);
-                                    var actionicon="";
-                                    if(data[i].isapproved=='Y'){
-                                        actionicon="<a href=\"#\" onclick=\"initChange("+data[i].ID+",'"+data[i].isapproved+"');\" \"><img src=\"http://localhost:8085/ABP-Ver1/assets/images/Tick-Box.png\" width=20 height=20/></a>";
-                                    }else{
-                                        actionicon="<a href=\"#\" onclick=\"initChange("+data[i].ID+",'"+data[i].isapproved+"');\" \"><img src=\"http://localhost:8085/ABP-Ver1/assets/images/wrong.png\" width=20 height=20/></a>";
-                                    }
-                                        
-                                    $('#example-basic4 tr:last').after('<tr data-tt-id="1" id="qpack" style="height: 50px;font-size:12px;color: #000;background-color: #fff;"><td align="center">' + data[i].ID + '</td><td align="center">' + data[i].question_title + '&nbsp<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].questionimgurl + ' width="50" height="50"/></td><td align="center">' + data[i].option1 + '&nbsp;<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].imageurl1 + ' width="50" height="50"/></td><td align="center">' + data[i].option2 + '&nbsp;<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].imageurl2 + ' width="50" height="50"/></td><td align="center">' + data[i].option3 + '&nbsp;<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].imageurl3 + ' width="50" height="50"/></td><td align="center">' + data[i].option4 + '&nbsp;<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].imageurl4 + ' width="50" height="50"/></td><td align="center">' + data[i].option5 + '&nbsp;<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].imageurl5 + ' width="50" height="50"/></td><td align="center">' + data[i].marks + '</td><td align="center">' + actionicon + '</td></tr>');
-
-
+                            $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center"><spring:message code="questionapprove.questionid" text="Question ID" /></th><th align="center"><spring:message code="questionapprove.questiontitle" text="Question Title" /></th><th align="center"><spring:message code="questionapprove.option1" text="Option 1" /></th><th align="center"><spring:message code="questionapprove.option2" text="Option 2" /></th>' +
+                                        '<th align="center"><spring:message code="questionapprove.option3" text="Option 3" /></th><th align="center"><spring:message code="questionapprove.option4" text="Option 4" /></th><th align="center"><spring:message code="questionapprove.option5" text="Option 5" /></th><th align="center"><spring:message code="questionapprove.marks" text="Marks" /></th><th align="center"><spring:message code="questionapprove.approved" text="Approved" /></th></tr></thead >');
+                            //alert(data.length);
+                            for (var i = 0, lennos = data.length; i < lennos; i++) {
+                                //alert(window.location.host);
+                                var actionicon = "";
+                                if (data[i].isapproved == 'Y') {
+                                    actionicon = "<a href=\"#\" onclick=\"initChange(" + data[i].ID + ",'" + data[i].isapproved + "');\" \"><img src=\"http://localhost:8085/ABP-Ver1/assets/images/Tick-Box.png\" width=20 height=20/></a>";
+                                } else {
+                                    actionicon = "<a href=\"#\" onclick=\"initChange(" + data[i].ID + ",'" + data[i].isapproved + "');\" \"><img src=\"http://localhost:8085/ABP-Ver1/assets/images/wrong.png\" width=20 height=20/></a>";
                                 }
+
+                                $('#example-basic4 tr:last').after('<tr data-tt-id="1" id="qpack" style="height: 50px;font-size:12px;color: #000;background-color: #fff;"><td align="center">' + data[i].ID + '</td><td align="center">' + data[i].question_title + '&nbsp<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].questionimgurl + ' width="50" height="50"/></td><td align="center">' + data[i].option1 + '&nbsp;<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].imageurl1 + ' width="50" height="50"/></td><td align="center">' + data[i].option2 + '&nbsp;<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].imageurl2 + ' width="50" height="50"/></td><td align="center">' + data[i].option3 + '&nbsp;<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].imageurl3 + ' width="50" height="50"/></td><td align="center">' + data[i].option4 + '&nbsp;<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].imageurl4 + ' width="50" height="50"/></td><td align="center">' + data[i].option5 + '&nbsp;<img src=http://' + window.location.host + '/ABP-Ver1/uploaded/questions/' + data[i].imageurl5 + ' width="50" height="50"/></td><td align="center">' + data[i].marks + '</td><td align="center">' + actionicon + '</td></tr>');
+
+
+                            }
 
 
                         }
@@ -518,18 +518,18 @@
                 //alert(txt);
                 //var w = window.open("<%=request.getContextPath()%>/admin/qualificationpack/openaddpc.io?nosid=" + id, "popupWindow", "width=1024, height=500, scrollbars=yes");
             }
-            function initChange(questionid,isactive) {
-               //alert(questionid);
-               //alert(isactive);
+            function initChange(questionid, isactive) {
+                //alert(questionid);
+                //alert(isactive);
                 $.ajax({
                     url: "initChange.io",
-                    data: {questionid: questionid,isactive:isactive},
+                    data: {questionid: questionid, isactive: isactive},
                     type: 'GET',
                     success: function (data) {
-                        if(data.status=='save'){
-                             $('#qpackid').trigger("change");
-                             $('#nosid').trigger("change");
-                             $('#pcid').trigger("change");
+                        if (data.status == 'save') {
+                            $('#qpackid').trigger("change");
+                            $('#nosid').trigger("change");
+                            $('#pcid').trigger("change");
                         }
                     }
                 });
@@ -538,7 +538,7 @@
             $('#expbtn').on('click', function (event) {
                 var qpackid = $("#qpackid").val();
                 //alert(qpackid);
-                window.open("<%=request.getContextPath()%>/admin/questions/exportexcel.io?qpid="+qpackid, '_blank');
+                window.open("<%=request.getContextPath()%>/admin/questions/exportexcel.io?qpid=" + qpackid, '_blank');
 //                $.ajax({
 //                    url: "exportexcel.io",
 //                    data: {qpid: qpackid},

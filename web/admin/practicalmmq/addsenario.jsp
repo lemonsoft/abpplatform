@@ -18,8 +18,8 @@
         <div class="smart-forms smart-container wrap-full">
 
             <div class="form-header header-blue">
-                <h4><i class="fa fa-pencil-square"></i>Add New Senario based Practical Question</h4>
-                <div style="position: absolute;top:5px;right:25px;width: 200px;"><a href="<%=request.getContextPath()%>/admin/practicalmmq/init.io" class="button btn-primary block pushed expand"> Practical MMQ </a></div>
+                <h4><i class="fa fa-pencil-square"></i><spring:message code="addsenario.title" text="Add New Senario based Practical Question" /></h4>
+                <div style="position: absolute;top:5px;right:25px;width: 200px;"><a href="<%=request.getContextPath()%>/admin/practicalmmq/init.io" class="button btn-primary block pushed expand"><spring:message code="addsenario.practicalmmq" text="Practical MMQ" />  </a></div>
 
             </div><!-- end .form-header section -->
 
@@ -30,13 +30,13 @@
                     <div class="frm-row">
                         <div class="section colm colm6"> 
                             <div class="section">
-                                <label for="names" class="field-label">Sector Skill Council : ${sscname}</label>
+                                <label for="names" class="field-label"><spring:message code="addsenario.sscid" text="Sector Skill Council" /> : ${sscname}</label>
 
                             </div><!-- end section -->
                         </div><!-- end section -->
                         <div class="section colm colm6">
                             <div class="section">
-                                <label for="names" class="field-label">Qualification Pack :${qpname}</label>
+                                <label for="names" class="field-label"><spring:message code="addsenario.qpackid" text="Qualification Pack" /> :${qpname}</label>
 
                             </div><!-- end section -->
                         </div><!-- end section -->
@@ -44,7 +44,7 @@
                     </div><!-- end frm-row section -->
 
                     <div class="frm-row">
-                        <label for="names" class="field-label">Enter Senario</label>
+                        <label for="names" class="field-label"><spring:message code="addsenario.entersenario" text="Enter Senario" /></label>
                         <div class="section colm colm6">
                             <label class="field prepend-icon">
                                 <form:textarea rows="5" cols="20" path="senario" id="senario" class="gui-input"></form:textarea>
@@ -55,9 +55,9 @@
                     <c:if test = "${mode=='update'}">
                         <div class="frm-row">
                             <display:table name="records" class="table table-bordered" requestURI="initSearch.io" decorator="com.abp.admin.practicalmmq.SrcDecorator" pagesize="10">
-                                <display:column property="id" title="Sr No #" />
-                                <display:column property="question"/>
-                                <display:column property="actions" title="Map to PC's"/>
+                                <display:column property="id" titleKey="addsenario.srno" />
+                                <display:column property="question" titleKey="addsenario.question"/>
+                                <display:column property="actions"  titleKey="addsenario.maptopc"/>
                                 <display:setProperty name="paging.banner.placement" value="bottom" />
                             </display:table>
                         </div>
@@ -75,7 +75,7 @@
                                             <div data-repeater-list="group-b">
                                                 <div data-repeater-item class="row">
                                                     <div class="col-md-7">
-                                                        <label class="control-label">Question</label>
+                                                        <label class="control-label"><spring:message code="addsenario.question" text="Question" /></label>
                                                         <input type="text" name="question[]" id="question" placeholder="Question" class="gui-input" />
 
                                                     </div>
@@ -90,7 +90,7 @@
                                             </div>
                                             <br>
                                             <a href="javascript:;" data-repeater-create class="btn btn-info mt-repeater-add">
-                                                <i class="fa fa-plus"></i> Add More Question</a>&nbsp;<button type="button" onclick="insertQuestions();" class="button btn-blue">Insert</button>
+                                                <i class="fa fa-plus"></i><spring:message code="addsenario.addmorepc" text="Add More Question" /></a>&nbsp;<button type="button" onclick="insertQuestions();" class="button btn-blue"><spring:message code="addsenario.insert" text="Insert" /></button>
                                             <br>
                                             <br> 
                                         </div>

@@ -74,7 +74,7 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i> Generate Question Paper</h4>
+                    <h4><i class="fa fa-pencil-square"></i> <spring:message code="generateqp.title" text="Generate Question Paper" /></h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
@@ -114,11 +114,11 @@
 
                         <div class="frm-row" id="displaytabledata">
 
-                            <span id="title1"><h5>Multi Tagged Questions</h5></span>
+                            <span id="title1"><h5><spring:message code="generateqp.multitaggedquestion" text="Multi Tagged Questions" /></h5></span>
                             <table id="example-basic4" class="table table-striped table-bordered table-hover dt-responsive"  border="1" cellpadding="2" cellspacing="2" width="100%">
 
                             </table>
-                            <span id="title2"><h5>PCs</h5></span>
+                            <span id="title2"><h5><spring:message code="generateqp.pcid" text="PCs" /></h5></span>
                             <table id="example-basic5" class="table table-striped table-bordered table-hover dt-responsive"  border="1" cellpadding="2" cellspacing="2" width="100%">
 
                             </table>

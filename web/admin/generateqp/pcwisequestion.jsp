@@ -33,7 +33,7 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i>PC Wise Questions</h4>
+                    <h4><i class="fa fa-pencil-square"></i><spring:message code="pcwise.title" text="PC Wise Questions" /></h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
@@ -47,7 +47,7 @@
                         <div class="frm-row">
 
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">PCID</label>
+                                <label for="names" class="field-label"><spring:message code="pcwise.pcid" text="PCID" /></label>
                                 <label class="field prepend-icon">
                                     <form:input path="pcids" id="pcids" class="gui-input" readonly="true"/>
 
@@ -55,7 +55,7 @@
                                 </label>
                             </div><!-- end section -->
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">PC Name</label>
+                                <label for="names" class="field-label"><spring:message code="pcwise.pcname" text="PC Name" /></label>
                                 <label class="field prepend-icon">
                                     <form:input path="pcname" id="pcname" class="gui-input" readonly="true"/>
 
@@ -66,7 +66,7 @@
                         <div class="frm-row">
 
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Theory Marks</label>
+                                <label for="names" class="field-label"><spring:message code="pcwise.theorymarks" text="Theory Marks" /></label>
                                 <label class="field prepend-icon">
                                     <form:input path="theorymarks" id="theorymarks" class="gui-input" readonly="true"/>
 
@@ -74,7 +74,7 @@
                                 </label>
                             </div><!-- end section -->
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Total Added Marks</label>
+                                <label for="names" class="field-label"><spring:message code="pcwise.totaladdedmarks" text="Total Added Marks" /></label>
                                 <label class="field prepend-icon">
                                     <form:input path="totaladdedmarks" id="totaladdedmarks" class="gui-input" readonly="true"/>
 
@@ -86,7 +86,7 @@
                         <div class="frm-row">
 
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Marks 1 (${marks1})</label>
+                                <label for="names" class="field-label"><spring:message code="pcwise.marks1" text="Marks 1" /> (${marks1})</label>
                                 <label class="field prepend-icon">
                                     <form:input path="marks1" id="marks1" class="gui-input"/>
 
@@ -94,7 +94,7 @@
                                 </label>
                             </div><!-- end section -->
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Marks 2 (${marks2})</label>
+                                <label for="names" class="field-label"><spring:message code="pcwise.marks2" text="pcwise.marks2" /> (${marks2})</label>
                                 <label class="field prepend-icon">
                                     <form:input path="marks2" id="marks2" class="gui-input"/>
 
@@ -105,7 +105,7 @@
                         <div class="frm-row">
 
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Marks 3 (${marks3})</label>
+                                <label for="names" class="field-label"><spring:message code="pcwise.marks3" text="pcwise.marks3" /> (${marks3})</label>
                                 <label class="field prepend-icon">
                                     <form:input path="marks3" id="marks3" class="gui-input"/>
 
@@ -113,7 +113,7 @@
                                 </label>
                             </div><!-- end section -->
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Marks 4 (${marks4})</label>
+                                <label for="names" class="field-label"><spring:message code="pcwise.marks4" text="pcwise.marks4" />(${marks4})</label>
                                 <label class="field prepend-icon">
                                     <form:input path="marks4" id="marks4" class="gui-input"/>
 
@@ -124,7 +124,7 @@
                         <div class="frm-row">
 
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Marks 5 (${marks5})</label>
+                                <label for="names" class="field-label"><spring:message code="pcwise.marks5" text="pcwise.marks5" /> (${marks5})</label>
                                 <label class="field prepend-icon">
                                     <form:input path="marks5" id="marks5" class="gui-input"/>
 
@@ -132,7 +132,7 @@
                                 </label>
                             </div><!-- end section -->
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Marks 6 (${marks6})</label>
+                                <label for="names" class="field-label"><spring:message code="pcwise.marks6" text="pcwise.marks6" /> (${marks6})</label>
                                 <label class="field prepend-icon">
                                     <form:input path="marks6" id="marks6" class="gui-input"/>
 
@@ -143,7 +143,7 @@
                         <div class="frm-row">
 
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Marks 7 (${marks7})</label>
+                                <label for="names" class="field-label"><spring:message code="pcwise.marks7" text="pcwise.marks7" /> (${marks7})</label>
                                 <label class="field prepend-icon">
                                     <form:input path="marks7" id="marks7" class="gui-input"/>
 
@@ -151,7 +151,7 @@
                                 </label>
                             </div><!-- end section -->
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Marks 8 (${marks8})</label>
+                                <label for="names" class="field-label"><spring:message code="pcwise.marks8" text="pcwise.marks8" /> (${marks8})</label>
                                 <label class="field prepend-icon">
                                     <form:input path="marks8" id="marks8" class="gui-input"/>
 
@@ -162,7 +162,7 @@
                         <div class="frm-row">
 
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Marks 9 (${marks9})</label>
+                                <label for="names" class="field-label"><spring:message code="pcwise.marks9" text="pcwise.marks9" /> (${marks9})</label>
                                 <label class="field prepend-icon">
                                     <form:input path="marks9" id="marks9" class="gui-input"/>
 
@@ -170,7 +170,7 @@
                                 </label>
                             </div><!-- end section -->
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Marks 10 (${marks10})</label>
+                                <label for="names" class="field-label"><spring:message code="pcwise.marks10" text="pcwise.marks10" /> (${marks10})</label>
                                 <label class="field prepend-icon">
                                     <form:input path="marks10" id="marks10" class="gui-input"/>
 
@@ -181,7 +181,7 @@
                         <div class="frm-row">
 
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Marks 11 (${marks11})</label>
+                                <label for="names" class="field-label"><spring:message code="pcwise.marks11" text="pcwise.marks11" /> (${marks11})</label>
                                 <label class="field prepend-icon">
                                     <form:input path="marks11" id="marks11" class="gui-input"/>
 
@@ -189,7 +189,7 @@
                                 </label>
                             </div><!-- end section -->
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Marks 12 (${marks12})</label>
+                                <label for="names" class="field-label"><spring:message code="pcwise.marks12" text="pcwise.marks12" /> (${marks12})</label>
                                 <label class="field prepend-icon">
                                     <form:input path="marks12" id="marks12" class="gui-input"/>
 
@@ -200,7 +200,7 @@
                         <div class="frm-row">
 
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Marks 13 (${marks13})</label>
+                                <label for="names" class="field-label"><spring:message code="pcwise.marks13" text="pcwise.marks13" /> (${marks13})</label>
                                 <label class="field prepend-icon">
                                     <form:input path="marks13" id="marks13" class="gui-input"/>
 
@@ -208,7 +208,7 @@
                                 </label>
                             </div><!-- end section -->
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Marks 14 (${marks14})</label>
+                                <label for="names" class="field-label"><spring:message code="pcwise.marks14" text="pcwise.marks14" /> (${marks14})</label>
                                 <label class="field prepend-icon">
                                     <form:input path="marks14" id="marks14" class="gui-input"/>
 
@@ -219,7 +219,7 @@
                         <div class="frm-row">
 
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Marks 15 (${marks15})</label>
+                                <label for="names" class="field-label"><spring:message code="pcwise.marks15" text="pcwise.marks15" /> (${marks15})</label>
                                 <label class="field prepend-icon">
                                     <form:input path="marks15" id="marks15" class="gui-input"/>
 
@@ -227,7 +227,7 @@
                                 </label>
                             </div><!-- end section -->
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Marks 16 (${marks16})</label>
+                                <label for="names" class="field-label"><spring:message code="pcwise.marks16" text="pcwise.marks16" /> (${marks16})</label>
                                 <label class="field prepend-icon">
                                     <form:input path="marks16" id="marks16" class="gui-input"/>
 
@@ -238,7 +238,7 @@
                         <div class="frm-row">
 
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Marks 17 (${marks17})</label>
+                                <label for="names" class="field-label"><spring:message code="pcwise.marks17" text="pcwise.marks17" /> (${marks17})</label>
                                 <label class="field prepend-icon">
                                     <form:input path="marks17" id="marks17" class="gui-input"/>
 
@@ -246,7 +246,7 @@
                                 </label>
                             </div><!-- end section -->
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Marks 18 (${marks18})</label>
+                                <label for="names" class="field-label"><spring:message code="pcwise.marks18" text="pcwise.marks18" /> (${marks18})</label>
                                 <label class="field prepend-icon">
                                     <form:input path="marks18" id="marks18" class="gui-input"/>
 
@@ -257,7 +257,7 @@
                         <div class="frm-row">
 
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Marks 19 (${marks19})</label>
+                                <label for="names" class="field-label"><spring:message code="pcwise.marks19" text="pcwise.marks19" /> (${marks19})</label>
                                 <label class="field prepend-icon">
                                     <form:input path="marks19" id="marks19" class="gui-input"/>
 
@@ -265,7 +265,7 @@
                                 </label>
                             </div><!-- end section -->
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Marks 20 (${marks20})</label>
+                                <label for="names" class="field-label"><spring:message code="pcwise.marks20" text="pcwise.marks20" /> (${marks20})</label>
                                 <label class="field prepend-icon">
                                     <form:input path="marks20" id="marks20" class="gui-input"/>
 
@@ -276,7 +276,7 @@
                         <div class="frm-row">
 
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Marks 21 (${marks21})</label>
+                                <label for="names" class="field-label"><spring:message code="pcwise.marks21" text="pcwise.marks21" />(${marks21})</label>
                                 <label class="field prepend-icon">
                                     <form:input path="marks21" id="marks21" class="gui-input"/>
 
@@ -284,7 +284,7 @@
                                 </label>
                             </div><!-- end section -->
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Marks 22 (${marks22})</label>
+                                <label for="names" class="field-label"><spring:message code="pcwise.marks22" text="pcwise.marks22" /> (${marks22})</label>
                                 <label class="field prepend-icon">
                                     <form:input path="marks22" id="marks22" class="gui-input"/>
 
@@ -295,7 +295,7 @@
                         <div class="frm-row">
 
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Marks 23 (${marks23})</label>
+                                <label for="names" class="field-label"><spring:message code="pcwise.marks23" text="pcwise.marks23" /> (${marks23})</label>
                                 <label class="field prepend-icon">
                                     <form:input path="marks23" id="marks23" class="gui-input"/>
 
@@ -303,7 +303,7 @@
                                 </label>
                             </div><!-- end section -->
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Marks 24 (${marks24})</label>
+                                <label for="names" class="field-label"><spring:message code="pcwise.marks24" text="pcwise.marks24" /> (${marks24})</label>
                                 <label class="field prepend-icon">
                                     <form:input path="marks24" id="marks24" class="gui-input"/>
 
@@ -314,7 +314,7 @@
                         <div class="frm-row">
 
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Marks 25 (${marks25})</label>
+                                <label for="names" class="field-label"><spring:message code="pcwise.marks25" text="pcwise.marks25" /> (${marks25})</label>
                                 <label class="field prepend-icon">
                                     <form:input path="marks25" id="marks25" class="gui-input"/>
 

@@ -27,8 +27,8 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i>Assign Question Paper</h4>
-                    <div style="position: absolute;top:5px;right:5px;width: 100px;"><a href="<%=request.getContextPath()%>/admin/batches/init.io" class="button btn-primary block pushed expand">Batches </a></div>
+                    <h4><i class="fa fa-pencil-square"></i><spring:message code="questionpaper.title" text="Assign Question Paper" /></h4>
+                    <div style="position: absolute;top:5px;right:5px;width: 100px;"><a href="<%=request.getContextPath()%>/admin/batches/init.io" class="button btn-primary block pushed expand"><spring:message code="questionpaper.batches" text="Batches" /> </a></div>
 
                 </div><!-- end .form-header section -->
 
@@ -38,13 +38,13 @@
                         <div class="frm-row">
                             <div class="section colm colm6"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Sector Skill Council : ${sscid}</label>
+                                    <label for="names" class="field-label"><spring:message code="questionpaper.sscid" text="Sector Skill Council" /> : ${sscid}</label>
 
                                 </div><!-- end section -->
                             </div><!-- end section -->
                             <div class="section colm colm6">
                                 <div class="section">
-                                    <label for="names" class="field-label">Qualification Pack :${qid}</label>
+                                    <label for="names" class="field-label"><spring:message code="questionpaper.qpid" text="Qualification Pack" /> :${qid}</label>
 
                                 </div><!-- end section -->
                             </div><!-- end section -->
@@ -53,7 +53,7 @@
                         <div class="frm-row">
                             <div class="section colm colm12"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Batch ID :${batch_id}</label>
+                                    <label for="names" class="field-label"><spring:message code="questionpaper.batchid" text="Batch ID" /> :${batch_id}</label>
 
                                 </div><!-- end section -->
                             </div><!-- end section -->
@@ -61,16 +61,16 @@
 
                         </div><!-- end frm-row section -->
                         <span id="error" style="color:red;">${error}</span>
-                        <h3>Assigned Question Paper</h3>
+                        <h3><spring:message code="questionpaper.assignquestionpaper" text="Assigned Question Paper" /></h3>
                         <div class="frm-row">
                             <c:if test = "${record != null}">
                                 <display:table name="record" class="table table-bordered" requestURI="addquestionpaper.io" decorator="com.abp.admin.batches.QuestionPaperDecorator" pagesize="1">
-                                    <display:column property="questionpaperid" title="QPID"/>
-                                    <display:column property="questionpapername" title="QP Desc" />
-                                    <display:column property="totaltime" title="Total Time" />
-                                    <display:column property="totalmarks" title="Total Marks" />
-                                    <display:column property="israndom" title="Is Random" />
-                                    <display:column property="actions" title="Actions"/>
+                                    <display:column property="questionpaperid" titleKey="questionpaper.questionpaperid"/>
+                                    <display:column property="questionpapername" titleKey="questionpaper.questionpapername" />
+                                    <display:column property="totaltime" titleKey="questionpaper.totaltime" />
+                                    <display:column property="totalmarks" titleKey="questionpaper.totalmarks" />
+                                    <display:column property="israndom" titleKey="questionpaper.israndom" />
+                                    <display:column property="actions" titleKey="questionpaper.actions"/>
                                 </display:table>
                             </c:if>
                         </div>
@@ -78,21 +78,21 @@
 
 
                         <div class="frm-row">
-                            <h3>All Available Question Paper</h3>
+                            <h3><spring:message code="questionpaper.availabelquestionpaper" text="All Available Question Paper" /></h3>
 
 
                         </div><!-- end frm-row section -->
                         <div class="frm-row" id="displaytabledata">
                             <c:if test = "${allquestionpapers != null}">
                                 <display:table name="allquestionpapers" class="table table-bordered" requestURI="addquestionpaper.io" decorator="com.abp.admin.batches.AllQuestionPaperDecorator" pagesize="10">
-                                    <display:column property="questionpaperid" title="QPID"/>
-                                    <display:column property="questionpapername" title="QP Desc" />
-                                    <display:column property="totaltime" title="Total Time" />
-                                    <display:column property="totalmarks" title="Total Marks" />
-                                    <display:column property="israndom" title="Is Random" />
+                                    <display:column property="questionpaperid" titleKey="QPID"/>
+                                    <display:column property="questionpapername" titleKey="QP Desc" />
+                                    <display:column property="totaltime" titleKey="Total Time" />
+                                    <display:column property="totalmarks" titleKey="Total Marks" />
+                                    <display:column property="israndom" titleKey="Is Random" />
 
                                 </display:table>
-                                <button name="map" type="button" id="mapQuestionPaper" class="button btn-primary block pushed expand" onclick="mapQuestionPaper();">Map Question Paper</button>
+                                <button name="map" type="button" id="mapQuestionPaper" class="button btn-primary block pushed expand" onclick="mapQuestionPaper();"><spring:message code="questionpaper.mapquestionpaper" text="Map Question Paper" /></button>
                             </c:if>
                         </div>
                     </form:form>

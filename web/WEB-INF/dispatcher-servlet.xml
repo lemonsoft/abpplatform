@@ -192,6 +192,39 @@
                 <value>admin/properties/assesorreport/assessorreport</value>
                 <value>admin/properties/batches/addassessor</value>
                 
+                <value>admin/properties/batches/batches</value>
+                <value>admin/properties/batches/finalresult</value>
+                <value>admin/properties/batches/noswiseresult</value>
+                <value>admin/properties/batches/questionpaper</value>
+                <value>admin/properties/consolidateassessor/consolidateassessor</value>
+                <value>admin/properties/consolidatejobroleresult/consolidatejobroleresult</value>
+                <value>admin/properties/generateqp/generateqp</value>
+                <value>admin/properties/generateqp/pcwisequestion</value>
+                <value>admin/properties/generateqp/questionpaper</value>
+                <value>admin/properties/individualassesor/individualassesor</value>
+                <value>admin/properties/jobrolemaster/jobrolemaster</value>
+                <value>admin/properties/location/location</value>
+                <value>admin/properties/locationwise/locationwise</value>
+                <value>admin/properties/monitortoday/monitortoday</value>
+                <value>admin/properties/monitortoday/viewresult</value>
+                
+                <value>admin/properties/practicalmmq/addsenario</value>
+                <value>admin/properties/practicalmmq/editmapping</value>
+                <value>admin/properties/practicalmmq/practicalmmq</value>
+                <value>admin/properties/practicalmmq/viewquestions</value>
+                
+                <value>admin/properties/qbankanalysis/qbankanalysis</value>
+                <value>admin/properties/questionapprove/questionapprove</value>
+                <value>admin/properties/questionpaper/questionpaper</value>
+                
+                <value>admin/properties/questions/questions</value>
+                <value>admin/properties/questions/addquestion</value>
+                <value>admin/properties/questions/importmultilanguage</value>
+                <value>admin/properties/questions/importquestions</value>
+                <value>admin/properties/questions/showmultilanguage</value>
+                
+                <value>admin/properties/questionsusage/questionsusage</value>
+                
             </list>
         </property>
         <property name="defaultEncoding" value="UTF-8"/>	

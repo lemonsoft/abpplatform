@@ -33,7 +33,7 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i>Location Wise Analysis</h4>
+                    <h4><i class="fa fa-pencil-square"></i><spring:message code="locationwise.title" text="Location Wise Analysis" /></h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
@@ -57,7 +57,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm3"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">State</label>
+                                    <label for="names" class="field-label"><spring:message code="locationwise.state" text="State" /></label>
                                     <label class="field prepend-icon">
                                         <form:select path="state" id="state" class="gui-input" >
                                             <form:option value="0">--Select--</form:option>
@@ -69,7 +69,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm3"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Select Month</label>
+                                    <label for="names" class="field-label"><spring:message code="locationwise.month" text="Select Month" /></label>
                                     <label class="field prepend-icon">
 
                                         <form:input path="month" type="month" id="month" class="gui-input"/>
@@ -88,13 +88,13 @@
                             <div class="frm-row">
                                 <table><tr><td colspan=5 align=right><a href="#" onclick="writeExcelSheet();"><img src="<%=request.getContextPath()%>/assets/images/excel.ico" width=30px height=30px/></a></td></tr></table>
                                 <display:table name="records" class="table table-bordered" requestURI="initSearch.io" pagesize="40">
-                                    <display:column property="srno" title="SrNo#" />
-                                    <display:column property="location" title="Location"/>
-                                    <display:column property="jobrole" title="Job Role"/>
-                                    <display:column property="nocandidateassesed" title="No. Of Candidate Assessed"/>
-                                    <display:column property="pass" title="Pass"/>
-                                    <display:column property="fail" title="Failed"/>
-                                    <display:column property="tpname" title="Training Partner Name"/>
+                                    <display:column property="srno" titleKey="locationwise.srno" />
+                                    <display:column property="location" titleKey="locationwise.location"/>
+                                    <display:column property="jobrole" titleKey="locationwise.jobrole"/>
+                                    <display:column property="nocandidateassesed" titleKey="locationwise.noofassesed"/>
+                                    <display:column property="pass" titleKey="locationwise.pass"/>
+                                    <display:column property="fail" titleKey="locationwise.failed"/>
+                                    <display:column property="tpname" titleKey="locationwise.tpname"/>
                                 </display:table>
 
                             </div>

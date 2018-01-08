@@ -27,7 +27,7 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square">Over All Batch Report</i></h4>
+                    <h4><i class="fa fa-pencil-square"><spring:message code="batches.title" text="Over All Batch Report" /></i></h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
@@ -38,13 +38,13 @@
                         <div class="section colm colm6"> 
                             <div class="section">
 
-                                <b>Sector Skills Council :</b>${sscid}
+                                <b><spring:message code="batches.title" text="Sector Skills Council" /> :</b>${sscid}
                             </div><!-- end section -->
                         </div><!-- end section -->
                          <div class="section colm colm6"> 
                             <div class="section">
 
-                                <b>Qualification Pack :</b>${qpid}
+                                <b><spring:message code="batches.title" text="Qualification Pack" /> :</b>${qpid}
                             </div><!-- end section -->
                         </div><!-- end section -->
 
@@ -54,19 +54,19 @@
 
                     <div class="frm-row">
                         <display:table name="batchresult" class="table table-bordered" requestURI="initSearch.io"  pagesize="10">
-                            <display:column property="caandidateid" title="Candidate ID" />
-                            <display:column property="candidatename" title="Candidate Name" />
-                            <display:column property="enrollmentno" title="Enrollment No" />
-                            <display:column property="fathername" title="Name Of Father Or Husband" />
-                            <display:column property="partnername" title="Partner Name" />
-                            <display:column property="jobrole" title="JobRole" />
-                            <display:column property="assesmentdate" title="Assessment Date" />
-                            <display:column property="assesorid" title="Assessor ID" />
-                            <display:column property="maxtheorymarks" title="Max Theory Marks" />
-                            <display:column property="maxpracticalmarks" title="Max Practical Marks"/>
-                            <display:column property="markstheory" title="Marks Theory" />
-                            <display:column property="markspractical" title="Marks Practical"/>
-                            <display:column property="result" title="Result"/>
+                            <display:column property="caandidateid" titleKey="finalresult.caandidateid" />
+                            <display:column property="candidatename" titleKey="finalresult.candidatename" />
+                            <display:column property="enrollmentno" titleKey="finalresult.enrollmentno" />
+                            <display:column property="fathername" titleKey="finalresult.fathername" />
+                            <display:column property="partnername" titleKey="finalresult.partnername" />
+                            <display:column property="jobrole" titleKey="finalresult.jobrole" />
+                            <display:column property="assesmentdate" titleKey="finalresult.assesmentdate" />
+                            <display:column property="assesorid" titleKey="finalresult.assesorid" />
+                            <display:column property="maxtheorymarks" titleKey="finalresult.maxtheorymarks" />
+                            <display:column property="maxpracticalmarks" titleKey="finalresult.maxpracticalmarks"/>
+                            <display:column property="markstheory" titleKey="finalresult.markstheory" />
+                            <display:column property="markspractical" titleKey="finalresult.markspractical"/>
+                            <display:column property="result" titleKey="finalresult.result"/>
                         </display:table>
 
                     </div>

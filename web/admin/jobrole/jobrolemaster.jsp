@@ -33,7 +33,7 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i>Job Role Master</h4>
+                    <h4><i class="fa fa-pencil-square"></i><spring:message code="jobrolemaster.title" text="Job Role Master" /></h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
@@ -90,7 +90,7 @@
                     success: function (data) {
                         //alert(data);
                          var str ="<tr><td colspan=5 align=right><a href=\"<%=request.getContextPath()%>/admin/jobrole/writeExcel.io?sscid="+sscid+"\"><img src=\"<%=request.getContextPath()%>/assets/images/excel.ico\" width=30px height=30px/></a></td></tr>";
-                         str = str + "<tr><td>Sr.#</td><td>Sector</td><td>Job Role</td><td>Job Role Number</td><td>Job Role Level</td></tr>";
+                         str = str + "<tr><td><spring:message code="jobrolemaster.srno" text="jobrolemaster.srno" /></td><td><spring:message code="jobrolemaster.sector" text="jobrolemaster.sector" /></td><td><spring:message code="jobrolemaster.jobrole" text="jobrolemaster.jobrole" /></td><td><spring:message code="jobrolemaster.jobrolenumber" text="jobrolemaster.jobrolenumber" /></td><td><spring:message code="jobrolemaster.jobrolelevel" text="jobrolemaster.jobrolelevel" /></td></tr>";
 
                         $.each(data, function (index, jsonObject) {
 

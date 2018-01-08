@@ -33,7 +33,7 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i>Individual Assessor Dashboard</h4>
+                    <h4><i class="fa fa-pencil-square"></i><spring:message code="individualassesor.title" text="Individual Assessor Dashboard" /></h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
@@ -69,17 +69,17 @@
                             <div class="frm-row">
                                 <table><tr><td colspan=5 align=right><a href="#" onclick="writeExcelSheet();"><img src="<%=request.getContextPath()%>/assets/images/excel.ico" width=30px height=30px/></a></td></tr></table>
                                 <display:table name="records" class="table table-bordered" requestURI="initSearch.io" pagesize="40">
-                                    <display:column property="srno" title="SrNo#" />
-                                    <display:column property="assesorname" title="Assesor Name"/>
-                                    <display:column property="jobroles" title="Job Roles"/>
-                                    <display:column property="affiliationdate" title="Affiliation date"/>
-                                    <display:column property="state" title="State"/>
-                                    <display:column property="city" title="City"/>
-                                    <display:column property="aadharno" title="Aadhar No"/>
-                                    <display:column property="qualification" title="Qualification"/>
-                                    <display:column property="totalexp" title="Total Experience"/>
-                                    <display:column property="noofcandidateasses" title="Number of Candidates Assesed"/>
-                                    <display:column property="pass" title="Pass %"/>
+                                    <display:column property="srno" titleKey="individualassesor.srno" />
+                                    <display:column property="assesorname" titleKey="individualassesor.assesorname"/>
+                                    <display:column property="jobroles" titleKey="individualassesor.jobroles"/>
+                                    <display:column property="affiliationdate" titleKey="individualassesor.affiliationdate"/>
+                                    <display:column property="state" titleKey="individualassesor.state"/>
+                                    <display:column property="city" titleKey="individualassesor.city"/>
+                                    <display:column property="aadharno" titleKey="individualassesor.aadharno"/>
+                                    <display:column property="qualification" titleKey="individualassesor.qualification"/>
+                                    <display:column property="totalexp" titleKey="individualassesor.totalexp"/>
+                                    <display:column property="noofcandidateasses" titleKey="individualassesor.noofcandidateasses"/>
+                                    <display:column property="pass" titleKey="individualassesor.pass"/>
                                  </display:table>
 
                             </div>

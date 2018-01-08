@@ -33,7 +33,7 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i>Question Bank Analysis</h4>
+                    <h4><i class="fa fa-pencil-square"></i><spring:message code="qbankanalysis.title" text="Question Bank Analysis" /></h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
@@ -57,7 +57,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm3"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Job Role</label>
+                                    <label for="names" class="field-label"><spring:message code="qbankanalysis.jobrole" text="Job Role" /></label>
                                     <label class="field prepend-icon">
                                         <form:select path="qpid" id="qpid" class="gui-input" >
                                             <form:option value="0">--Select--</form:option>
@@ -69,7 +69,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm3"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Select Month</label>
+                                    <label for="names" class="field-label"><spring:message code="qbankanalysis.selectmonth" text="Select Month" /></label>
                                     <label class="field prepend-icon">
 
                                         <form:input path="month" type="month" id="month" class="gui-input"/>
@@ -88,12 +88,12 @@
                             <div class="frm-row">
                                 <table><tr><td colspan=5 align=right><a href="#" onclick="writeExcelSheet();"><img src="<%=request.getContextPath()%>/assets/images/excel.ico" width=30px height=30px/></a></td></tr></table>
                                                 <display:table name="records" class="table table-bordered" requestURI="initSearch.io" pagesize="40">
-                                                    <display:column property="questionid" title="Question ID" />
-                                                    <display:column property="question" title="Question"/>
-                                                    <display:column property="noofattempt" title="No. of Candidates Who Attempted"/>
-                                                    <display:column property="incorrectattempt" title="Incorrect Attempt"/>
-                                                    <display:column property="correctatmpt" title="Correct Attempt"/>
-                                                    <display:column property="notattempt" title="Not Attempted"/>
+                                                    <display:column property="questionid" titleKey="qbankanalysis.questionid" />
+                                                    <display:column property="question" titleKey="qbankanalysis.question"/>
+                                                    <display:column property="noofattempt" titleKey="qbankanalysis.nocandidateofattempt"/>
+                                                    <display:column property="incorrectattempt" titleKey="qbankanalysis.incorrectattempt"/>
+                                                    <display:column property="correctatmpt" titleKey="qbankanalysis.correctatmpt"/>
+                                                    <display:column property="notattempt" titleKey="qbankanalysis.notattempt"/>
                                                 </display:table>
 
                             </div>
@@ -146,8 +146,8 @@
         function writeExcelSheet() {
             var qpackid = $("#qpid").val();
             var srcdate = $("#month").val();
-            alert(srcdate+ " Test data " + qpackid);
-            window.location.href = "<%=request.getContextPath()%>/admin/qbankanalysis/writeExcel.io?qpackid="+qpackid+"&srcdate="+srcdate;
+            alert(srcdate + " Test data " + qpackid);
+            window.location.href = "<%=request.getContextPath()%>/admin/qbankanalysis/writeExcel.io?qpackid=" + qpackid + "&srcdate=" + srcdate;
 
         }
     </script>

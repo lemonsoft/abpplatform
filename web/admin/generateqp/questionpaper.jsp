@@ -33,7 +33,7 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i>Create Question Paper</h4>
+                    <h4><i class="fa fa-pencil-square"></i><spring:message code="questionpaper.title" text="Create Question Paper" /></h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
@@ -47,7 +47,7 @@
                         <div class="frm-row">
 
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Question Paper Name</label>
+                                <label for="names" class="field-label"><spring:message code="questionpaper.questionpapername" text="Question Paper Name" /></label>
                                 <label class="field prepend-icon">
                                     <form:input path="questionpapername" id="questionpapername" class="gui-input"/>
 
@@ -55,7 +55,7 @@
                                 </label>
                             </div><!-- end section -->
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Total Time</label>
+                                <label for="names" class="field-label"><spring:message code="questionpaper.totaltime" text="Total Time" /></label>
                                 <label class="field prepend-icon">
                                     <form:input type="text" path="totaltime"  id="totaltime" class="gui-input"/>
 
@@ -66,15 +66,15 @@
 
                         <div class="frm-row">
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Total Marks</label>
+                                <label for="names" class="field-label"><spring:message code="questionpaper.totalmarks" text="Total Marks" /></label>
                                 <label class="field prepend-icon">
                                     <c:if test = "${mode=='update'}">
-                                    <form:input type="number" path="totalmarks" id="totalmarks" class="gui-input"/>
+                                        <form:input type="number" path="totalmarks" id="totalmarks" class="gui-input"/>
                                     </c:if>
                                 </label>
                             </div><!-- end section -->
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Is Question Random</label>
+                                <label for="names" class="field-label"><spring:message code="questionpaper.isquestionrandom" text="Is Question Random" /></label>
                                 <label class="field prepend-icon">
                                     <c:choose>
                                         <c:when test = "${israndom == 'on'}">
@@ -87,11 +87,11 @@
 
                                 </label>
                             </div><!-- end section -->
-                            
+
                         </div><!-- end frm-row section -->
                         <div class="frm-row">
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Is Option Random</label>
+                                <label for="names" class="field-label"><spring:message code="questionpaper.isoptionrandom" text="Is Option Random" /></label>
                                 <label class="field prepend-icon">
                                     <c:choose>
                                         <c:when test = "${isoptionrandom == 'on'}">
@@ -107,7 +107,7 @@
                                 </label>
                             </div><!-- end section -->
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Is Active</label>
+                                <label for="names" class="field-label"><spring:message code="questionpaper.isactive" text="Is Active" /></label>
                                 <label class="field prepend-icon">
                                     <c:choose>
                                         <c:when test = "${isactive == 'on'}">
@@ -147,80 +147,80 @@
 
         <script>
 
-                                function generateQuestion() {
-                                    var qpackid = $('#qpackid').val();
+                            function generateQuestion() {
+                                var qpackid = $('#qpackid').val();
 
-                                    if (qpackid) {
-                                        //alert("Equal ");
-                                        var formData = {
-                                            'qpackid': $('#qpackid').val(),
-                                            'questionpapername': $('#questionpapername').val(),
-                                            'totaltime': $('#totaltime').val(),
-                                            'israndom': $('#israndom').val(),
-                                            'isoptionrandom': $('#isoptionrandom').val(),
-                                            'isactive': $('#isactive').val()
+                                if (qpackid) {
+                                    //alert("Equal ");
+                                    var formData = {
+                                        'qpackid': $('#qpackid').val(),
+                                        'questionpapername': $('#questionpapername').val(),
+                                        'totaltime': $('#totaltime').val(),
+                                        'israndom': $('#israndom').val(),
+                                        'isoptionrandom': $('#isoptionrandom').val(),
+                                        'isactive': $('#isactive').val()
 
-                                        };
-                                        $.ajax({
-                                            url: "generateQuestionPaper.io",
-                                            data: formData,
-                                            type: 'GET',
-                                            success: function (data) {
-                                                //alert(data.error);
-                                                if (data.error !== undefined) {
-                                                    $('#error').html('<font color=red>' + data.error + '</font>');
-                                                }
-                                                if (data.status !== undefined) {
-                                                    $('#status').html('<font color=green>' + data.status + '</font>');
-                                                }
-
+                                    };
+                                    $.ajax({
+                                        url: "generateQuestionPaper.io",
+                                        data: formData,
+                                        type: 'GET',
+                                        success: function (data) {
+                                            //alert(data.error);
+                                            if (data.error !== undefined) {
+                                                $('#error').html('<font color=red>' + data.error + '</font>');
                                             }
-                                        });
-
-                                    } else {
-
-                                        $('#error').html("<font color=red>Invalid Qualification Pack</font>");
-                                    }
-                                }
-                                
-                                function updateQuestionPaper() {
-                                    var questionpaperid = $('#questionpaperid').val();
-
-                                    if (questionpaperid) {
-                                        //alert("Equal ");
-                                        var formData = {
-                                            'questionpaperid': $('#questionpaperid').val(),
-                                            'qpackid': $('#qpackid').val(),
-                                            'questionpapername': $('#questionpapername').val(),
-                                            'totaltime': $('#totaltime').val(),
-                                            'totalmarks': $('#totalmarks').val(),
-                                            'israndom': $('#israndom').val(),
-                                            'isoptionrandom': $('#isoptionrandom').val(),
-                                            'isactive': $('#isactive').val()
-
-                                        };
-                                        $.ajax({
-                                            url: "updateQuestionPaper.io",
-                                            data: formData,
-                                            type: 'GET',
-                                            success: function (data) {
-                                                //alert(data.error);
-                                                
-                                                if (data.status == "ok") {
-                                                    $('#status').html('<font color=green>Question Paper Updated</font>');
-                                                }
-                                                if (data.status == "fail") {
-                                                    $('#status').html('<font color=red>Question Paper Update Failed</font>');
-                                                }
-
+                                            if (data.status !== undefined) {
+                                                $('#status').html('<font color=green>' + data.status + '</font>');
                                             }
-                                        });
 
-                                    } else {
+                                        }
+                                    });
 
-                                        $('#error').html("<font color=red>Invalid Qualification Pack</font>");
-                                    }
+                                } else {
+
+                                    $('#error').html("<font color=red>Invalid Qualification Pack</font>");
                                 }
+                            }
+
+                            function updateQuestionPaper() {
+                                var questionpaperid = $('#questionpaperid').val();
+
+                                if (questionpaperid) {
+                                    //alert("Equal ");
+                                    var formData = {
+                                        'questionpaperid': $('#questionpaperid').val(),
+                                        'qpackid': $('#qpackid').val(),
+                                        'questionpapername': $('#questionpapername').val(),
+                                        'totaltime': $('#totaltime').val(),
+                                        'totalmarks': $('#totalmarks').val(),
+                                        'israndom': $('#israndom').val(),
+                                        'isoptionrandom': $('#isoptionrandom').val(),
+                                        'isactive': $('#isactive').val()
+
+                                    };
+                                    $.ajax({
+                                        url: "updateQuestionPaper.io",
+                                        data: formData,
+                                        type: 'GET',
+                                        success: function (data) {
+                                            //alert(data.error);
+
+                                            if (data.status == "ok") {
+                                                $('#status').html('<font color=green>Question Paper Updated</font>');
+                                            }
+                                            if (data.status == "fail") {
+                                                $('#status').html('<font color=red>Question Paper Update Failed</font>');
+                                            }
+
+                                        }
+                                    });
+
+                                } else {
+
+                                    $('#error').html("<font color=red>Invalid Qualification Pack</font>");
+                                }
+                            }
 
         </script>
     </body>

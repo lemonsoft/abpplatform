@@ -33,7 +33,7 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i>Map To PC</h4>
+                    <h4><i class="fa fa-pencil-square"></i><spring:message code="editmapping.title" text="Map To PC" /></h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
@@ -42,7 +42,7 @@
                     <form:hidden path="id" />
                     <div class="form-body theme-blue">
 
-                        <label for="names" class="field-label">Edit Question:</label>
+                        <label for="names" class="field-label"><spring:message code="editmapping.editquestion" text="Edit Question" />:</label>
                         <div class="frm-row">
 
                             <div class="section colm colm6">
@@ -58,7 +58,7 @@
                         </div><!-- end frm-row section -->
                         <div class="frm-row">
                             <table id="example-basic4" class="table table-striped table-bordered table-hover dt-responsive"  border="1" cellpadding="2" cellspacing="2" width="100%">
-                                <thead><th>NOSID</th><th>NOS Name</th><th>&nbsp;</th></thead>
+                                <thead><th><spring:message code="editmapping.nosid" text="NOSID" /></th><th><spring:message code="editmapping.nosname" text="NOS Name" /></th><th>&nbsp;</th></thead>
                                 <tbody>
                                     <%! int i = 0;%>
                                     <c:forEach var="listdata" items="${noslist}" varStatus="i">
@@ -68,7 +68,7 @@
                                             <td>${listdata.nosname}</td>
                                             <td><c:forEach var="pcdata" items="${listdata.pcdata}" >
                                                     <table id="example-basic4" class="table table-striped table-bordered table-hover dt-responsive"  border="1" cellpadding="2" cellspacing="2" width="100%">
-                                                        <thead><th></th><th>PC ID</th><th>PC Name</th><th>Actual Practical Marks</th><th>Remaining Practical Marks</th><th>Enter Marks</th></thead>
+                                                        <thead><th></th><th><spring:message code="editmapping.pcid" text="PC ID" /></th><th><spring:message code="editmapping.pcname" text="PC Name" /></th><th><spring:message code="editmapping.actualmarks" text="Actual Practical Marks" /></th><th><spring:message code="editmapping.remainingmarks" text="Remaining Practical Marks" /></th><th><spring:message code="editmapping.entermarks" text="Enter Marks" /></th></thead>
                                                         <tbody>
                                                             <tr>
                                                                 <td>
@@ -122,7 +122,7 @@
 
                                         var idattr = $(this).attr('id');
                                         var id = idattr.substring(4);
-                                        alert(id);
+                                        
                                         var marks = $('#' + id).val();
                                         if (parseInt(marks) > 0) {
                                             $('#err' + id).text("");
@@ -190,7 +190,7 @@
                                         jsonObj.push(item);
 
                                     });
-                                    alert(jsonObj);
+                                    
 
                                     $.ajax({
                                         url: "updatePCIDMARKS.io",

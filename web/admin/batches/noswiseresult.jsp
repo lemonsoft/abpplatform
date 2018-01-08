@@ -27,7 +27,7 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square">NOS Report</i></h4>
+                    <h4><i class="fa fa-pencil-square"><spring:message code="noswiseresult.title" text="NOS Report" /></i></h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
@@ -38,19 +38,19 @@
                         <div class="section colm colm4"> 
                             <div class="section">
 
-                                <b>Sector Skills Council :</b>${sscid}
+                                <b><spring:message code="noswiseresult.sscid" text="Sector Skills Council" /> :</b>${sscid}
                             </div><!-- end section -->
                         </div><!-- end section -->
                         <div class="section colm colm4"> 
                             <div class="section">
 
-                                <b>Qualification Pack :</b>${qpid}
+                                <b><spring:message code="noswiseresult.qpid" text="Qualification Pack" /> :</b>${qpid}
                             </div><!-- end section -->
                         </div><!-- end section -->
                         <div class="section colm colm4"> 
                             <div class="section">
 
-                                <b>Batch ID :</b>${batchid}
+                                <b><spring:message code="noswiseresult.batchid" text="Batch ID" /> :</b>${batchid}
                             </div><!-- end section -->
                         </div><!-- end section -->
 

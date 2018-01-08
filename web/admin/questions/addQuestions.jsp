@@ -27,8 +27,8 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i>Add Question</h4>
-                    <div style="position: absolute;top:5px;right:5px;width: 100px;"><a href="<%=request.getContextPath()%>/admin/questions/init.io" class="button btn-primary block pushed expand">Questions </a></div>
+                    <h4><i class="fa fa-pencil-square"></i><spring:message code="addquestion.title" text="Add Question" /></h4>
+                    <div style="position: absolute;top:5px;right:5px;width: 100px;"><a href="<%=request.getContextPath()%>/admin/questions/init.io" class="button btn-primary block pushed expand"><spring:message code="addquestion.questions" text="Questions" /> </a></div>
 
                 </div><!-- end .form-header section action="${action}"-->
 
@@ -42,7 +42,7 @@
                         <div class="frm-row">
                             <div class="section colm colm4"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Question Level</label>
+                                    <label for="names" class="field-label"><spring:message code="addquestion.questionlevel" text="Question Level" /></label>
                                     <label class="field prepend-icon">
                                         <form:select path="question_level" id="question_level" class="gui-input" >
                                             <form:option value="1">Easy</form:option>
@@ -56,7 +56,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm4"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Question Type</label>
+                                    <label for="names" class="field-label"><spring:message code="addquestion.questiontype" text="Question Type" /></label>
                                     <label class="field prepend-icon">
 
                                         <form:select path="question_type" id="question_type" class="gui-input" >
@@ -73,7 +73,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm4"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Marks</label>
+                                    <label for="names" class="field-label"><spring:message code="addquestion.marks" text="Marks" /></label>
                                     <label class="field prepend-icon">
 
                                         <form:select path="marks" id="marks" class="gui-input" >
@@ -116,7 +116,7 @@
                         <div class="frm-row">
                             <div class="section colm colm6"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">No of Option</label>
+                                    <label for="names" class="field-label"><spring:message code="addquestion.noofoption" text="No of Option" /></label>
                                     <label class="field prepend-icon">
                                         <form:select path="noofoption" id="noofoption" class="gui-input" >
                                             <form:option value="3">3</form:option>
@@ -130,7 +130,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm6"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Correct Answer</label>
+                                    <label for="names" class="field-label"><spring:message code="addquestion.correctanswer" text="Correct Answer" /></label>
                                     <label class="field prepend-icon">
 
                                         <form:select path="correct_option" id="correct_option" class="gui-input" >
@@ -153,7 +153,7 @@
                         <div class="frm-row">
                             <div class="section colm colm4"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Question</label>
+                                    <label for="names" class="field-label"><spring:message code="addquestion.question" text="Question" /></label>
                                     <label class="field prepend-icon">
                                         <form:textarea path="question_title" rows="5" cols="10" class="gui-input" required="true"></form:textarea>
 
@@ -165,7 +165,7 @@
 
                                 <div class="section colm colm3"> 
                                     <div class="section">
-                                        <label for="names" class="field-label">Question Image Url :</label>
+                                        <label for="names" class="field-label"><spring:message code="addquestion.questionimgurl" text="Question Image Url" /> :</label>
                                         <label class="field prepend-icon">
 
                                         <form:input path="questionimgurl" id="questionimgurl" class="gui-input"  />
@@ -176,7 +176,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm3"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Upload Image</label>
+                                    <label for="names" class="field-label"><spring:message code="addquestion.uploadimage" text="Upload Image" /></label>
                                     <label class="field prepend-icon">
 
                                         <input type="file" name="files" id="uploadImage" class="gui-input" />
@@ -201,7 +201,7 @@
                         <div class="frm-row">
                             <div class="section colm colm4"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Option A</label>
+                                    <label for="names" class="field-label"><spring:message code="addquestion.optiona" text="Option A" /></label>
                                     <label class="field prepend-icon">
                                         <form:textarea path="option1" rows="5" cols="10" class="gui-input" required="true"></form:textarea>
 
@@ -213,7 +213,7 @@
 
                                 <div class="section colm colm3"> 
                                     <div class="section">
-                                        <label for="names" class="field-label">Option A Image Url :</label>
+                                        <label for="names" class="field-label"><spring:message code="addquestion.optionaimageurl" text="Option A Image Url" /> :</label>
                                         <label class="field prepend-icon">
 
                                         <form:input path="imageurl1" id="imageurl1" class="gui-input"  />
@@ -224,7 +224,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm3"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Upload Image</label>
+                                    <label for="names" class="field-label"><spring:message code="addquestion.uploadimage" text="Upload Image" /></label>
                                     <label class="field prepend-icon">
 
                                         <input type="file" name="files" id="uploadImageA" class="gui-input" />
@@ -249,7 +249,7 @@
                         <div class="frm-row">
                             <div class="section colm colm4"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Option B</label>
+                                    <label for="names" class="field-label"><spring:message code="addquestion.optionb" text="Option B" /></label>
                                     <label class="field prepend-icon">
                                         <form:textarea path="option2" rows="5" cols="10" class="gui-input" required="true"></form:textarea>
 
@@ -261,7 +261,7 @@
 
                                 <div class="section colm colm3"> 
                                     <div class="section">
-                                        <label for="names" class="field-label">Option B Image Url :</label>
+                                        <label for="names" class="field-label"><spring:message code="addquestion.optionbimageurl" text="Option B Image Url" /> :</label>
                                         <label class="field prepend-icon">
 
                                         <form:input path="imageurl2" id="imageurl2" class="gui-input"  />
@@ -272,7 +272,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm3"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Upload Image</label>
+                                    <label for="names" class="field-label"><spring:message code="addquestion.uploadimage" text="Upload Image" /></label>
                                     <label class="field prepend-icon">
 
                                         <input type="file" name="files" id="uploadImageB" class="gui-input" />
@@ -296,7 +296,7 @@
                         <div class="frm-row" id="option3">
                             <div class="section colm colm4"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Option C</label>
+                                    <label for="names" class="field-label"><spring:message code="addquestion.optionc" text="Option C" /></label>
                                     <label class="field prepend-icon">
                                         <form:textarea path="option3" rows="5" cols="10" class="gui-input" required="true"></form:textarea>
 
@@ -308,7 +308,7 @@
 
                                 <div class="section colm colm3"> 
                                     <div class="section">
-                                        <label for="names" class="field-label">Option C Image Url :</label>
+                                        <label for="names" class="field-label"><spring:message code="addquestion.optioncimageurl" text="Option C Image Url" /> :</label>
                                         <label class="field prepend-icon">
 
                                         <form:input path="imageurl3" id="imageurl3" class="gui-input"  />
@@ -319,7 +319,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm3"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Upload Image</label>
+                                    <label for="names" class="field-label"><spring:message code="addquestion.uploadimage" text="Upload Image" /></label>
                                     <label class="field prepend-icon">
 
                                         <input type="file" name="files" id="uploadImageC" class="gui-input" />
@@ -343,7 +343,7 @@
                         <div class="frm-row" id="option4">
                             <div class="section colm colm4"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Option D</label>
+                                    <label for="names" class="field-label"><spring:message code="addquestion.optiond" text="Option D" /></label>
                                     <label class="field prepend-icon">
                                         <form:textarea path="option4" rows="5" cols="10" class="gui-input" ></form:textarea>
 
@@ -355,7 +355,7 @@
 
                                 <div class="section colm colm3"> 
                                     <div class="section">
-                                        <label for="names" class="field-label">Option D Image Url :</label>
+                                        <label for="names" class="field-label"><spring:message code="addquestion.optiondimageurl" text="Option D Image Url" /> :</label>
                                         <label class="field prepend-icon">
 
                                         <form:input path="imageurl4" id="imageurl4" class="gui-input"  />
@@ -366,7 +366,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm3"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Upload Image</label>
+                                    <label for="names" class="field-label"><spring:message code="addquestion.uploadimage" text="Upload Image" /></label>
                                     <label class="field prepend-icon">
 
                                         <input type="file" name="files" id="uploadImageD" class="gui-input" />
@@ -390,7 +390,7 @@
                         <div class="frm-row" id="option5">
                             <div class="section colm colm4"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Option E</label>
+                                    <label for="names" class="field-label"><spring:message code="addquestion.optione" text="Option E" /></label>
                                     <label class="field prepend-icon">
                                         <form:textarea path="option5" rows="5" cols="10" class="gui-input" ></form:textarea>
 
@@ -402,7 +402,7 @@
 
                                 <div class="section colm colm3"> 
                                     <div class="section">
-                                        <label for="names" class="field-label">Option E Image Url :</label>
+                                        <label for="names" class="field-label"><spring:message code="addquestion.optioneimageurl" text="Option E Image Url" /> :</label>
                                         <label class="field prepend-icon">
 
                                         <form:input path="imageurl5" id="imageurl5" class="gui-input"  />
@@ -413,7 +413,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm3"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Upload Image</label>
+                                    <label for="names" class="field-label"><spring:message code="addquestion.uploadimage" text="Upload Image" /></label>
                                     <label class="field prepend-icon">
 
                                         <input type="file" name="files" id="uploadImageE" class="gui-input" />
@@ -438,7 +438,7 @@
 
                             <div class="section colm colm4"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Solution</label>
+                                    <label for="names" class="field-label"><spring:message code="addquestion.solution" text="Solution" /></label>
                                     <label class="field prepend-icon">
 
                                         <form:input path="solution" id="solution" class="gui-input"  required="true"/>

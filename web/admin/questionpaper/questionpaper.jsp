@@ -74,7 +74,7 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i>Question Papers</h4>
+                    <h4><i class="fa fa-pencil-square"></i><spring:message code="questionpaper.title" text="Question Papers" /></h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
@@ -189,15 +189,12 @@
 
                                 $("#example-basic4").empty();
                                 $("#title1").show();
-                                $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center">QPID</th><th align="center">QP Name</th><th align="center">Total Time</th><th align="center">Total Marks</th><th align="center">Quality Pack</th><th align="center">Is Random</th><th align="center">Is Active</th><th align="center">Created On</th><th align="center" colspan="2">View</th></tr></thead >');
+                                $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center"><spring:message code="questionpaper.qpid" text="QPID" /></th><th align="center"><spring:message code="questionpaper.qpname" text="QP Name" /></th><th align="center"><spring:message code="questionpaper.totaltime" text="Total Time" /></th><th align="center"><spring:message code="questionpaper.totalmarks" text="Total Marks" /></th><th align="center"><spring:message code="questionpaper.qualitypack" text="Quality Pack" /></th><th align="center"><spring:message code="questionpaper.israndom" text="Is Random" /></th><th align="center"><spring:message code="questionpaper.isactive" text="Is Active" /></th><th align="center"><spring:message code="questionpaper.createdon" text="Created On" /></th><th align="center" colspan="2"><spring:message code="questionpaper.view" text="View" /></th></tr></thead >');
                                 for (var i = 0, lennos = data.length; i < lennos; i++) {
 
                                     $('#example-basic4 tr:last').after('<tr data-tt-id="1" id="qpack" style="height: 50px;font-size:12px;color: #000;background-color: #fff;"><td align="center">' + data[i].questionpaperid + '</td><td align="center">' + data[i].questionpapername + '</td><td align="center">' + data[i].totaltime + '</td><td align="center">' + data[i].totalmarks + '</td><td align="center">' + data[i].qpackname + '</td><td align="center">' + data[i].israndom + '</td><td align="center">' + data[i].isactive + '</td><td align="center">' + data[i].createddatetime + '</td><td align="center"><a hrfe="#" onclick="viewQuestions();">View Questions</a></td><td align="center"><a hrfe="#" onclick="editQuestionPaper(' + data[i].questionpaperid + ');">Edit</a></td></tr>');
                                 }
-
-
-
-                            }
+                             }
                         });
                     } else {
                         $("#example-basic4").empty();

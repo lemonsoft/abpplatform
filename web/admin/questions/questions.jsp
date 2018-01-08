@@ -74,8 +74,8 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i> Questions</h4>
-                    <div style="position: absolute;top:5px;right:5px;width: 100px;"><button type="button" class="button btn-green" onclick="importQuestions();">Import Questions</button></div>
+                    <h4><i class="fa fa-pencil-square"></i><spring:message code="question.title" text="Questions" /> </h4>
+                    <div style="position: absolute;top:5px;right:5px;width: 100px;"><button type="button" class="button btn-green" onclick="importQuestions();"><spring:message code="question.importquestion" text="Import Questions" /></button></div>
 
                 </div><!-- end .form-header section -->
                 <form:form method="post" action="${action}"   commandName="questions" > 
@@ -113,7 +113,7 @@
                         <div class="frm-row">
                             <div class="section colm colm6"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Select NOS</label>
+                                    <label for="names" class="field-label"><spring:message code="question.selectnos" text="Select NOS" /></label>
                                     <label class="field prepend-icon">
                                         <form:select path="nosid" id="nosid" class="gui-input" >
                                             <form:option value="0">--Select--</form:option>
@@ -126,7 +126,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm6"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Select PC</label>
+                                    <label for="names" class="field-label"><spring:message code="question.selectpc" text="Select PC" /></label>
                                     <label class="field prepend-icon">
                                         <form:select path="pcid" id="pcid" class="gui-input" >
                                             <form:option value="0">--Select--</form:option>
@@ -142,7 +142,7 @@
                         </div><!-- end frm-row section -->
 
                         <div class="frm-row" id="displaytabledata">
-                            <button type="button" id="expbtn" class="button btn-blue">Export Question</button>&nbsp;<button type="button" id="addbtn" class="button btn-blue">Add Question</button> <button type="button" id="importmultilang" class="button btn-blue" onclick="importmultilanguage();">Import Multi Lingual Questions</button>
+                            <button type="button" id="expbtn" class="button btn-blue"><spring:message code="question.exportquestion" text="Export Question" /></button>&nbsp;<button type="button" id="addbtn" class="button btn-blue"><spring:message code="question.addquestion" text="Add Question" /></button> <button type="button" id="importmultilang" class="button btn-blue" onclick="importmultilanguage();"><spring:message code="question.importmultilingual" text="Import Multi Lingual Questions" /></button>
                             <table id="example-basic4" class="table table-striped table-bordered table-hover dt-responsive"  border="1" cellpadding="2" cellspacing="2" width="100%">
 
                             </table>
@@ -300,8 +300,8 @@
                             success: function (data) {
 
                                 $("#example-basic4").empty();
-                                $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center">Question ID</th><th align="center">Question Title</th><th align="center">Option 1</th><th align="center">Option 2</th>' +
-                                        '<th align="center">Option 3</th><th align="center">Option 4</th><th align="center">Option 5</th><th align="center">Marks</th><th align="center">Correct Option</th><th align="center">Edit / Preview</th><th align="center">Multilingual</th><th align="center">Action</th></tr></thead >');
+                                $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center"><spring:message code="question.questionid" text="Question ID" /></th><th align="center"><spring:message code="question.questiontitle" text="Question Title" /></th><th align="center"><spring:message code="question.option1" text="Option 1" /></th><th align="center"><spring:message code="question.option2" text="Option 2" /></th>' +
+                                        '<th align="center"><spring:message code="question.option3" text="Option 3" /></th><th align="center"><spring:message code="question.option4" text="Option 4" /></th><th align="center"><spring:message code="question.option5" text="Option 5" /></th><th align="center"><spring:message code="question.marks" text="Marks" /></th><th align="center"><spring:message code="question.correctoption" text="Correct Option" /></th><th align="center"><spring:message code="question.editpreview" text="Edit / Preview" /></th><th align="center"><spring:message code="question.multilingual" text="Multilingual" /></th><th align="center"><spring:message code="question.action" text="Action" /></th></tr></thead >');
                                 //alert(data.length);
                                 for (var i = 0, lennos = data.length; i < lennos; i++) {
                                     //alert(window.location.host);
@@ -336,8 +336,8 @@
                         success: function (data) {
 
                             $("#example-basic4").empty();
-                            $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center">Question ID</th><th align="center">Question Title</th><th align="center">Option 1</th><th align="center">Option 2</th>' +
-                                    '<th align="center">Option 3</th><th align="center">Option 4</th><th align="center">Option 5</th><th align="center">Marks</th><th align="center">Correct Option</th><th align="center">Edit / Preview</th><th align="center">Multilingual</th><th align="center">Action</th></tr></thead >');
+                             $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center"><spring:message code="question.questionid" text="Question ID" /></th><th align="center"><spring:message code="question.questiontitle" text="Question Title" /></th><th align="center"><spring:message code="question.option1" text="Option 1" /></th><th align="center"><spring:message code="question.option2" text="Option 2" /></th>' +
+                                        '<th align="center"><spring:message code="question.option3" text="Option 3" /></th><th align="center"><spring:message code="question.option4" text="Option 4" /></th><th align="center"><spring:message code="question.option5" text="Option 5" /></th><th align="center"><spring:message code="question.marks" text="Marks" /></th><th align="center"><spring:message code="question.correctoption" text="Correct Option" /></th><th align="center"><spring:message code="question.editpreview" text="Edit / Preview" /></th><th align="center"><spring:message code="question.multilingual" text="Multilingual" /></th><th align="center"><spring:message code="question.action" text="Action" /></th></tr></thead >');
                             //alert(data.length);
                             for (var i = 0, lennos = data.length; i < lennos; i++) {
 
@@ -373,8 +373,8 @@
                         success: function (data) {
 
                             $("#example-basic4").empty();
-                            $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center">Question ID</th><th align="center">Question Title</th><th align="center">Option 1</th><th align="center">Option 2</th>' +
-                                    '<th align="center">Option 3</th><th align="center">Option 4</th><th align="center">Option 5</th><th align="center">Marks</th><th align="center">Correct Option</th><th align="center">Edit / Preview</th><th align="center">Multilingual</th><th align="center">Action</th></tr></thead >');
+                             $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center"><spring:message code="question.questionid" text="Question ID" /></th><th align="center"><spring:message code="question.questiontitle" text="Question Title" /></th><th align="center"><spring:message code="question.option1" text="Option 1" /></th><th align="center"><spring:message code="question.option2" text="Option 2" /></th>' +
+                                        '<th align="center"><spring:message code="question.option3" text="Option 3" /></th><th align="center"><spring:message code="question.option4" text="Option 4" /></th><th align="center"><spring:message code="question.option5" text="Option 5" /></th><th align="center"><spring:message code="question.marks" text="Marks" /></th><th align="center"><spring:message code="question.correctoption" text="Correct Option" /></th><th align="center"><spring:message code="question.editpreview" text="Edit / Preview" /></th><th align="center"><spring:message code="question.multilingual" text="Multilingual" /></th><th align="center"><spring:message code="question.action" text="Action" /></th></tr></thead >');
                             //alert(data.length);
                             for (var i = 0, lennos = data.length; i < lennos; i++) {
 
@@ -386,10 +386,7 @@
 
                         }
 
-
-
-
-                    });
+                     });
                 } else {
                     $("#example-basic4").empty();
                     $("#addbtn").hide();
