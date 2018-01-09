@@ -33,7 +33,7 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i>Result Summary</h4>
+                    <h4><i class="fa fa-pencil-square"></i><spring:message code="result.title" text="Result Summary" /></h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
@@ -46,7 +46,7 @@
                         <div class="frm-row">
 
                             <div class="section colm colm6">
-                                <label for="names" class="field-label">Enter BatchID :</label>
+                                <label for="names" class="field-label"><spring:message code="result.batchid" text="Enter BatchID" /> :</label>
                                 <label class="field prepend-icon">
                                     <form:input path="batchid" id="batchid" class="gui-input" placeholder="result summary"/>
 

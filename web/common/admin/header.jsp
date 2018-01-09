@@ -241,7 +241,7 @@
                                                         <div class="col-md-4">
                                                             <ul class="mega-menu-submenu">
                                                                 <li aria-haspopup="true" class=" ">
-                                                                    <a href="layout_mega_menu_fixed.html" class="nav-link  "> Monthly Dashboard </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/monthlydashboard/init.io" class="nav-link  "> Monthly Dashboard </a>
                                                                 </li>
                                                                 <li aria-haspopup="true" class=" ">
                                                                     <a href="layout_disabled_menu.html" class="nav-link  "> Time Analysis </a>
@@ -250,10 +250,10 @@
                                                                     <a href="<%=request.getContextPath()%>/admin/locationwise/init.io" class="nav-link  "> Location wise </a>
                                                                 </li>
                                                                 <li aria-haspopup="true" class=" ">
-                                                                    <a href="layout_mega_menu_fixed.html" class="nav-link  "> Batch Analysis- NOS Wise </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/batchanalysis/init.io" class="nav-link  "> Batch Analysis- NOS Wise </a>
                                                                 </li>
                                                                 <li aria-haspopup="true" class=" ">
-                                                                    <a href="layout_disabled_menu.html" class="nav-link  "> Location Report- NOS Wise </a>
+                                                                    <a href="<%=request.getContextPath()%>/admin/locationwisenosreport/init.io" class="nav-link  "> Location Report- NOS Wise </a>
                                                                 </li>
                                                                 <li aria-haspopup="true" class=" ">
                                                                     <a href="layout_blank_page.html" class="nav-link  "> Job Role Wise </a>
