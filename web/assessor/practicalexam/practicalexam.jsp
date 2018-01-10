@@ -62,7 +62,7 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i> Take Practicals</h4>
+                    <h4><i class="fa fa-pencil-square"></i><spring:message code="practical.title" text="Take Practicals" /></h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
@@ -71,7 +71,7 @@
                         <div class="frm-row">
                             <div class="section colm colm6"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Batch ID:</label>
+                                    <label for="names" class="field-label"><spring:message code="practical.batchid" text="Batch ID" />:</label>
                                     <label class="field prepend-icon">
                                         <form:select path="batchid" name="batchid" id="batchid" class="gui-input" >
                                             <form:option value="">--Select--</form:option>
@@ -114,7 +114,7 @@
                     //alert(data.length);
                     $("#example-basic4").empty();
 
-                    $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center">Attendance Image</th><th align="center">Enrollment No</th><th align="center">Student Name</th><th align="center" colspan="2">Practical Exam</th></tr></thead >');
+                    $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center"><spring:message code="practical.attendanceimage" text="Attendance Image" /></th><th align="center"><spring:message code="practical.enrollno" text="Enrollment No" /></th><th align="center"><spring:message code="practical.studentname" text="Student Name" /></th><th align="center" colspan="2"><spring:message code="practical.practicalexam" text="Practical Exam" /></th></tr></thead >');
                     for (var i = 0, lennos = data.length; i <= lennos; i++) {
 
                         var view = "<button type=\"button\" class=\"button btn-primary block pushed expand\" onclick=\"takeExam('" + data[i].userid + "');\">Take Practical</button>";

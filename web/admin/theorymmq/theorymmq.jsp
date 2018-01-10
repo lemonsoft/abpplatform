@@ -74,7 +74,7 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i> Multimapping Questions</h4>
+                    <h4><i class="fa fa-pencil-square"></i><spring:message code="theorymmq.title" text="Multimapping Questions" /></h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
@@ -109,7 +109,7 @@
                             </div><!-- end section -->
                         </div><!-- end frm-row section -->
                         <div class="frm-row" id="displaytabledata">
-                            <button type="button" class="button btn-blue" onclick="importQuestions();">Import MMQ's</button>&nbsp;<button type="button" id="importmultilang" class="button btn-blue" onclick="importmultilanguage();">Import Multi Lingual MMQ's</button>
+                            <button type="button" class="button btn-blue" onclick="importQuestions();"><spring:message code="theorymmq.importmmq" text="Import MMQ's" /></button>&nbsp;<button type="button" id="importmultilang" class="button btn-blue" onclick="importmultilanguage();"><spring:message code="theorymmq.importmultilingualmmq" text="Import Multi Lingual MMQ's" /></button>
                             <table id="example-basic4" class="table table-striped table-bordered table-hover dt-responsive"  border="1" cellpadding="2" cellspacing="2" width="100%">
 
                             </table>
@@ -162,8 +162,8 @@
                         success: function (data) {
 
                             $("#example-basic4").empty();
-                            $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center">Question ID</th><th align="center">Question Title</th><th align="center">Option 1</th><th align="center">Option 2</th>' +
-                                    '<th align="center">Option 3</th><th align="center">Option 4</th><th align="center">Marks</th><th align="center">PCs with Selected Marks</th><th align="center">Is Active</th><th align="center">Correct Option</th><th align="center">Edit</th><th align="center">Multilingual</th><th align="center">Action</th></tr></thead >');
+                            $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center"><spring:message code="theorymmq.questionid" text="Question ID" /></th><th align="center"><spring:message code="theorymmq.questiontitle" text="Question Title" /></th><th align="center"><spring:message code="theorymmq.option1" text="Option 1" /></th><th align="center"><spring:message code="theorymmq.option2" text="Option 2" /></th>' +
+                                    '<th align="center"><spring:message code="theorymmq.option3" text="Option 3" /></th><th align="center"><spring:message code="theorymmq.option4" text="Option 4" /></th><th align="center"><spring:message code="theorymmq.marks" text="Marks" /></th><th align="center"><spring:message code="theorymmq.pcwithmarks" text="PCs with Selected Marks" /></th><th align="center"><spring:message code="theorymmq.isactive" text="Is Active" /></th><th align="center"><spring:message code="theorymmq.correctoption" text="Correct Option" /></th><th align="center"><spring:message code="theorymmq.edit" text="Edit" /></th><th align="center"><spring:message code="theorymmq.multilingual" text="Multilingual" /></th><th align="center">Action</th></tr></thead >');
                             //alert(data.length);
                             for (var i = 0, lennos = data.length; i < lennos; i++) {
                                 //alert(window.location.host);
@@ -173,8 +173,6 @@
                             }
 
                         }
-
-
 
                     });
                 } else {

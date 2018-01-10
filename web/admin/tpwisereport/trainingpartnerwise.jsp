@@ -33,7 +33,7 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i>Training Partner Wise</h4>
+                    <h4><i class="fa fa-pencil-square"></i><spring:message code="tpwise.title" text="Training Partner Wise" /></h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
@@ -57,7 +57,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm3"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Job Role</label>
+                                    <label for="names" class="field-label"><spring:message code="tpwise.jobrole" text="Job Role" /></label>
                                     <label class="field prepend-icon">
                                         <form:select path="qpackid" id="qpackid" class="gui-input" >
                                             <form:option value="0">--Select--</form:option>
@@ -69,7 +69,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm3"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Select Month</label>
+                                    <label for="names" class="field-label"><spring:message code="tpwise.selectmonth" text="Select Month" /></label>
                                     <label class="field prepend-icon">
 
                                         <form:input path="month" type="month" id="month" class="gui-input"/>
@@ -86,15 +86,15 @@
                         </div><!-- end frm-row section -->
                         <c:if test="${records != null}"> 
                             <div class="frm-row">
-                                <table><tr><td colspan=5 align=right><a href="#" onclick="writeExcelSheet();"><img src="<%=request.getContextPath()%>/assets/images/excel.ico" width=30px height=30px/></a></td></tr></table>
+                                <table><tr><td colspan=5 align=right><a href="#" onclick="writeExcelSheet();"><img src="<%=request.getContextPath()%>/assets/images/excel.ico" width="30px" height="30px"/></a></td></tr></table>
                                                 <display:table name="records" class="table table-bordered" requestURI="initSearch.io" pagesize="40">
-                                                    <display:column property="trainingpartner" title="Training Partner" />
-                                                    <display:column property="totalstudent" title="Total Students"/>
-                                                    <display:column property="theorypassed" title="Theory Passed"/>
-                                                    <display:column property="theoryfailed" title="Theory Failed"/>
-                                                    <display:column property="practicalpassed" title="Practical Passed"/>
-                                                    <display:column property="practicalfailed" title="Practical Failed"/>
-                                                    <display:column property="location" title="Location"/>
+                                                    <display:column property="trainingpartner" titleKey="tpwise.trainingpartner" />
+                                                    <display:column property="totalstudent" titleKey="tpwise.totalstudents"/>
+                                                    <display:column property="theorypassed" titleKey="tpwise.theorypassed"/>
+                                                    <display:column property="theoryfailed" titleKey="tpwise.theoryfailed"/>
+                                                    <display:column property="practicalpassed" titleKey="tpwise.practicalpassed"/>
+                                                    <display:column property="practicalfailed" titleKey="tpwise.practicalfailed"/>
+                                                    <display:column property="location" titleKey="tpwise.location"/>
                                                 </display:table>
 
                             </div>
@@ -139,8 +139,6 @@
                     $("#qpackid").html("<option value=''>------- Select --------</option>");
                 }
             });
-
-
 
         });
 

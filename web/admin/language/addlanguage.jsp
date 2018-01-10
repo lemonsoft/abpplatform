@@ -52,13 +52,7 @@
                                     <span class="field-icon"><i class="fa fa-language"></i></span>  
                                 </label>
                             </div><!-- end section -->
-
-
-
                         </div><!-- end frm-row section -->
-
-
-
                     </div><!-- end .form-body section -->
                     <div class="form-footer">
                         <c:if test = "${mode == 'add'}">

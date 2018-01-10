@@ -33,7 +33,7 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i>Practical Paper</h4>
+                    <h4><i class="fa fa-pencil-square"></i><spring:message code="exam.title" text="Practical Paper" /></h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
@@ -45,22 +45,22 @@
                     <div class="form-body theme-blue">
 
                         <div class="frm-row">
-                            <div class="section colm colm6"><b>Student Name :</b>${studentname}</div>
-                            <div class="section colm colm6"><b>Enrollment No :</b>${enrollno}</div>
+                            <div class="section colm colm6"><b><spring:message code="exam.stname" text="Student Name" /> :</b>${studentname}</div>
+                            <div class="section colm colm6"><b><spring:message code="exam.enrollno" text="Enrollment No" /> :</b>${enrollno}</div>
                         </div>
                         <div class="frm-row">
 
                             <div class="section colm colm12">
                                 <table class="table table-striped table-bordered table-hover dt-responsive"  border="1" cellpadding="2" cellspacing="2" width="100%">
-                                    <tr><td>Senario</td><td></td></tr>
+                                    <tr><td><spring:message code="exam.senario" text="Senario" /></td><td></td></tr>
 
                                     <c:forEach var="senerio" items="${questionlist}">
                                         <tr><td>${senerio.key}</td>
                                             <td>
 
                                                 <display:table name="${senerio.value}" class="table table-bordered" decorator="com.abp.assessor.practicalexam.SrcDecorator" requestURI="initSearch.io"  pagesize="5">
-                                                    <display:column property="question" title="Question"  style="word-break:break-all;"/>
-                                                    <display:column property="options" title="Actions" />
+                                                    <display:column property="question" titleKey="exam.question"  style="word-break:break-all;"/>
+                                                    <display:column property="options" titleKey="exam.actions" />
                                                 </display:table>
 
                                             </td> </tr>

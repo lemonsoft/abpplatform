@@ -33,8 +33,8 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i>Import Multilingual Theory MMQ</h4>
-                    <div style="position: absolute;top:5px;right:5px;width: 200px;"><a href="<%=request.getContextPath()%>/admin/theorymmq/init.io" class="button btn-primary block pushed expand">Theory MMQ </a></div>
+                    <h4><i class="fa fa-pencil-square"></i><spring:message code="importmultilanguage.title" text="Import Multilingual Theory MMQ" /></h4>
+                    <div style="position: absolute;top:5px;right:5px;width: 200px;"><a href="<%=request.getContextPath()%>/admin/theorymmq/init.io" class="button btn-primary block pushed expand"><spring:message code="importmultilanguage.theorymmq" text="Theory MMQ" /> </a></div>
 
                 </div><!-- end .form-header section -->
 
@@ -45,9 +45,9 @@
                         <div class="frm-row">
                             <div class="section colm colm4"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Note :  It will accept only Excel files with *.xls and.xlsx extension only.</label>
+                                    <label for="names" class="field-label"><spring:message code="importmultilanguage.note1" text="Note :  It will accept only Excel files with *.xls and.xlsx extension only." /></label>
                                     <label class="field prepend-icon">
-                                        Use the same format as given below :<a href="#" id="download">Download</a> 
+                                        <spring:message code="importmultilanguage.note2" text="Use the same format as given below" /> :<a href="#" id="download"><spring:message code="importmultilanguage.download" text="Download" /></a> 
                                     </label>
                                 </div><!-- end section -->
                             </div><!-- end section -->
@@ -67,7 +67,7 @@
                                 <div class="section">
                                     <label for="names" class="field-label">&nbsp;</label>
                                     <label class="field prepend-icon">
-                                        <button type="submit" class="button btn-blue">Upload</button>
+                                        <button type="submit" class="button btn-blue"><spring:message code="importmultilanguage.upload" text="Upload" /></button>
                                     </label>
                                 </div><!-- end section -->
                             </div><!-- end section -->
@@ -78,9 +78,9 @@
                                 <div class="section" style='overflow:auto;width:1200px;'>
                                     <table id="example-basic4" class="table table-striped table-bordered table-hover dt-responsive"  border="1" cellpadding="2" cellspacing="2" id="format">
                                         <thead>
-                                        <th>QuestionID</th><th>LanguageID</th><th>Question</th><th>Option1</th>
-                                        <th>Option2</th><th>Option3</th>
-                                        <th>Option4</th>
+                                        <th><spring:message code="importmultilanguage.questionid" text="QuestionID" /></th><th><spring:message code="importmultilanguage.languageid" text="LanguageID" /></th><th><spring:message code="importmultilanguage.question" text="Question" /></th><th><spring:message code="importmultilanguage.option1" text="Option1" /></th>
+                                        <th><spring:message code="importmultilanguage.option2" text="Option2" /></th><th><spring:message code="importmultilanguage.option3" text="Option3" /></th>
+                                        <th><spring:message code="importmultilanguage.option4" text="Option4" /></th>
                                         </thead>
                                     </table>
                                 </div><!-- end section -->
@@ -90,21 +90,21 @@
                         <c:if test = "${importdata !=null}">
                             <div class="frm-row" style='overflow:auto;width:1200px;height:650px;'>
                                 <display:table name="importdata" class="table table-bordered" requestURI="importQuestionExcel.io"  pagesize="50">
-                                   <display:column property="question_id" title="QuestionID" />
-                                    <display:column property="language_id" title="LanguageID" />
-                                    <display:column property="question_title" title="Question" />
-                                    <display:column property="option1" title="Option1" />
-                                    <display:column property="option2" title="Option2" />
-                                    <display:column property="option3" title="Option3" />
-                                    <display:column property="option4" title="Option4" />
-                                     <display:column property="status" title="Status" />
+                                    <display:column property="question_id" titleKey="importmultilanguage.questionid" />
+                                    <display:column property="language_id" titleKey="importmultilanguage.languageid" />
+                                    <display:column property="question_title" titleKey="importmultilanguage.question" />
+                                    <display:column property="option1" titleKey="importmultilanguage.option1" />
+                                    <display:column property="option2" titleKey="importmultilanguage.option2" />
+                                    <display:column property="option3" titleKey="importmultilanguage.option3" />
+                                    <display:column property="option4" titleKey="importmultilanguage.option4" />
+                                    <display:column property="status" titleKey="importmultilanguage.status" />
 
                                 </display:table>
                                 <c:if test = "${isError == true}">
-                                    <font color="red"><h4>Excel Sheet Have Errors.</h4></font>
+                                    <font color="red"><h4><spring:message code="importmultilanguage.note3" text="Excel Sheet Have Errors." /></h4></font>
                                 </c:if>
                                 <c:if test = "${isError == false}">
-                                    <button type="button" onclick="startimport();" class="button btn-blue">Import Question</button>
+                                    <button type="button" onclick="startimport();" class="button btn-blue"><spring:message code="importmultilanguage.importquestion" text="Import Question" /></button>
                                 </c:if>
                             </div>
                         </c:if>

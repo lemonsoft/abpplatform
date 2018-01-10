@@ -33,7 +33,7 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i>PC wise Report</h4>
+                    <h4><i class="fa fa-pencil-square"></i><spring:message code="pcwisereport.title" text="PC wise Report" /></h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
@@ -44,17 +44,17 @@
                     <div class="frm-row">
                         <display:table name="pcwiselog" class="table table-bordered" requestURI="pcreport.io"  pagesize="50">
 
-                            <display:column property="pcid" title="PCID" />
-                            <display:column property="theorymarks" title="Theory Marks"/>
-                            <display:column property="scoredtheorymarks" title="Scored Theory Marks"/>
-                            <display:column property="practicalmarks" title="Practical Marks"/>
-                            <display:column property="scoredpracticalmarks" title="Scored Practical Marks"/>
-                            <display:column property="totalmarks" title="Total Marks"/>
-                            <display:column property="scoredtotalmarks" title="Scored Total Marks"/>
+                            <display:column property="pcid" title="pcwisereport.pcid" />
+                            <display:column property="theorymarks" title="pcwisereport.theorymarks"/>
+                            <display:column property="scoredtheorymarks" title="pcwisereport.scoredtheorymarks"/>
+                            <display:column property="practicalmarks" title="pcwisereport.practicalmarks"/>
+                            <display:column property="scoredpracticalmarks" title="pcwisereport.scoredpracticalmarks"/>
+                            <display:column property="totalmarks" title="pcwisereport.totalmarks"/>
+                            <display:column property="scoredtotalmarks" title="pcwisereport.scoredtotalmarks"/>
 
                         </display:table>
                         <table class="table table-bordered" cellpadding="2" cellspacing="2" border="1">
-                            <tr><td ><b>Total</b></td><td >${totaltheory}</td><td >&nbsp;</td><td >${totalpractical}</td><td >&nbsp;</td><td >&nbsp;</td></tr>
+                            <tr><td ><b><spring:message code="pcwisereport.total" text="Total" /></b></td><td >${totaltheory}</td><td >&nbsp;</td><td >${totalpractical}</td><td >&nbsp;</td><td >&nbsp;</td></tr>
                         </table>
 
                     </div><!-- end frm-row section -->

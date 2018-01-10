@@ -105,7 +105,7 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i>Multilingual Question</h4>
+                    <h4><i class="fa fa-pencil-square"></i><spring:message code="showmultilanguage.title" text="Multilingual Question" /></h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
@@ -117,17 +117,15 @@
                             <c:if test = "${records !=null}">
                                 <div class="frm-row"   id="displaytabledata">
                                     <display:table name="records" class="table table-bordered"   pagesize="10">
-                                        <display:column property="question_id" title="QuestionID" />
-                                        <display:column property="language_id" title="LanguageID" />
-                                        <display:column property="question_title" style="white-space:wrap;" title="Question" />
-                                        <display:column property="option1" title="Option1" />
-                                        <display:column property="option2" title="Option2" />
-                                        <display:column property="option3" title="Option3" />
-                                        <display:column property="option4" title="Option4" />
-                                        <display:column property="actions" title="Edit" />
-
-
-                                    </display:table>
+                                        <display:column property="question_id" titleKey="showmultilanguage.questionid" />
+                                        <display:column property="language_id" titleKey="showmultilanguage.languageid" />
+                                        <display:column property="question_title" style="white-space:wrap;" titleKey="showmultilanguage.question" />
+                                        <display:column property="option1" titleKey="showmultilanguage.option1" />
+                                        <display:column property="option2" titleKey="showmultilanguage.option2" />
+                                        <display:column property="option3" titleKey="showmultilanguage.option3" />
+                                        <display:column property="option4" titleKey="showmultilanguage.option4" />
+                                        <display:column property="actions" titleKey="showmultilanguage.edit" />
+                                     </display:table>
 
                                 </div>
                             </c:if>
@@ -137,7 +135,7 @@
                                 <input type="hidden" id="qid" name="qid"  />
                                 <div class="section colm colm4"> 
                                     <div class="section">
-                                        <label for="names" class="field-label">Question</label>
+                                        <label for="names" class="field-label"><spring:message code="showmultilanguage.question" text="Question" /></label>
                                         <label class="field prepend-icon">
                                             <textarea name="question"  rows="5" cols="20" id="question" class="gui-input"></textarea>
 
@@ -148,7 +146,7 @@
                                 </div><!-- end section -->
                                 <div class="section colm colm4">
                                     <div class="section">
-                                        <label for="names" class="field-label">Option1</label>
+                                        <label for="names" class="field-label"><spring:message code="showmultilanguage.option1" text="Option1" /></label>
                                         <label class="field prepend-icon">
                                             <input  id="option1" name="option1" class="gui-input" />
 
@@ -158,7 +156,7 @@
                                 </div><!-- end section -->
                                 <div class="section colm colm4">
                                     <div class="section">
-                                        <label for="names" class="field-label">Option2</label>
+                                        <label for="names" class="field-label"><spring:message code="showmultilanguage.option2" text="Option2" /></label>
                                         <label class="field prepend-icon">
                                             <input  id="option2" name="option2" class="gui-input" />
 
@@ -172,7 +170,7 @@
 
                                 <div class="section colm colm6">
                                     <div class="section">
-                                        <label for="names" class="field-label">Option3</label>
+                                        <label for="names" class="field-label"><spring:message code="showmultilanguage.option3" text="Option3" /></label>
                                         <label class="field prepend-icon">
                                             <input  id="option3" name="option3" class="gui-input" />
 
@@ -182,7 +180,7 @@
                                 </div><!-- end section -->
                                 <div class="section colm colm6">
                                     <div class="section">
-                                        <label for="names" class="field-label">Option4</label>
+                                        <label for="names" class="field-label"><spring:message code="showmultilanguage.option4" text="Option4" /></label>
                                         <label class="field prepend-icon">
                                             <input  id="option4" name="option4" class="gui-input" />
 

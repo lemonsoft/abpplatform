@@ -27,7 +27,7 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i>Edit Theory MMQ</h4>
+                    <h4><i class="fa fa-pencil-square"></i><spring:message code="addtheorymmq.title" text="Edit Theory MMQ" /></h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section action="${action}"-->
@@ -43,7 +43,7 @@
                         <div class="frm-row">
                             <div class="section colm colm4"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Question Level</label>
+                                    <label for="names" class="field-label"><spring:message code="addtheorymmq.questionlevel" text="Question Level" /></label>
                                     <label class="field prepend-icon">
                                         <form:select path="question_level" id="question_level" class="gui-input" >
                                             <form:option value="1">Easy</form:option>
@@ -57,7 +57,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm4"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Question Type</label>
+                                    <label for="names" class="field-label"><spring:message code="addtheorymmq.questiontype" text="Question Type" /></label>
                                     <label class="field prepend-icon">
 
                                         <form:select path="question_type" id="question_type" class="gui-input" >
@@ -74,7 +74,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm4"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Marks</label>
+                                    <label for="names" class="field-label"><spring:message code="addtheorymmq.marks" text="Marks" /></label>
                                     <label class="field prepend-icon">
 
                                         <form:select path="marks" id="marks" class="gui-input" >
@@ -117,7 +117,7 @@
                         <div class="frm-row">
                             <div class="section colm colm6"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">No of Option</label>
+                                    <label for="names" class="field-label"><spring:message code="addtheorymmq.noofoption" text="No of Option" /></label>
                                     <label class="field prepend-icon">
                                         <form:select path="noofoption" id="noofoption" class="gui-input" >
                                             <form:option value="3">3</form:option>
@@ -131,7 +131,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm6"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Correct Answer</label>
+                                    <label for="names" class="field-label"><spring:message code="addtheorymmq.correctanswer" text="Correct Answer" /></label>
                                     <label class="field prepend-icon">
 
                                         <form:select path="correct_option" id="correct_option" class="gui-input" >
@@ -154,7 +154,7 @@
                         <div class="frm-row">
                             <div class="section colm colm4"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Question</label>
+                                    <label for="names" class="field-label"><spring:message code="addtheorymmq.question" text="Question" /></label>
                                     <label class="field prepend-icon">
                                         <form:textarea path="question_title" rows="5" cols="10" class="gui-input" required="true"></form:textarea>
 
@@ -166,7 +166,7 @@
 
                                 <div class="section colm colm3"> 
                                     <div class="section">
-                                        <label for="names" class="field-label">Question Image Url :</label>
+                                        <label for="names" class="field-label"><spring:message code="addtheorymmq.questionimageurl" text="Question Image Url" /> :</label>
                                         <label class="field prepend-icon">
 
                                         <form:input path="questionimgurl" id="questionimgurl" class="gui-input"  />
@@ -177,7 +177,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm3"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Upload Image</label>
+                                    <label for="names" class="field-label"><spring:message code="addtheorymmq.uploadimage" text="Upload Image" /></label>
                                     <label class="field prepend-icon">
 
                                         <input type="file" name="files" id="uploadImage" class="gui-input" />
@@ -202,7 +202,7 @@
                         <div class="frm-row">
                             <div class="section colm colm4"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Option A</label>
+                                    <label for="names" class="field-label"><spring:message code="addtheorymmq.optiona" text="Option A" /></label>
                                     <label class="field prepend-icon">
                                         <form:textarea path="option1" rows="5" cols="10" class="gui-input" required="true"></form:textarea>
 
@@ -214,7 +214,7 @@
 
                                 <div class="section colm colm3"> 
                                     <div class="section">
-                                        <label for="names" class="field-label">Option A Image Url :</label>
+                                        <label for="names" class="field-label"><spring:message code="addtheorymmq.optionaimgurl" text="Option A Image Url" /> :</label>
                                         <label class="field prepend-icon">
 
                                         <form:input path="imageurl1" id="imageurl1" class="gui-input"  />
@@ -225,7 +225,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm3"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Upload Image</label>
+                                    <label for="names" class="field-label"><spring:message code="addtheorymmq.uploadimage" text="Upload Image" /></label>
                                     <label class="field prepend-icon">
 
                                         <input type="file" name="files" id="uploadImageA" class="gui-input" />
@@ -250,7 +250,7 @@
                         <div class="frm-row">
                             <div class="section colm colm4"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Option B</label>
+                                    <label for="names" class="field-label"><spring:message code="addtheorymmq.optionb" text="Option B" /></label>
                                     <label class="field prepend-icon">
                                         <form:textarea path="option2" rows="5" cols="10" class="gui-input" required="true"></form:textarea>
 
@@ -262,7 +262,7 @@
 
                                 <div class="section colm colm3"> 
                                     <div class="section">
-                                        <label for="names" class="field-label">Option B Image Url :</label>
+                                        <label for="names" class="field-label"><spring:message code="addtheorymmq.optionbimgurl" text="Option B Image Url" /> :</label>
                                         <label class="field prepend-icon">
 
                                         <form:input path="imageurl2" id="imageurl2" class="gui-input"  />
@@ -273,7 +273,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm3"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Upload Image</label>
+                                    <label for="names" class="field-label"><spring:message code="addtheorymmq.uploadimage" text="Upload Image" /></label>
                                     <label class="field prepend-icon">
 
                                         <input type="file" name="files" id="uploadImageB" class="gui-input" />
@@ -297,7 +297,7 @@
                         <div class="frm-row" id="option3">
                             <div class="section colm colm4"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Option C</label>
+                                    <label for="names" class="field-label"><spring:message code="addtheorymmq.optionc" text="Option C" /></label>
                                     <label class="field prepend-icon">
                                         <form:textarea path="option3" rows="5" cols="10" class="gui-input" required="true"></form:textarea>
 
@@ -309,7 +309,7 @@
 
                                 <div class="section colm colm3"> 
                                     <div class="section">
-                                        <label for="names" class="field-label">Option C Image Url :</label>
+                                        <label for="names" class="field-label"><spring:message code="addtheorymmq.optioncimgurl" text="Option C Image Url" /> :</label>
                                         <label class="field prepend-icon">
 
                                         <form:input path="imageurl3" id="imageurl3" class="gui-input"  />
@@ -320,7 +320,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm3"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Upload Image</label>
+                                    <label for="names" class="field-label"><spring:message code="addtheorymmq.uploadimage" text="Upload Image" /></label>
                                     <label class="field prepend-icon">
 
                                         <input type="file" name="files" id="uploadImageC" class="gui-input" />
@@ -344,7 +344,7 @@
                         <div class="frm-row" id="option4">
                             <div class="section colm colm4"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Option D</label>
+                                    <label for="names" class="field-label"><spring:message code="addtheorymmq.optiond" text="Option D" /></label>
                                     <label class="field prepend-icon">
                                         <form:textarea path="option4" rows="5" cols="10" class="gui-input" ></form:textarea>
 
@@ -356,7 +356,7 @@
 
                                 <div class="section colm colm3"> 
                                     <div class="section">
-                                        <label for="names" class="field-label">Option D Image Url :</label>
+                                        <label for="names" class="field-label"><spring:message code="addtheorymmq.optiondimgurl" text="Option D Image Url" /> :</label>
                                         <label class="field prepend-icon">
 
                                         <form:input path="imageurl4" id="imageurl4" class="gui-input"  />
@@ -367,7 +367,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm3"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Upload Image</label>
+                                    <label for="names" class="field-label"><spring:message code="addtheorymmq.uploadimg" text="Upload Image" /></label>
                                     <label class="field prepend-icon">
 
                                         <input type="file" name="files" id="uploadImageD" class="gui-input" />
@@ -393,7 +393,7 @@
 
                             <div class="section colm colm4"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Solution</label>
+                                    <label for="names" class="field-label"><spring:message code="addtheorymmq.solution" text="Solution" /></label>
                                     <label class="field prepend-icon">
 
                                         <form:input path="solution" id="solution" class="gui-input"  required="true"/>
@@ -466,8 +466,7 @@
                 }
             });
             $(document).ready(function () {
-                //$("#option4").hide();
-                //$("#option5").hide();
+                
                 var val = $('#noofoption').find(":selected").text();
 
                 if (parseInt(val) === 3) {
@@ -607,10 +606,8 @@
                                 str = "<option value=''>------- Select --------</option>";
                             }
                             $.each(data, function (index, jsonObject) {
-                                //$.each(jsonObject, function (key, val) {
-                                //alert("key : " + jsonObject.ID + " ; value : " + jsonObject.NAME);
                                 str = str + "<option value=" + jsonObject.ID + ">" + jsonObject.NAME + "</option>"
-                                // });
+                               
                             });
                             $("#districtid").html(str);
                         }

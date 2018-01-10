@@ -33,7 +33,7 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i>NOS wise Report</h4>
+                    <h4><i class="fa fa-pencil-square"></i><spring:message code="nosreport.title" text="NOS wise Report" /></h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
@@ -45,19 +45,19 @@
 
                         <div class="frm-row">
                             <display:table name="noswiselog" class="table table-bordered" requestURI="nosreport.io"  pagesize="50">
-                                <display:column property="nosid" title="NOSID" />
-                                <display:column property="theorymarks" title="Theory Marks"/>
-                                <display:column property="theorycutoff" title="Theory Cutoff"/>
-                                <display:column property="scoredtheorymarks" title="Scored Theory Marks"/>
-                                <display:column property="practicalmarks" title="Practical Marks"/>
-                                <display:column property="practicalcutoff" title="Practical Cutoff"/>
-                                <display:column property="practicalscoredmarks" title="Scored Practical Marks"/>
-                                <display:column property="totalmarks" title="Total Marks"/>
-                                <display:column property="overallcutoff" title="Overall Cutoff"/>
-                                <display:column property="scoredtotalmarks" title="Scored Total Marks"/>
-                                <display:column property="weightedavg" title="Weighted Average"/>
-                                <display:column property="scoredweightavg" title="Scored Weighted Average"/>
-                                <display:column property="result" title="Results"/>
+                                <display:column property="nosid" titleKey="nosreport.nosid" />
+                                <display:column property="theorymarks" titleKey="nosreport.theorymarks"/>
+                                <display:column property="theorycutoff" titleKey="nosreport.theorycutoff"/>
+                                <display:column property="scoredtheorymarks" titleKey="nosreport.scoredtheorymarks"/>
+                                <display:column property="practicalmarks" titleKey="nosreport.practicalmarks"/>
+                                <display:column property="practicalcutoff" titleKey="nosreport.practicalcutoff"/>
+                                <display:column property="practicalscoredmarks" titleKey="nosreport.practicalscoredmarks"/>
+                                <display:column property="totalmarks" titleKey="nosreport.totalmarks"/>
+                                <display:column property="overallcutoff" titleKey="nosreport.overallcutoff"/>
+                                <display:column property="scoredtotalmarks" titleKey="nosreport.scoredtotalmarks"/>
+                                <display:column property="weightedavg" titleKey="nosreport.weightedavg"/>
+                                <display:column property="scoredweightavg" titleKey="nosreport.scoredweightavg"/>
+                                <display:column property="result" titleKey="nosreport.result"/>
                             </display:table>
 
 

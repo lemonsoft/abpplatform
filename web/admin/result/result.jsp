@@ -73,7 +73,7 @@
             <div class="smart-forms smart-container wrap-full">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i> Result </h4>
+                    <h4><i class="fa fa-pencil-square"></i>  <spring:message code="result.title" text="Result" />  </h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
@@ -108,7 +108,7 @@
                             </div><!-- end section -->
                             <div class="section colm colm4"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Select Batch</label>
+                                    <label for="names" class="field-label"><spring:message code="result.selectbatch" text="Select Batch" /></label>
                                     <label class="field prepend-icon">
                                         <form:select path="batchid" id="batchid" class="gui-input" >
                                             <form:option value="0">--Select--</form:option>
@@ -123,20 +123,10 @@
                         </div><!-- end frm-row section -->
                         <div class="frm-row" id="displaytabledata">
                             <table id="example-basic4" class="table table-striped table-bordered table-hover dt-responsive"  border="1" cellpadding="2" cellspacing="2" width="100%">
-
-
-
-
                             </table>
                         </div>
                     </div>
                 </form:form>
-
-
-
-
-
-
 
             </div><!-- end .smart-forms section -->
         </div><!-- end .smart-wrap section -->
@@ -224,31 +214,31 @@
             $("#batchid").change(function () {
 
                 var batchid = $(this).val();
-                var qpackid =  $("#qpid").val();
+                var qpackid = $("#qpid").val();
                 if (batchid) {
 
                     $.ajax({
                         url: "getResultDetails.io",
-                        data: {batchid: batchid,qpackid: qpackid},
+                        data: {batchid: batchid, qpackid: qpackid},
                         type: 'GET',
                         success: function (data) {
-                            
+
                             $("#example-basic4").empty();
-                            $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center">Photo</th><th align="center">Enrollment</th><th align="center">Name</th><th align="center">Max Theory</th>' +
-                                    '<th align="center">Theory Cutoff</th><th align="center">Scored Theory Marks</th><th align="center">Max Practical</th><th align="center">Practical Cutoff</th><th align="center">Scored Practical</th><th align="center">Overall Cutoff</th><th align="center">Scored Total</th><th align="center">Scored Weighted Avg</th><th align="center">NOS Report</th><th align="center">PC Report</th><th align="center">Proctoring Video</th><th align="center">Question Wise Report</th></tr></thead >');
-                            
+                            $('#example-basic4').prepend('<thead ><tr style="height: 50px;font-size:12px;color: #000;background-color: #fff;" ><th align="center"><spring:message code="result.photo" text="Photo" /></th><th align="center"><spring:message code="result.enrollment" text="Enrollment" /></th><th align="center"><spring:message code="result.name" text="Name" /></th><th align="center"><spring:message code="result.maxtheory" text="Max Theory" /></th>' +
+                                    '<th align="center"><spring:message code="result.theorycutoff" text="Theory Cutoff" /></th><th align="center"><spring:message code="result.scoredtheorymarks" text="Scored Theory Marks" /></th><th align="center"><spring:message code="result.maxpractical" text="Max Practical" /></th><th align="center"><spring:message code="result.practicalcutoof" text="Practical Cutoff" /></th><th align="center"><spring:message code="result.scoredpractical" text="Scored Practical" /></th><th align="center"><spring:message code="result.overallcutoff" text="Overall Cutoff" /></th><th align="center"><spring:message code="result.scoredtotal" text="Scored Total" /></th><th align="center"><spring:message code="result.scoredweightedavg" text="Scored Weighted Avg" /></th><th align="center"><spring:message code="result.nosreport" text="NOS Report" /></th><th align="center"><spring:message code="result.pcreport" text="PC Report" /></th><th align="center"><spring:message code="result.proctoringvideo" text="Proctoring Video" /></th><th align="center"><spring:message code="result.questionwiselog" text="Question Wise Report" /></th></tr></thead >');
+
                             for (var i = 0, lennos = data.length; i < lennos; i++) {
-                              var id=data[i].ID;
-                            $('#example-basic4 tr:last').after('<tr data-tt-id="1" id="qpack" style="height: 50px;font-size:12px;color: #000;background-color: #fff;"><td>Photo</td><td align="center">' + data[i].enrollmentno + '</td><td align="center">' + data[i].name + '</td><td align="center">' + data[i].maxtheory + '</td><td align="center">' + data[i].theorycuttoff + '</td><td align="center">' + data[i].scoredtheorymarks + '</td><td align="center">' + data[i].maxpractical + '</td><td align="center">' + data[i].practicalcuttoff + '</td><td align="center">' + data[i].scoredpracticalmarks + '</td><td align="center">' + data[i].overallcutoff + '</td><td align="center">' + data[i].scoredtotal + '</td><td align="center">' + data[i].scoredweightedavg + '</td>'
-                                    + '<td><button type="button" class="button btn-blue" onClick="opendisplaynos(' + data[i].ID + ');">NOS</button></td><td><button type="button" class="button btn-blue" onClick="opendisplaypc(' + data[i].ID + ');">PC</button></td><td><button type="button" class="button btn-blue" onClick="openpcdialog(' + data[i].ID + ');">NO VIDEO</button></td><td><button type="button" id="openeditqp" class="button btn-blue" onclick="openreportdialog('+id+');">REPORT</button></td></tr>');
-                            
+                                var id = data[i].ID;
+                                $('#example-basic4 tr:last').after('<tr data-tt-id="1" id="qpack" style="height: 50px;font-size:12px;color: #000;background-color: #fff;"><td>Photo</td><td align="center">' + data[i].enrollmentno + '</td><td align="center">' + data[i].name + '</td><td align="center">' + data[i].maxtheory + '</td><td align="center">' + data[i].theorycuttoff + '</td><td align="center">' + data[i].scoredtheorymarks + '</td><td align="center">' + data[i].maxpractical + '</td><td align="center">' + data[i].practicalcuttoff + '</td><td align="center">' + data[i].scoredpracticalmarks + '</td><td align="center">' + data[i].overallcutoff + '</td><td align="center">' + data[i].scoredtotal + '</td><td align="center">' + data[i].scoredweightedavg + '</td>'
+                                        + '<td><button type="button" class="button btn-blue" onClick="opendisplaynos(' + data[i].ID + ');">NOS</button></td><td><button type="button" class="button btn-blue" onClick="opendisplaypc(' + data[i].ID + ');">PC</button></td><td><button type="button" class="button btn-blue" onClick="openpcdialog(' + data[i].ID + ');">NO VIDEO</button></td><td><button type="button" id="openeditqp" class="button btn-blue" onclick="openreportdialog(' + id + ');">REPORT</button></td></tr>');
+
                             }
-                           
+
                         }
                     });
                 } else {
                     $("#example-basic4").empty();
-                    
+
                 }
             });
 
@@ -267,19 +257,19 @@
                 //alert("Test code" + qpid);
                 var w = window.open("<%=request.getContextPath()%>/admin/qualificationpack/openaddpc.io?nosid=" + id + "&qpid=" + qpid, "popupWindow", "width=1024, height=500, scrollbars=yes");
             }
-            function opendisplaypc(id,id2) {
-               
-                var w = window.open("<%=request.getContextPath()%>/admin/result/pcreport.io?userresultid=" + id+"&userid="+id2, "popupWindow", "width=1024, height=500, scrollbars=yes");
+            function opendisplaypc(id, id2) {
+
+                var w = window.open("<%=request.getContextPath()%>/admin/result/pcreport.io?userresultid=" + id + "&userid=" + id2, "popupWindow", "width=1024, height=500, scrollbars=yes");
             }
-            function opendisplaynos(id,id2) {
-                
-                var w = window.open("<%=request.getContextPath()%>/admin/result/nosreport.io?userresultid=" + id+"&userid="+id2, "popupWindow", "width=1024, height=500, scrollbars=yes");
+            function opendisplaynos(id, id2) {
+
+                var w = window.open("<%=request.getContextPath()%>/admin/result/nosreport.io?userresultid=" + id + "&userid=" + id2, "popupWindow", "width=1024, height=500, scrollbars=yes");
             }
-            function openreportdialog(id,id2) {
+            function openreportdialog(id, id2) {
                 //var qpid = $('select[name=qpid]').val();
                 alert("Test code" + id);
                 alert("Test code" + id2);
-                var w = window.open("<%=request.getContextPath()%>/admin/result/totalreport.io?userresultid=" + id+"&userid="+id2, "popupWindow", "width=1200, height=500, scrollbars=yes");
+                var w = window.open("<%=request.getContextPath()%>/admin/result/totalreport.io?userresultid=" + id + "&userid=" + id2, "popupWindow", "width=1200, height=500, scrollbars=yes");
             }
             function opendeletenos(id) {
                 //var qpid = $('select[name=qpid]').val();

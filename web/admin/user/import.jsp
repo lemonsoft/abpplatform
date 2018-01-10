@@ -34,7 +34,7 @@
 
                 <div class="form-header header-blue">
                     <h4><i class="fa fa-pencil-square"></i><spring:message code="user.title" text="Import User" /></h4>
-                    <div style="position: absolute;top:5px;right:5px;width: 100px;"><a href="<%=request.getContextPath()%>/admin/batches/init.io" class="button btn-primary block pushed expand">Batches </a></div>
+                    <div style="position: absolute;top:5px;right:5px;width: 100px;"><a href="<%=request.getContextPath()%>/admin/batches/init.io" class="button btn-primary block pushed expand"><spring:message code="import.batches" text="Batches" /> </a></div>
 
                 </div><!-- end .form-header section -->
 
@@ -44,9 +44,9 @@
                         <div class="frm-row">
                             <div class="section colm colm4"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Sector Skill Council :${sscname}</label>
+                                    <label for="names" class="field-label"><spring:message code="import.ssc" text="Sector Skill Council" /> :${sscname}</label>
                                     <label class="field prepend-icon">
-                                        Qualification Pack :${qpname}
+                                        <spring:message code="import.qpack" text="Qualification Pack" /> :${qpname}
                                     </label>
                                 </div><!-- end section -->
                             </div><!-- end section -->
@@ -54,9 +54,9 @@
                         <div class="frm-row">
                             <div class="section colm colm4"> 
                                 <div class="section">
-                                    <label for="names" class="field-label">Note :  It will accept only Excel files with *.xls and.xlsx extension only.</label>
+                                    <label for="names" class="field-label"><spring:message code="import.note1" text="Note :  It will accept only Excel files with *.xls and.xlsx extension only." /></label>
                                     <label class="field prepend-icon">
-                                        Use the same format as given below :<a href="#" id="download">Download</a> 
+                                        <spring:message code="import.note2" text="Use the same format as given below" /> :<a href="#" id="download"><spring:message code="import.download" text="Download" /></a> 
                                     </label>
                                 </div><!-- end section -->
                             </div><!-- end section -->
@@ -76,7 +76,7 @@
                                 <div class="section">
                                     <label for="names" class="field-label">&nbsp;</label>
                                     <label class="field prepend-icon">
-                                        <button type="submit" class="button btn-blue">Upload</button>
+                                        <button type="submit" class="button btn-blue"><spring:message code="import.upload" text="Upload" /></button>
                                     </label>
                                 </div><!-- end section -->
                             </div><!-- end section -->
@@ -87,26 +87,26 @@
                                 <div class="section" style='overflow:auto;width:1200px;'>
                                     <table id="example-basic4" class="table table-striped table-bordered table-hover dt-responsive"  border="1" cellpadding="2" cellspacing="2" id="format">
                                         <thead>
-                                        <th>BatchID</th><th>Enrollment No</th>
-                                        <th>Name of Training Agency</th><th>Name of the Trainee</th>
-                                        <th>Gender(M/F/T)</th><th>Category(Gen/SC/ST/OBC)</th>
-                                        <th>DOB</th><th>Father's name</th>
-                                        <th>Mother's name</th><th>Address of the trainee</th>
-                                        <th>District</th><th>State</th>
-                                        <th>Phone no of the trainee</th><th>Educational Qualification</th>
-                                        <th>Tech Qualification(If Any)</th><th>Is the training conducted linked to Occupational Standards</th>
-                                        <th>Job Role</th><th>Is the training agency an NSDC partner? (Y/N)</th>
-                                        <th>Skilling/Upskilling</th><th>Course Start Date</th>
-                                        <th>Date of course completion</th><th>Trainer's name</th>
-                                        <th>Training Provider SPOC name</th><th>Contact No</th>
-                                        <th>Email ID</th><th>Total fee charged for training</th>
-                                        <th>Date of assessment</th><th>Name of assessment agency</th>
-                                        <th>Total Fee charged for assessment</th><th>Assessment fee charged from whom?</th>
-                                        <th>Total Fee charged for certification</th><th>Certification fee charged from whom?</th>
-                                        <th>No of years of prior work experience</th><th>Employed (Y/N)</th>
-                                        <th>Name of the employer</th><th>Name of key contact from the employer</th>
-                                        <th>Phone no of the key contact from the employer</th><th>% age increase in wage post certification</th>
-                                        <th>Benefits gained from certification</th>
+                                        <th><spring:message code="import.batchid" text="BatchID" /></th><th><spring:message code="import.enrollno" text="Enrollment No" /></th>
+                                        <th><spring:message code="import.trainingagency" text="Name of Training Agency" /></th><th><spring:message code="import.nameoftrainee" text="Name of the Trainee" /></th>
+                                        <th><spring:message code="import.gender" text="Gender(M/F/T)" /></th><th><spring:message code="import.category" text="Category(Gen/SC/ST/OBC)" /></th>
+                                        <th><spring:message code="import.dob" text="DOB" /></th><th><spring:message code="import.fathername" text="Father's name" /></th>
+                                        <th><spring:message code="import.mothername" text="Mother's name" /></th><th><spring:message code="import.addresstrainee" text="Address of the trainee" /></th>
+                                        <th><spring:message code="import.district" text="District" /></th><th><spring:message code="import.state" text="State" /></th>
+                                        <th><spring:message code="import.traineephone" text="Phone no of the trainee" /></th><th><spring:message code="import.educationalqualification" text="Educational Qualification" /></th>
+                                        <th><spring:message code="import.techqualification" text="Tech Qualification(If Any)" /></th><th><spring:message code="import.occupationalstandard" text="Is the training conducted linked to Occupational Standards" /></th>
+                                        <th><spring:message code="import.jobrole" text="Job Role" /></th><th><spring:message code="import.isnsdcpartner" text="Is the training agency an NSDC partner? (Y/N)" /></th>
+                                        <th><spring:message code="import.skilling_upskilling" text="Skilling/Upskilling" /></th><th><spring:message code="import.coursestartdate" text="Course Start Date" /></th>
+                                        <th><spring:message code="import.coursecompletion" text="Date of course completion" /></th><th><spring:message code="import.trainername" text="Trainer's name" /></th>
+                                        <th><spring:message code="import.trainingproviderspoc" text="Training Provider SPOC name" /></th><th><spring:message code="import.contactno" text="Contact No" /></th>
+                                        <th><spring:message code="import.emailid" text="Email ID" /></th><th><spring:message code="import.totalfeecharged" text="Total fee charged for training" /></th>
+                                        <th><spring:message code="import.dateofassesment" text="Date of assessment" /></th><th><spring:message code="import.nameofagency" text="Name of assessment agency" /></th>
+                                        <th><spring:message code="import.totalfeecharged" text="Total Fee charged for assessment" /></th><th><spring:message code="import.assesmentfee" text="Assessment fee charged from whom?" /></th>
+                                        <th><spring:message code="import.totalfee" text="Total Fee charged for certification" /></th><th><spring:message code="import.certificationfee" text="Certification fee charged from whom?" /></th>
+                                        <th><spring:message code="import.noofyears" text="No of years of prior work experience" /></th><th><spring:message code="import.keycontactemployer" text="Employed (Y/N)" /></th>
+                                        <th><spring:message code="import.employer" text="Name of the employer" /></th><th><spring:message code="import.employer" text="Name of key contact from the employer" /></th>
+                                        <th><spring:message code="import.phonenokeycontact" text="Phone no of the key contact from the employer" /></th><th><spring:message code="import.postcertification" text="% age increase in wage post certification" /></th>
+                                        <th><spring:message code="import.benifitsgained" text="Benefits gained from certification" /></th>
 
                                         </thead>
                                     </table>
@@ -117,50 +117,50 @@
                         <c:if test = "${importdata !=null}">
                             <div class="frm-row" style='overflow:auto;width:1200px;height:650px;'>
                                 <display:table name="importdata" class="table table-bordered" requestURI="importshow.io"  pagesize="200">
-                                    <display:column property="batchid" title="Batch ID" />
-                                    <display:column property="enrollmentno" title="Enrollment No" />
-                                    <display:column property="trainingagency" title="Training Agency" />
-                                    <display:column property="traineename" title="Trainee Name" />
-                                    <display:column property="gender" title="Gender" />
-                                    <display:column property="category" title="Category" />
-                                    <display:column property="dateofbirth" title="Date Of Birth" />
-                                    <display:column property="fathername" title="Father Name" />
-                                    <display:column property="mothername" title="Mother Name" />
-                                    <display:column property="traineeadress" title="Trainee Address" />
-                                    <display:column property="district" title="District" />
-                                    <display:column property="states" title="State" />
-                                    <display:column property="traineephone" title="Phone no of the trainee" />
-                                    <display:column property="eduqualification" title="Educational Qualification" />
-                                    <display:column property="techqualification" title="Tech Qualification(If Any)" />
-                                    <display:column property="istraineconductocupstd" title="Is the training conducted linked to Occupational Standards" />
-                                    <display:column property="jobrole" title="Job Role" />
-                                    <display:column property="istagencynsdcpartner" title="Is the training agency an NSDC partner? (Y/N)" />
-                                    <display:column property="skillingupskilling" title="Skilling/Upskilling" />
-                                    <display:column property="coursestartdate" title="Course Start Date" />
-                                    <display:column property="dateofcompletion" title="Date of course completion" />
-                                    <display:column property="trainersname" title="Trainer's name" />
-                                    <display:column property="tproviderspocname" title="Training Provider SPOC name" />
-                                    <display:column property="contactno" title="Contact No" />
-                                    <display:column property="emailid" title="Email ID" />
-                                    <display:column property="totalfeefortraining" title="Total fee charged for training" />
-                                    <display:column property="dateofassessment" title="Date of assessment" />
-                                    <display:column property="assessmentagency" title="Name of assessment agency" />
-                                    <display:column property="totalfeeforassessment" title="Total Fee charged for assessment" />
-                                    <display:column property="assessmentfeefromwhom" title="Assessment fee charged from whom?" />
-                                    <display:column property="totalfeeforcertification" title="Total Fee charged for certification" />
-                                    <display:column property="certificationchargefromwhom" title="Certification fee charged from whom?" />
-                                    <display:column property="priorworkexpyear" title="No of years of prior work experience" />
-                                    <display:column property="employed" title="Employed (Y/N)" />
-                                    <display:column property="nameofemployer" title="Name of the employer" />
-                                    <display:column property="keycontactfrmemployer" title="Name of key contact from the employer" />
-                                    <display:column property="phonenoofkeycontact" title="Phone no of the key contact from the employer" />
-                                    <display:column property="perageincreasewagepostcert" title="% age increase in wage post certification" />
-                                    <display:column property="benifitgainfrmcert" title="Benefits gained from certification" />
-                                    <display:column property="status" title="Status" />
+                                    <display:column property="batchid" titleKey="import.batchid" />
+                                    <display:column property="enrollmentno" titleKey="import.enrollno" />
+                                    <display:column property="trainingagency" titleKey="import.trainingagency" />
+                                    <display:column property="traineename" titleKey="import.nameoftrainee" />
+                                    <display:column property="gender" titleKey="import.gender" />
+                                    <display:column property="category" titleKey="import.category" />
+                                    <display:column property="dateofbirth" titleKey="import.dob" />
+                                    <display:column property="fathername" titleKey="import.fathername" />
+                                    <display:column property="mothername" titleKey="import.mothername" />
+                                    <display:column property="traineeadress" titleKey="import.addresstrainee" />
+                                    <display:column property="district" titleKey="import.district" />
+                                    <display:column property="states" titleKey="import.state" />
+                                    <display:column property="traineephone" titleKey="import.traineephone" />
+                                    <display:column property="eduqualification" titleKey="import.educationalqualification" />
+                                    <display:column property="techqualification" titleKey="import.techqualification" />
+                                    <display:column property="istraineconductocupstd" titleKey="import.occupationalstandard" />
+                                    <display:column property="jobrole" titleKey="import.jobrole" />
+                                    <display:column property="istagencynsdcpartner" titleKey="import.isnsdcpartner" />
+                                    <display:column property="skillingupskilling" titleKey="import.skilling_upskilling" />
+                                    <display:column property="coursestartdate" titleKey="import.coursestartdate" />
+                                    <display:column property="dateofcompletion" titleKey="import.coursecompletion" />
+                                    <display:column property="trainersname" titleKey="import.trainername" />
+                                    <display:column property="tproviderspocname" titleKey="import.trainingproviderspoc" />
+                                    <display:column property="contactno" titleKey="import.contactno" />
+                                    <display:column property="emailid" titleKey="import.emailid" />
+                                    <display:column property="totalfeefortraining" titleKey="import.totalfeecharged" />
+                                    <display:column property="dateofassessment" titleKey="import.dateofassesment" />
+                                    <display:column property="assessmentagency" titleKey="import.nameofagency" />
+                                    <display:column property="totalfeeforassessment" titleKey="import.totalfeecharged" />
+                                    <display:column property="assessmentfeefromwhom" titleKey="import.assesmentfee" />
+                                    <display:column property="totalfeeforcertification" titleKey="import.totalfee" />
+                                    <display:column property="certificationchargefromwhom" titleKey="import.certificationfee" />
+                                    <display:column property="priorworkexpyear" titleKey="import.noofyears" />
+                                    <display:column property="employed" titleKey="import.employed" />
+                                    <display:column property="nameofemployer" titleKey="import.employer" />
+                                    <display:column property="keycontactfrmemployer" titleKey="import.keycontactemployer" />
+                                    <display:column property="phonenoofkeycontact" titleKey="import.phonenokeycontact" />
+                                    <display:column property="perageincreasewagepostcert" titleKey="import.postcertification" />
+                                    <display:column property="benifitgainfrmcert" titleKey="import.benifitsgained" />
+                                    <display:column property="status" titleKey="Status" />
 
                                 </display:table>
                                 <c:if test = "${displaybtn == 'yes'}">
-                                    <button type="button" onclick="startimport();" class="button btn-blue">Import Users</button>
+                                    <button type="button" onclick="startimport();" class="button btn-blue"><spring:message code="import.importusers" text="Import Users" /></button>
                                 </c:if>
                             </div>
                         </c:if>

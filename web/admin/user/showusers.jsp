@@ -28,7 +28,7 @@
 
                 <div class="form-header header-blue">
                     <h4><i class="fa fa-pencil-square"></i><spring:message code="user.srctitle" text="Users" /></h4>
-                    <div style="position: absolute;top:5px;right:5px;width: 100px;"><a href="<%=request.getContextPath()%>/admin/batches/init.io" class="button btn-primary block pushed expand">Batches </a></div>
+                    <div style="position: absolute;top:5px;right:5px;width: 100px;"><a href="<%=request.getContextPath()%>/admin/batches/init.io" class="button btn-primary block pushed expand"><spring:message code="showuser.batches" text="Batches" /> </a></div>
 
                 </div><!-- end .form-header section -->
 
@@ -37,9 +37,9 @@
                         <div class="frm-row">
                             <div class="section colm colm4"> 
                                 <div class="section">
-                                    <label for="names" class="field-label"><b>Sector Skill Council :</b>${sscname}</label>
+                                    <label for="names" class="field-label"><b><spring:message code="showuser.ssc" text="Sector Skill Council" /> :</b>${sscname}</label>
                                     <label class="field prepend-icon">
-                                        <b>Qualification Pack :</b>${qpname}
+                                        <b><spring:message code="showuser.qpack" text="Qualification Pack" /> :</b>${qpname}
                                     </label>
                                 </div><!-- end section -->
                             </div><!-- end section -->
@@ -47,19 +47,19 @@
 
 
                         <div class="frm-row">
-                            <div style="position: relative;right:2px;"><a href="exportexcel.io?batchid=2">Export Excel</a></div>
+                            <div style="position: relative;right:2px;"><a href="exportexcel.io?batchid=2"><spring:message code="showuser.exportexcel" text="Export Excel" /></a></div>
                             <display:table name="importdata" class="table table-bordered" requestURI="showuser.io" decorator="com.abp.admin.batches.SrcDecorator"  pagesize="50">
-                                <display:column property="photoname" title="Photo" />
-                                <display:column property="enrollmentno" title="Enrollment No" />
-                                <display:column property="username" title="User Name" />
-                                <display:column property="traineename" title="Student Name" />
-                                <display:column property="gender" title="Gender" />
-                                <display:column property="dateofbirth" title="Date Of Birth" />
-                                <display:column property="traineeadress" title="Address" />
-                                <display:column property="district" title="District" />
-                                <display:column property="states" title="State" />
-                                <display:column property="contactno" title="Contact No" />
-                                <display:column property="webcam" title="Web Cam" />
+                                <display:column property="photoname" titleKey="showuser.photo" />
+                                <display:column property="enrollmentno" titleKey="showuser.enrollno" />
+                                <display:column property="username" titleKey="showuser.username" />
+                                <display:column property="traineename" titleKey="showuser.studentname" />
+                                <display:column property="gender" titleKey="showuser.gender" />
+                                <display:column property="dateofbirth" titleKey="showuser.dob" />
+                                <display:column property="traineeadress" titleKey="showuser.address" />
+                                <display:column property="district" titleKey="showuser.district" />
+                                <display:column property="states" titleKey="showuser.state" />
+                                <display:column property="contactno" titleKey="showuser.contactno" />
+                                <display:column property="webcam" titleKey="showuser.webcam" />
 
                             </display:table>
 

@@ -6,6 +6,9 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib uri="/WEB-INF/displaytag.tld" prefix="display" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <!DOCTYPE html>
 <head>
     <link rel="stylesheet" type="text/css"  href="<%=request.getContextPath()%>/assets/css/smart-forms.css">
@@ -47,18 +50,18 @@
                 <div class="portlet box blue-hoki">
                     <div class="portlet-title">
                         <div class="caption">
-                            <i class="fa fa-gift"></i>Assessor Details </div>
+                            <i class="fa fa-gift"></i><spring:message code="assessor.dashboard" text="Assessor Details" /> </div>
 
                     </div>
                     <div class="portlet-body">
                         <div class="scroller" style="height:350px" data-rail-visible="1" data-rail-color="yellow" data-handle-color="#a1b2bd">
                             <div><img src="<%=request.getContextPath()%>/assets/images/NoPhotoAvailable.jpg" class="circle"></div>
                             <table class="table table-striped table-bordered table-hover dt-responsive"  border="1" cellpadding="2" cellspacing="2" width="100%">
-                                <tr><td>Name :</td><td>${name}</td></tr>
-                                <tr><td>Qualification :</td><td>${qualification}</td></tr>
-                                <tr><td>State :</td><td>${state}</td></tr>
-                                <tr><td>District:</td><td>${district}</td></tr>
-                                <tr><td>Email ID:</td><td>${emailid}</td></tr>
+                                <tr><td><spring:message code="assessor.name" text="Name" /> :</td><td>${name}</td></tr>
+                                <tr><td><spring:message code="assessor.qualification" text="Qualification" /> :</td><td>${qualification}</td></tr>
+                                <tr><td><spring:message code="assessor.state" text="State" /> :</td><td>${state}</td></tr>
+                                <tr><td><spring:message code="assessor.district" text="District" />:</td><td>${district}</td></tr>
+                                <tr><td><spring:message code="assessor.emailid" text="Email ID" />:</td><td>${emailid}</td></tr>
 
                             </table>
                         </div>
@@ -74,20 +77,19 @@
                 <div class="portlet box blue-hoki">
                     <div class="portlet-title">
                         <div class="caption">
-                            <i class="fa fa-gift"></i>My Batches</div>
+                            <i class="fa fa-gift"></i><spring:message code="assessor.mybatches" text="My Batches" /></div>
 
                     </div>
                     <div class="portlet-body">
                         <div class="scroller" style="height:350px" data-rail-visible="1" data-rail-color="yellow" data-handle-color="#a1b2bd">
                             <display:table name="records" class="table table-bordered" requestURI="initSearch.io" decorator="com.abp.assessor.login.SrcDecorator" pagesize="10">
-                                <display:column property="batchid" title="Batch ID" />
-                                <display:column property="tpname" title="T.P Name" />
-                                <display:column property="batchsize" title="Batch Size" />
-                                <display:column property="centeraddr" title="Center Address" />
-                                <display:column property="startdate" title="Exam Start Date" />
-                                <display:column property="enddate" title="Exam End Date" />
-                                <display:column property="attendance" title="Attendance" />
-
+                                <display:column property="batchid" titleKey="assessor.batchid" />
+                                <display:column property="tpname" titleKey="assessor.tpname" />
+                                <display:column property="batchsize" titleKey="assessor.batchsize" />
+                                <display:column property="centeraddr" titleKey="assessor.centeraddress" />
+                                <display:column property="startdate" titleKey="assessor.examstartdate" />
+                                <display:column property="enddate" titleKey="assessor.examenddate" />
+                                <display:column property="attendance" titleKey="assessor.attendance" />
                             </display:table>
                         </div>
                     </div>
