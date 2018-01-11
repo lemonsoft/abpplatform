@@ -8,8 +8,10 @@ package com.abp.admin.locationanalysis;
 import com.abp.admin.batches.BatchesDAO;
 import com.abp.admin.batches.UserDAO;
 import com.abp.admin.qualificationpack.QualificationPackDAO;
+import com.abp.admin.result.TheoryWiseResultDAO;
 import com.abp.admin.result.UserResultDetailDAO;
 import com.abp.admin.ssc.SSCDAO;
+import com.abp.function.CommonFunction;
 import com.abp.statedistrict.StateDAO;
 import com.abp.superdao.SuperBean;
 import com.abp.superservice.SuperService;
@@ -71,43 +73,40 @@ public class LocationWiseAnalysis {
         System.out.println(" Sector " + locationdao.getSscid());
         System.out.println(" State " + locationdao.getState());
         System.out.println(" Month " + locationdao.getMonth());
-
-        ArrayList disprecord=new ArrayList();
-        int i=1;
+        CommonFunction comm = new CommonFunction();
+        ArrayList disprecord = new ArrayList();
+        int i = 1;
         Map param = new HashMap();
         param.put("state_id", Integer.parseInt(locationdao.getState()));
         List<SuperBean> records = this.superService.listAllObjectsByCriteria(new BatchesDAO(), param);
         if (records.size() > 0) {
             Iterator itr = records.iterator();
             while (itr.hasNext()) {
-                
+
                 BatchesDAO batchdao = (BatchesDAO) itr.next();
-                LocationWiseDAO locatdao=new LocationWiseDAO();
-                locatdao.setSrno(""+i);
+                LocationWiseDAO locatdao = new LocationWiseDAO();
+                locatdao.setSrno("" + i);
                 locatdao.setLocation(getStateIdByName(Integer.parseInt(locationdao.getState())));
                 locatdao.setTpname(batchdao.getTpName());
                 locatdao.setJobrole(getQualityPackName(batchdao.getQpackId()));
-                locatdao.setNocandidateassesed("0");
-                locatdao.setPass("0");
-                locatdao.setFail("0");
+                locatdao.setNocandidateassesed(""+getTotalNoAssessedUser(batchdao.getID()));
+                int totalusers=comm.getTotalUserOfBatch(batchdao.getID(),this.superService);
+                int totalpass=comm.getTotalUserPass(batchdao.getID(),batchdao.getQpackId(), superService);
+                locatdao.setPass(""+totalpass);
+                int totalfail=totalusers-totalpass;
+                locatdao.setFail(""+totalfail);
                 
-                Map param2 = new HashMap();
-                param2.put("ID", batchdao.getID());
-                List<SuperBean> records2 = this.superService.listAllObjectsByCriteria(new UserDAO(), param2);
-                if (records2.size() > 0) {
-                    Iterator itr2 = records2.iterator();
-                    while (itr2.hasNext()) {
-                        UserDAO userdao = (UserDAO) itr2.next();
+                System.out.println(" Total User "+totalusers);
+                System.out.println(" Total Pass "+totalpass);
+                System.out.println(" Total Fail "+totalfail);
 
-                    }
-
-                }
+                
                 disprecord.add(locatdao);
                 i++;
             }
         }
         model.addAttribute("records", disprecord);
-        model.addAttribute("locationdao", new LocationWiseDAO());
+        model.addAttribute("locationdao", locationdao);
         model.addAttribute("ssc", getSectorSkillCouncil());
         model.addAttribute("mode", "add");
 
@@ -254,14 +253,36 @@ public class LocationWiseAnalysis {
 
         return flag;
     }
-    
-    
-    private boolean isPassFailed(int userid){
-        
-         boolean flag = false;
-        
-        
-         return flag;
+
+    private int getTotalNoAssessedUser(int batchid) {
+
+        int totalassesed = 0;
+
+        Map param2 = new HashMap();
+        param2.put("ID", batchid);
+        List<SuperBean> records2 = this.superService.listAllObjectsByCriteria(new UserDAO(), param2);
+        if (records2.size() > 0) {
+            Iterator itr2 = records2.iterator();
+            while (itr2.hasNext()) {
+                UserDAO userdao = (UserDAO) itr2.next();
+                Map param = new HashMap();
+                param.put("userid", userdao.getID());
+                List<SuperBean> records = this.superService.listAllObjectsByCriteria(new TheoryWiseResultDAO(), param);
+                if(records.size()>0){
+                    totalassesed++;
+                }
+            }
+
+        }
+
+        return totalassesed;
+    }
+
+    private boolean isPassFailed(int userid) {
+
+        boolean flag = false;
+
+        return flag;
     }
 
 }

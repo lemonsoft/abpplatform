@@ -8,7 +8,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-<%@taglib uri="/WEB-INF/displaytag.tld" prefix="display" %>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -30,75 +30,62 @@
     <body >
 
         <div class="smart-wrap">
-            <div class="smart-forms smart-container wrap-full">
+            <div class="smart-forms smart-container wrap-2">
 
                 <div class="form-header header-blue">
-                    <h4><i class="fa fa-pencil-square"></i>Monthly Job Role Dashboard</h4>
+                    <h4><i class="fa fa-pencil-square"></i>Question Bank Analysis</h4>
                     <div style="position: absolute;top:5px;right:5px;width: 100px;"></div>
 
                 </div><!-- end .form-header section -->
 
-                <form:form method="post" action="${action}"  commandName="monthlydashboarddao">
-
+                <form:form method="post" action="${action}"  commandName="qbankanalysisdao">
+                    <form:hidden path="id" />
                     <div class="form-body theme-blue">
 
 
                         <div class="frm-row">
+
                             <div class="section colm colm4">
-                                <label for="names" class="field-label"><spring:message code="ssc.title" text="Sector Skill Council" /></label>
+                                <label for="names" class="field-label">Sector Skill Council:</label>
                                 <label class="field prepend-icon">
                                     <form:select path="sscid" name="sscid" id="sscid" class="gui-input" >
                                         <form:option value="">--Select--</form:option>
                                         <form:options items="${ssc}"/>
                                     </form:select>
-
-                                    <span class="field-icon"><i class="fa fa-location-arrow"></i></span> 
                                 </label>
                             </div><!-- end section -->
-
-                            <div class="section colm colm4"> 
-                                <div class="section">
-                                    <label for="names" class="field-label">Select Month</label>
-                                    <label class="field prepend-icon">
-
-                                        <form:input path="month" type="month" id="month" class="gui-input"/>
-                                    </label>
-                                </div><!-- end section -->
+                            <div class="section colm colm4">
+                                <label for="names" class="field-label">Job Role:</label>
+                                <label class="field prepend-icon">
+                                    <form:select path="qpackid" name="qpackid" id="qpackid" class="gui-input" >
+                                        <form:option value="0">--Select--</form:option>
+                                    </form:select>
+                                </label>
                             </div><!-- end section -->
-                            <div class="section colm colm2"> 
-                                <div class="section">
-                                    <label for="names" class="field-label">&nbsp;</label>
-                                    <label class="field prepend-icon"><button type="submit" class="button btn-blue"><spring:message code="common.button.submit" text="Submit" /></button></label>
-                                </div><!-- end section -->
+                            <div class="section colm colm4">
+                                <label for="names" class="field-label">Month:</label>
+                                <label class="field prepend-icon">
+                                    <form:input path="month" type="month" id="month" class="gui-input"/>
+                                </label>
                             </div><!-- end section -->
-
+                            
                         </div><!-- end frm-row section -->
-                        <c:if test="${records != null}"> 
-                            <div class="frm-row">
-                                <table><tr><td colspan=5 align=right><a href="#" onclick="writeExcelSheet();"><img src="<%=request.getContextPath()%>/assets/images/excel.ico" width=30px height=30px/></a></td></tr></table>
-                                                <display:table name="records" class="table table-bordered" requestURI="initSearch.io" pagesize="40">
-                                                    <display:column property="srno" title="SrNo" />
-                                                    <display:column property="jobrole" title="Job Role"/>
-                                                    <display:column property="pass" title="Passed"/>
-                                                    <display:column property="fail" title="Failed"/>
-                                                    <display:column property="notappeared" title="Not Appeared"/>
-                                                    <display:column property="totalnostudent" title="total No Student"/>
-
-                                </display:table>
-
-                            </div>
-                        </c:if>
-
-
                     </div><!-- end .form-body section -->
-
-
-
+                    <div class="form-footer">
+                        <c:if test = "${mode == 'add'}">
+                            <button type="submit" class="button btn-blue"><spring:message code="common.button.submit" text="Submit" /></button>
+                        </c:if>
+                        <c:if test = "${mode=='update'}">
+                            <button type="submit" class="button btn-blue"><spring:message code="common.button.update" text="Update" /></button>
+                        </c:if>
+                        <button type="reset" class="button btn-blue"><spring:message code="common.button.cancel" text="Cancel" /></button>
+                    </div><!-- end .form-footer section -->
                 </form:form>
 
             </div><!-- end .smart-forms section -->
         </div><!-- end .smart-wrap section -->
     </body>
+
     <script type="text/javascript">
 
         $(document).ready(function () {
@@ -109,7 +96,7 @@
 
                     $.ajax({
                         url: "getQP.io",
-                        data: {ssc_id: sscid},
+                        data: {sscid: sscid},
                         type: 'GET',
                         success: function (data) {
 
@@ -129,15 +116,13 @@
                 }
             });
 
-
-
         });
 
         function writeExcelSheet() {
-            var sscid = $("#sscid").val();
+            var qpackid = $("#qpackid").val();
             var srcdate = $("#month").val();
-            alert(srcdate + " Test data " + sscid);
-            window.location.href = "<%=request.getContextPath()%>/admin/monthlydashboard/writeExcel.io?sscid=" + sscid + "&srcdate=" + srcdate;
+            alert(srcdate + " Test data " + qpackid);
+            window.location.href = "<%=request.getContextPath()%>/admin/qbankanalysis/writeExcel.io?qpackid=" + qpackid + "&srcdate=" + srcdate;
 
         }
     </script>

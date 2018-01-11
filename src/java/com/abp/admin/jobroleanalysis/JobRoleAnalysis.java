@@ -5,7 +5,15 @@
  */
 package com.abp.admin.jobroleanalysis;
 
+import com.abp.admin.batches.BatchesDAO;
+import com.abp.admin.qualificationpack.QualificationPackDAO;
+import com.abp.superdao.SuperBean;
 import com.abp.superservice.SuperService;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,14 +56,41 @@ public class JobRoleAnalysis {
         request.getSession().setAttribute("body", "/admin/jobroleanalysis/jobroleanalysis.jsp");
         return "admin/common";
     }
+
     @RequestMapping(value = "/search", method = RequestMethod.POST)
     public String search(HttpServletRequest request, HttpServletResponse response, JobRoleAnalysisDAO beanObj, Model model) {
-        
+
         System.out.println(" fromdate " + beanObj.getFromdate());
         System.out.println(" todate " + beanObj.getTodate());
-        
-        model.addAttribute("jobroleanalysisdao", new JobRoleAnalysisDAO());
+        ArrayList recordsall=new ArrayList();
+        int i=1;
+        Map param = new HashMap();
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new BatchesDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            BatchesDAO data = (BatchesDAO) itr.next();
+            Map param2 = new HashMap();
+            param2.put("qpid", data.getQpackId());
+            List<SuperBean> records2 = this.superService.listAllObjectsByCriteria(new QualificationPackDAO(), param2);
+            if (records2.size() > 0) {
+                Iterator itr2 = records2.iterator();
+                while (itr2.hasNext()) {
+                    QualificationPackDAO data2 = (QualificationPackDAO) itr2.next();
+                    JobRoleAnalysisDAO jobanadao=new JobRoleAnalysisDAO();
+                    
+                    jobanadao.setJobrole(data2.getQpackname());
+                    jobanadao.setTheoryfail("--");
+                    jobanadao.setTheorypass("--");
+                    jobanadao.setVivafail("--");
+                    jobanadao.setVivapass("--");
+                    recordsall.add(jobanadao);
+                    i++;
+                }
+            }
 
+        }
+        model.addAttribute("recordsall", recordsall);
+        model.addAttribute("jobroleanalysisdao", new JobRoleAnalysisDAO());
         model.addAttribute("mode", "add");
         model.addAttribute("action", "search.io");
         request.getSession().setAttribute("body", "/admin/jobroleanalysis/jobroleanalysis.jsp");

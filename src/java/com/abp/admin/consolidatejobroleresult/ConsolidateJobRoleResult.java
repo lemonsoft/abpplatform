@@ -15,7 +15,7 @@ import com.abp.admin.result.PracticalWiseresultDAO;
 import com.abp.admin.result.TheoryWiseResultDAO;
 import com.abp.admin.result.UserResultDetailDAO;
 import com.abp.admin.ssc.SSCDAO;
-import com.abp.admin.trainingpartner.DisplayTrainingPartnerwise;
+import com.abp.function.CommonFunction;
 import com.abp.statedistrict.DistrictDAO;
 import com.abp.statedistrict.StateDAO;
 import com.abp.superdao.SuperBean;
@@ -53,22 +53,22 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/admin/jobroleresult")
 public class ConsolidateJobRoleResult {
-
+    
     private static final Logger logger = Logger.getLogger(ConsolidateJobRoleResult.class);
     @Autowired
     private ServletContext servletContext;
-
+    
     private SuperService superService;
-
+    
     @Autowired(required = true)
     @Qualifier(value = "superService")
     public void setSuperService(SuperService superService) {
         this.superService = superService;
     }
-
+    
     @RequestMapping(value = "/init", method = RequestMethod.GET)
     public String init(HttpServletRequest request, HttpServletResponse response, Model model) {
-
+        
         model.addAttribute("jobroledao", new DisplayJobRoleResult());
         model.addAttribute("ssc", getSectorSkillCouncil());
         model.addAttribute("mode", "add");
@@ -76,17 +76,18 @@ public class ConsolidateJobRoleResult {
         request.getSession().setAttribute("body", "/admin/consolidatejobroleresult/jobroleresult.jsp");
         return "admin/common";
     }
-
+    
     @RequestMapping(value = "/search", method = RequestMethod.POST)
     public String search(HttpServletRequest request, HttpServletResponse response, DisplayJobRoleResult beanObj, Model model) {
-
+        
         System.out.println(" Sector " + beanObj.getSscid());
         System.out.println(" Job role " + beanObj.getQpackid());
         System.out.println(" Month " + beanObj.getMonth());
-
+        
         ArrayList recordss = new ArrayList();
         QualificationPackDAO beanQpackObj = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(beanObj.getQpackid()));
-
+        CommonFunction commonfunct = new CommonFunction();
+        int i = 1;
         Map qpacks = new HashMap();
         qpacks.put("qpackId", new Integer(beanObj.getQpackid()));
         List<SuperBean> records = this.superService.listAllObjectsByCriteria(new BatchesDAO(), qpacks);
@@ -95,6 +96,7 @@ public class ConsolidateJobRoleResult {
             while (itr.hasNext()) {
                 BatchesDAO data = (BatchesDAO) itr.next();
                 DisplayJobRoleResult dispjobroledao = new DisplayJobRoleResult();
+                dispjobroledao.setSrno("" + i);
                 dispjobroledao.setJobrole(beanQpackObj.getQpackname());
                 dispjobroledao.setTpname(data.getTpName());
                 dispjobroledao.setBatchid("" + data.getBatch_id());
@@ -105,7 +107,12 @@ public class ConsolidateJobRoleResult {
                 dispjobroledao.setAssesorname(getAssessorNameById(data.getAssessorId()));
                 dispjobroledao.setTotalnostudent("" + getTotalStudent(data.getID()));
                 dispjobroledao.setNotappeared("" + totalappear(data.getBatch_id()));
+                int totalpass = commonfunct.getTotalUserPass(data.getID(), beanQpackObj.getQpid(), superService);
+                System.out.println("Total user pass" + totalpass);
+                dispjobroledao.setPass("" + totalpass);
+                dispjobroledao.setFail("" + 0);
                 recordss.add(dispjobroledao);
+                i++;
             }
         }
         model.addAttribute("records", recordss);
@@ -119,15 +126,14 @@ public class ConsolidateJobRoleResult {
     
     @RequestMapping(value = "/writeExcel", method = RequestMethod.GET)
     public void writeExcel(HttpServletRequest request, HttpServletResponse response, Model model) {
-
+        
         String sscid = request.getParameter("sscid");
         String qpackid = request.getParameter("qpackid");
         String month = request.getParameter("month");
-
-       
+        
         ArrayList record = new ArrayList();
         QualificationPackDAO beanQpackObj = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), new Integer(qpackid));
-
+        CommonFunction commonfunct = new CommonFunction();
         Map qpacks = new HashMap();
         qpacks.put("qpackId", new Integer(qpackid));
         List<SuperBean> recordsw = this.superService.listAllObjectsByCriteria(new BatchesDAO(), qpacks);
@@ -146,10 +152,14 @@ public class ConsolidateJobRoleResult {
                 dispjobroledao.setAssesorname(getAssessorNameById(data.getAssessorId()));
                 dispjobroledao.setTotalnostudent("" + getTotalStudent(data.getID()));
                 dispjobroledao.setNotappeared("" + totalappear(data.getBatch_id()));
+                int totalpass = commonfunct.getTotalUserPass(data.getID(), beanQpackObj.getQpid(), superService);
+                System.out.println("Total user pass" + totalpass);
+                dispjobroledao.setPass("" + totalpass);
+                dispjobroledao.setFail("" + 0);
                 record.add(dispjobroledao);
             }
         }
-
+        
         System.out.println(sscid + " : : Get Parameter Value " + qpackid);
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet spreadsheet = workbook.createSheet("training_partner_wise");
@@ -194,7 +204,6 @@ public class ConsolidateJobRoleResult {
         cell = row.createCell(16);
         cell.setCellValue("Deviation in Number of Days");
         
-
         System.out.println("Record : " + record.size());
         if (record.size() > 0) {
             Iterator itr = record.iterator();
@@ -239,11 +248,11 @@ public class ConsolidateJobRoleResult {
                 ik++;
             }
         }
-
+        
         try {
             response.setContentType("application/vnd.ms-excel");
             response.setHeader("Content-Disposition", "inline; filename=training_partner_wise.xls");
-
+            
             workbook.write(response.getOutputStream());
             response.getOutputStream().flush();
             response.getOutputStream().close();
@@ -252,20 +261,21 @@ public class ConsolidateJobRoleResult {
             logger.error("This is Error message", e);
         }
         System.out.println("Code is Here...");
-
+        
     }
-
+    
     @RequestMapping(value = "/getQP", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody  String getQP(@RequestParam("ssc_id") String sscid) {
-
+    public @ResponseBody
+    String getQP(@RequestParam("ssc_id") String sscid) {
+        
         System.out.println("SSC ID::" + sscid);
         String districts = getQualificationPackByID(sscid);
-
+        
         return districts;
     }
-
+    
     public Map<Integer, String> getSectorSkillCouncil() {
-
+        
         Map<Integer, String> states = new HashMap();
         List<SuperBean> records = this.superService.listAllObjects(new SSCDAO());
         if (records.size() > 0) {
@@ -275,15 +285,15 @@ public class ConsolidateJobRoleResult {
                 states.put(data.getSscId(), data.getSscName());
             }
         }
-
+        
         return states;
     }
-
+    
     public String getQualificationPackByID(String sscid) {
-
+        
         JSONObject jsonObj = new JSONObject();
         JSONArray jsonarr = new JSONArray();
-
+        
         try {
             Map param = new HashMap();
             param.put("sscid", sscid);
@@ -297,21 +307,21 @@ public class ConsolidateJobRoleResult {
                         jsonObj.append("NAME", data.getQpackname());
                         jsonarr.put(jsonObj);
                     }
-
+                    
                     jsonObj = new JSONObject();
                 }
             }
         } catch (Exception e) {
-
+            
             e.printStackTrace();
             logger.error("This is Error message", e);
         }
-
+        
         return jsonarr.toString();
     }
-
+    
     private String getStateNameById(int stateid) {
-
+        
         String statename = "";
         StateDAO beanQpackObj = (StateDAO) this.superService.getObjectById(new StateDAO(), stateid);
         if (beanQpackObj != null) {
@@ -319,9 +329,9 @@ public class ConsolidateJobRoleResult {
         }
         return statename;
     }
-
+    
     private String getDistrictNameById(int districtid) {
-
+        
         String districtname = "";
         DistrictDAO beanQpackObj = (DistrictDAO) this.superService.getObjectById(new DistrictDAO(), districtid);
         if (beanQpackObj != null) {
@@ -329,9 +339,9 @@ public class ConsolidateJobRoleResult {
         }
         return districtname;
     }
-
+    
     private String getAssessorNameById(int assessorid) {
-
+        
         String assessorname = "";
         AssessorDAO beanQpackObj = (AssessorDAO) this.superService.getObjectById(new AssessorDAO(), assessorid);
         if (beanQpackObj != null) {
@@ -339,9 +349,9 @@ public class ConsolidateJobRoleResult {
         }
         return assessorname;
     }
-
+    
     private int getTotalStudent(int batchid) {
-
+        
         System.out.println("  batchid  : : : " + batchid);
         int totalstudent = 0;
         Map param = new HashMap();
@@ -350,12 +360,12 @@ public class ConsolidateJobRoleResult {
         if (records.size() > 0) {
             totalstudent = records.size();
         }
-
+        
         return totalstudent;
     }
-
+    
     private int totalappear(int batchid) {
-
+        
         int totalstudent = 0;
         Map param = new HashMap();
         param.put("batchid", batchid);
@@ -364,23 +374,23 @@ public class ConsolidateJobRoleResult {
             Iterator itr = records.iterator();
             while (itr.hasNext()) {
                 UserDAO userdao = (UserDAO) itr.next();
-
+                
                 Map param2 = new HashMap();
                 param2.put("userid", userdao.getID());
                 List<SuperBean> records2 = this.superService.listAllObjectsByCriteria(new UserResultDetailDAO(), param2);
                 if (records2.size() > 0) {
-
+                    
                     totalstudent++;
                 }
             }
         }
-
+        
         return totalstudent;
-
+        
     }
-
-    public int calculateTotalPass(int batchid) {
-
+    
+    public int calculateTotalPass(int batchid, int qpackid) {
+        
         int totalpass = 0;
         Map param = new HashMap();
         param.put("batchid", batchid);
@@ -389,17 +399,15 @@ public class ConsolidateJobRoleResult {
             Iterator itr = records.iterator();
             while (itr.hasNext()) {
                 UserDAO userdao = (UserDAO) itr.next();
-
+                
             }
         }
-
+        
         return totalpass;
     }
-
     
-
     private boolean checkAllTheoryQuestions(int userid, int userdetailid, int qpackid) {
-
+        
         boolean flag = false;
         Map param = new HashMap();
         param.put("userid", userid);
@@ -414,12 +422,12 @@ public class ConsolidateJobRoleResult {
                 flag = true;
             }
         }
-
+        
         return flag;
     }
-
+    
     private int getTotalTheoryMarks(int userid, int userdetailid, String questionids) {
-
+        
         int totaltheorymarks = 0;
         String questions[] = questionids.split(",");
         for (int i = 0; i < questions.length; i++) {
@@ -433,13 +441,13 @@ public class ConsolidateJobRoleResult {
                 String selectanswer = data.getCorrectanswer();
                 totaltheorymarks = totaltheorymarks + getMarksofQuestion(questions[i], selectanswer);
             }
-
+            
         }
         return totaltheorymarks;
     }
-
+    
     private int getMarksofQuestion(String questionid, String selectOption) {
-
+        
         int marks = 0;
         QuestionDAO questdao = (QuestionDAO) this.superService.getObjectById(new QuestionDAO(), Integer.parseInt(questionid));
         if (questdao != null) {
@@ -447,13 +455,13 @@ public class ConsolidateJobRoleResult {
             if (Integer.parseInt(corectopt) == Integer.parseInt(selectOption)) {
                 marks = questdao.getMarks();
             }
-
+            
         }
         return marks;
     }
-
+    
     private boolean checkAllPracticalQuestion(int userid, int userdetailid, int qpackid) {
-
+        
         boolean flag = false;
         int totalpracticalmarks = 0;
         Map param = new HashMap();
@@ -467,7 +475,7 @@ public class ConsolidateJobRoleResult {
                 if (data.getAnswerstatus().equalsIgnoreCase("yes")) {
                     totalpracticalmarks = totalpracticalmarks + getAllPracticalmarks(data.getQuestionid());
                 }
-
+                
             }
         }
         QualificationPackDAO beanObj = (QualificationPackDAO) this.superService.getObjectById(new QualificationPackDAO(), qpackid);
@@ -475,12 +483,12 @@ public class ConsolidateJobRoleResult {
         if (totalpracticalmarks > getPracticalCutoffmarks) {
             flag = true;
         }
-
+        
         return flag;
     }
-
+    
     private int getAllPracticalmarks(int questionid) {
-
+        
         int marks = 0;
         Map param = new HashMap();
         param.put("question_id", questionid);
@@ -489,12 +497,12 @@ public class ConsolidateJobRoleResult {
             PCWithMarksDAO pcmarks = (PCWithMarksDAO) records.get(0);
             marks = pcmarks.getMarks();
         }
-
+        
         return marks;
     }
-
+    
     private boolean isPracticalPass(int userid, int batchid, int qpackid) {
-
+        
         boolean flagthry = false;
         Map param = new HashMap();
         param.put("userid", userid);
@@ -509,9 +517,9 @@ public class ConsolidateJobRoleResult {
         }
         return flagthry;
     }
-
+    
     private boolean isTheoryPass(int userid, int batchid, int qpackid) {
-
+        
         boolean flagthry = false;
         Map param = new HashMap();
         param.put("userid", userid);
@@ -524,7 +532,7 @@ public class ConsolidateJobRoleResult {
                 flagthry = checkAllTheoryQuestions(userid, data.getID(), qpackid);
             }
         }
-
+        
         return flagthry;
     }
 }

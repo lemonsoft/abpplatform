@@ -6,7 +6,8 @@
 package com.abp.admin.individualdashboard;
 
 import com.abp.admin.assessor.AssessorDAO;
-import com.abp.admin.consolidatejobroleresult.DisplayJobRoleResult;
+import com.abp.admin.batches.BatchesDAO;
+import com.abp.admin.batches.UserDAO;
 import com.abp.admin.qualificationpack.QualificationPackDAO;
 import com.abp.admin.ssc.SSCDAO;
 import com.abp.statedistrict.DistrictDAO;
@@ -93,13 +94,13 @@ public class IndividualDashBoardDAO {
             dispdao.setAadharno(assesdao.getAadharno());
             dispdao.setQualification(assesdao.getQualification());
             dispdao.setTotalexp(assesdao.getTotalexp() + " Years");
-            dispdao.setNoofcandidateasses("0");
+            dispdao.setNoofcandidateasses(""+getTotalAssessedBatch(assesdao.getAssessorid()));
             dispdao.setPass("NAN%");
             data.add(dispdao);
             i++;
         }
         model.addAttribute("records", data);
-        model.addAttribute("individualdao", new DisplayIndividualDAO());
+        model.addAttribute("individualdao", beanObj);
         model.addAttribute("ssc", getSectorSkillCouncil());
         model.addAttribute("mode", "add");
         model.addAttribute("action", "search.io");
@@ -121,7 +122,7 @@ public class IndividualDashBoardDAO {
             Iterator itr = records.iterator();
             AssessorDAO assesdao = (AssessorDAO) itr.next();
             DisplayIndividualDAO dispdao = new DisplayIndividualDAO();
-            dispdao.setSrno("" + i);
+            dispdao.setSrno(""+i);
             dispdao.setAssesorname(assesdao.getFirstname());
             String jobroles = assesdao.getJobrole();
             dispdao.setJobroles(getQPackNameById(jobroles));
@@ -131,7 +132,7 @@ public class IndividualDashBoardDAO {
             dispdao.setAadharno(assesdao.getAadharno());
             dispdao.setQualification(assesdao.getQualification());
             dispdao.setTotalexp(assesdao.getTotalexp() + " Years");
-            dispdao.setNoofcandidateasses("0");
+            dispdao.setNoofcandidateasses(""+getTotalAssessedBatch(assesdao.getAssessorid()));
             dispdao.setPass("NAN%");
             record.add(dispdao);
             i++;
@@ -166,8 +167,7 @@ public class IndividualDashBoardDAO {
         cell.setCellValue("Number of Candidates Assesed");
         cell = row.createCell(10);
         cell.setCellValue("Pass %");
-        
-        
+
         if (record.size() > 0) {
             Iterator itr = record.iterator();
             int ik = 1;
@@ -196,11 +196,11 @@ public class IndividualDashBoardDAO {
                 cell.setCellValue(dispqbank.getNoofcandidateasses());
                 cell = row.createCell(10);
                 cell.setCellValue(dispqbank.getPass());
-                
+
                 ik++;
             }
         }
-        
+
         try {
             response.setContentType("application/vnd.ms-excel");
             response.setHeader("Content-Disposition", "inline; filename=individual_assesor_dashboard.xls");
@@ -318,6 +318,29 @@ public class IndividualDashBoardDAO {
             districtname = beanObj.getDistrictName();
         }
         return districtname;
+    }
+
+    private int getTotalAssessedBatch(int assessorid) {
+
+        int totalassessjob = 0;
+        Map param = new HashMap();
+        param.put("assessorId", assessorid);
+        List<SuperBean> records = this.superService.listAllObjectsByCriteria(new BatchesDAO(), param);
+        if (records.size() > 0) {
+            Iterator itr = records.iterator();
+            while (itr.hasNext()) {
+                BatchesDAO data = (BatchesDAO) itr.next();
+                Map param2 = new HashMap();
+                param2.put("batchid", data.getID());
+                List<SuperBean> records2 = this.superService.listAllObjectsByCriteria(new UserDAO(), param2);
+                if (records2.size() > 0) {
+                    totalassessjob=records2.size();
+                }
+
+            }
+        }
+
+        return totalassessjob;
     }
 
 }

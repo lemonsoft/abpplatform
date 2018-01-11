@@ -223,7 +223,25 @@
                 <value>admin/properties/questions/importquestions</value>
                 <value>admin/properties/questions/showmultilanguage</value>
                 
-                <value>admin/properties/questionsusage/questionsusage</value>
+                <value>admin/properties/result/detailreport</value>
+                <value>admin/properties/result/nosreport</value>
+                <value>admin/properties/result/pcreport</value>
+                <value>admin/properties/result/result</value>
+                <value>admin/properties/theorymmq/addtheorymmq</value>
+                <value>admin/properties/theorymmq/importmmqquestion</value>
+                <value>admin/properties/theorymmq/importmultilanguage</value>
+                <value>admin/properties/theorymmq/showmultilanguage</value>
+                <value>admin/properties/theorymmq/theorymmq</value>
+                
+                <value>admin/properties/trainingpartnerwise/trainingpartnerwise</value>
+                
+                <value>admin/properties/user/import</value>
+                <value>admin/properties/user/show</value>
+                <value>admin/properties/user/user</value>
+                
+                <value>assessor/dashboard/dashboard</value>
+                <value>assessor/exam/exam</value>
+                <value>assessor/practicalexam/practicalexam</value>
                 
             </list>
         </property>

@@ -48,7 +48,7 @@
                                 <label for="names" class="field-label"><spring:message code="ssc.title" text="Sector Skill Council" /></label>
                                 <label class="field prepend-icon">
                                     <form:select path="sscid" name="sscid" id="sscid" class="gui-input" >
-                                        <form:option value="">--Select--</form:option>
+                                        <form:option value="0">--Select--</form:option>
                                         <form:options items="${ssc}"/>
                                     </form:select>
 
@@ -64,8 +64,8 @@
                                     </label>
                                 </div><!-- end section -->
                             </div><!-- end section -->
-                            
-                            
+
+
                             <div class="section colm colm2"> 
                                 <div class="section">
                                     <label for="names" class="field-label">&nbsp;</label>
@@ -74,17 +74,17 @@
                             </div><!-- end section -->
 
                         </div><!-- end frm-row section -->
-                        <c:if test="${records != null}"> 
+                        <c:if test="${recordall != null}"> 
                             <div class="frm-row">
                                 <table><tr><td colspan=5 align=right><a href="#" onclick="writeExcelSheet();"><img src="<%=request.getContextPath()%>/assets/images/excel.ico" width=30px height=30px/></a></td></tr></table>
-                                <display:table name="records" class="table table-bordered" requestURI="initSearch.io" pagesize="40">
-                                    <display:column property="srno" titleKey="assesor.search.srno" />
-                                    <display:column property="assessorname" titleKey="assesor.search.assessorname"/>
-                                    <display:column property="jobroles" titleKey="assesor.search.jobroles"/>
-                                    <display:column property="location" titleKey="assesor.search.location"/>
-                                    <display:column property="datesoccupiedinmonth" titleKey="assesor.search.datesoccupiedinmonth"/>
-                                    
-                                 </display:table>
+                                                <display:table name="recordall" class="table table-bordered" requestURI="initSearch.io" pagesize="40">
+                                                    <display:column property="srno" titleKey="assesor.search.srno" />
+                                                    <display:column property="assessorname" titleKey="assesor.search.assessorname"/>
+                                                    <display:column property="jobroles" titleKey="assesor.search.jobroles"/>
+                                                    <display:column property="location" titleKey="assesor.search.location"/>
+                                                    <display:column property="datesoccupiedinmonth" titleKey="assesor.search.datesoccupiedinmonth"/>
+
+                                </display:table>
 
                             </div>
                         </c:if>
@@ -134,10 +134,11 @@
         });
 
         function writeExcelSheet() {
-            
+
             var sscid = $("#sscid").val();
-            alert(sscid + " Test data " );
-            window.location.href = "<%=request.getContextPath()%>/admin/individualdashboard/writeExcel.io?sscid=" + sscid;
+            var month = $("#month").val();
+            alert(sscid + " Test data " + month);
+            window.location.href = "<%=request.getContextPath()%>/admin/assesorreport/writeExcel.io?sscid=" + sscid + "&month=" + month;
 
         }
     </script>
